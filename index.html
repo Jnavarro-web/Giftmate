@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#F4A438"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Giftmate"/>
+  <title>Giftmate 🎁</title>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/icon-192.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0A0A18; font-family: 'DM Sans', system-ui, sans-serif; }
+    #root { min-height: 100vh; }
+    #splash { position:fixed;inset:0;background:#0A0A18;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.4s ease; }
+    #splash p { color:#F4A438;font-family:Georgia,serif;font-style:italic;font-size:22px;font-weight:700;margin-top:16px; }
+    input,button,select,textarea { font-family: inherit; }
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <svg width="80" height="80" viewBox="0 0 44 44" fill="none">
+      <circle cx="22" cy="22" r="22" fill="#F4A438"/>
+      <text x="22" y="20" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="900" font-size="11" fill="#0A0A18" letter-spacing="0.5">gift</text>
+      <text x="22" y="32" text-anchor="middle" font-family="Arial Black,Impact,sans-serif" font-weight="900" font-size="13.5" fill="#0A0A18" letter-spacing="0.8">MATE</text>
+    </svg>
+    <p>Giftmate</p>
+  </div>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/htm@3/dist/htm.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="./app.js"></script>
+
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const s = document.getElementById('splash');
+        if (s) { s.style.opacity = '0'; setTimeout(() => s.remove(), 400); }
+      }, 800);
+    });
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+    }
+  </script>
+</body>
+</html>
