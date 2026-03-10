@@ -1,20 +1,15 @@
-const CACHE_NAME = "giftmate-v3";
+const CACHE_NAME = "giftmate-v4";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/app.js",
-  "/boot.js",
   "/manifest.json",
   "/privacy.html",
   "/terms.html",
   "/account-deletion.html",
   "/icon-192.png",
   "/icon-512.png",
-  "/og-image.png",
-  "/vendor/react.production.min.js",
-  "/vendor/react-dom.production.min.js",
-  "/vendor/htm.umd.js",
-  "/vendor/supabase.js"
+  "/og-image.png"
 ];
 
 self.addEventListener("install", event => {

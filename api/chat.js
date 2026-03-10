@@ -3,7 +3,7 @@ const SUPABASE_URL = "https://xpvvutfojaqtrybwlnph.supabase.co";
 // Anon key is public — safe to embed as fallback (same key used in app.js)
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_S1FnE9dxWOZCZ77Bm93SSg_ObsDrMVc";
 
-const ALLOWED_MODELS = ["claude-3-5-haiku-20241022", "claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"];
+const ALLOWED_MODELS = ["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022", "claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"];
 const MAX_MESSAGE_LENGTH = 4000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 12;
