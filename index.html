@@ -72,13 +72,37 @@
       } catch(e) {}
     })();
 
+    // Force-remove splash after 800ms on load (normal path)
     window.addEventListener('load', function() {
       setTimeout(function() {
         var s = document.getElementById('splash');
         if (s) { s.style.opacity = '0'; setTimeout(function(){ if(s.parentNode) s.parentNode.removeChild(s); }, 400); }
       }, 800);
+
+      // Hard fallback: if splash is still visible after 4s, something crashed — remove it
+      setTimeout(function() {
+        var s = document.getElementById('splash');
+        if (s && s.parentNode) s.parentNode.removeChild(s);
+      }, 4000);
+
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(function(){});
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+          // When a new SW takes over, reload the page to get fresh assets
+          reg.addEventListener('updatefound', function() {
+            var newWorker = reg.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', function() {
+                if (newWorker.state === 'activated') {
+                  window.location.reload();
+                }
+              });
+            }
+          });
+        }).catch(function(){});
+        // Also reload if controller changes (SW swap mid-session)
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+          window.location.reload();
+        });
       }
     });
   </script>
