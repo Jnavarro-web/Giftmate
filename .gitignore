@@ -1,0 +1,9 @@
+# Local dev folder structure (files are served from root in GitHub/Vercel)
+public/
+# Environment files with secrets
+.env
+.env.local
+# Node
+node_modules/
+# SQL migrations (optional - keep if you want version history)
+# migration_*.sql

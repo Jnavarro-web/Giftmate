@@ -5,6 +5,7 @@ const SUPABASE_URL = "https://xpvvutfojaqtrybwlnph.supabase.co";
 const SUPABASE_KEY = "sb_publishable_S1FnE9dxWOZCZ77Bm93SSg_ObsDrMVc";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const API = "/api/chat", MODEL = "claude-sonnet-4-20250514";
+const SUPPORT_EMAIL = "support@giftm8.app";
 
 const THEMES = {
   // Midnight: classic — warm amber drives everything on deep navy
@@ -499,6 +500,48 @@ const trackTabView = (() => {
     _lastTab = tab; _tabStart = Date.now();
   };
 })();
+const captureError = (source, error, context={}) => {
+  console.error(`[${source}]`, error, context);
+  const message = typeof error === "string" ? error : (error?.message || "Unknown error");
+  track("client_error", {source, message: String(message).slice(0, 500), context});
+};
+const openLegalPage = path => {
+  const url = new URL(path, window.location.origin).toString();
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+const requestAccountDeletion = email => {
+  const subject = encodeURIComponent("Giftmate account deletion request");
+  const body = encodeURIComponent(`Please delete my Giftmate account.\n\nEmail: ${email || ""}\nUsername: \nReason (optional): `);
+  window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+};
+const isRecoveryFlow = () => {
+  const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+  const params = new URLSearchParams(hash);
+  return params.get("type") === "recovery";
+};
+const hasRecoveryTokens = () => {
+  const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+  const params = new URLSearchParams(hash);
+  return Boolean(params.get("access_token") && params.get("refresh_token"));
+};
+const clearAuthHash = () => {
+  if(window.location.hash) window.history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+};
+const callChatApi = async payload => {
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session?.access_token) throw new Error("Please log in again to use Giftmate AI.");
+  const res = await fetch(API, {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":`Bearer ${session.access_token}`
+    },
+    body:JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if(!res.ok) throw new Error(data?.error || "Giftmate AI is unavailable right now.");
+  return data;
+};
 const INTEREST_KEYS=["Gaming","Music","Travel","Cooking","Fitness","Photography","Art","Reading","Tech","Sports","Fashion","Film","Hiking","Coffee","Wine","Yoga","Dance","DIY"];
 const INTEREST_TRANSLATIONS={
   en: ["Gaming","Music","Travel","Cooking","Fitness","Photography","Art","Reading","Tech","Sports","Fashion","Film","Hiking","Coffee","Wine","Yoga","Dance","DIY"],
@@ -590,6 +633,22 @@ function pickPhoto(onResult) {
   inp.click();
 }
 
+function getBirthdaySyncNote(profileId) {
+  return `birthday:${profileId}`;
+}
+
+function getNextBirthdayDate(birthday) {
+  if(!birthday) return null;
+  const [,mm,dd] = birthday.split("-").map(Number);
+  if(!mm || !dd) return null;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let year = today.getFullYear();
+  const nextBirthday = new Date(year, mm - 1, dd);
+  if(nextBirthday < today) year += 1;
+  return `${year}-${String(mm).padStart(2,"0")}-${String(dd).padStart(2,"0")}`;
+}
+
 // ── EDIT PROFILE MODAL ──
 function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange}) {
   const [name, setName] = useState(profile.display_name||"");
@@ -597,6 +656,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
   const [emoji, setEmoji] = useState(profile.emoji||"🎁");
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url||"");
   const [interests, setInterests] = useState(profile.interests||[]);
+  const [birthday, setBirthday] = useState(profile.birthday||"");
   const [city, setCity] = useState(profile.city||"");
   const [country, setCountry] = useState(profile.country||"");
   const [language, setLanguage] = useState(profile.language||_lang||"en");
@@ -609,11 +669,20 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
     if(!name.trim()) return;
     setLoading(true);
     try {
-      const updates = {display_name:name, username:username.toLowerCase().replace(/[^a-z0-9_]/g,""), emoji, interests, avatar_url:avatarUrl||null, city:city||null, country:country||null, language, is_private:isPrivate};
+      const updates = {display_name:name, username:username.toLowerCase().replace(/[^a-z0-9_]/g,""), emoji, interests, birthday:birthday||null, avatar_url:avatarUrl||null, city:city||null, country:country||null, language, is_private:isPrivate};
       // Save theme separately in case migration_theme.sql hasn't been run yet
       const {error} = await sb.from("profiles").update(updates).eq("id", profile.id);
       if(error) { console.error("Save error:", error); setLoading(false); return; }
       await sb.from("profiles").update({theme:selectedTheme}).eq("id", profile.id).then(()=>{}).catch(()=>{});
+      if(profile.display_name !== name || (profile.birthday||null) !== (birthday||null)) {
+        const {error: syncError} = await sb.rpc("sync_followers_birthday_occasions", {
+          p_profile_id: profile.id,
+          p_old_display_name: profile.display_name,
+          p_new_display_name: name,
+          p_new_birthday: birthday || null
+        });
+        if(syncError) console.error("Birthday sync failed:", syncError);
+      }
       setLang(language);
       if(onLangChange) onLangChange(language);
       const fullUpdates = {...updates, theme:selectedTheme};
@@ -644,6 +713,11 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
         <div style=${{marginBottom:14}}>
           <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:5}}>${t("username")}</div>
           <${Inp} value=${username} onChange=${v=>setUsername(v.toLowerCase().replace(/[^a-z0-9_]/g,""))} placeholder="username"/>
+        </div>
+
+        <div style=${{marginBottom:14}}>
+          <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:5}}>${t("yourBirthday")}</div>
+          <${Inp} value=${birthday} onChange=${setBirthday} type="date"/>
         </div>
 
         <div style=${{display:"flex",gap:10,marginBottom:14}}>
@@ -716,6 +790,11 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
         <button onClick=${save} disabled=${loading} style=${{width:"100%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,border:"none",color:"#000",borderRadius:12,padding:"14px 0",fontSize:15,fontWeight:800,cursor:"pointer",marginBottom:10}}>
           ${loading?t("loading"):t("save")}
         </button>
+        <div style=${{display:"flex",justifyContent:"space-between",gap:8,marginBottom:8}}>
+          <button onClick=${()=>openLegalPage("/privacy")} style=${{flex:1,background:"transparent",border:`1px solid ${P.border}`,color:P.muted,borderRadius:10,padding:"10px 12px",cursor:"pointer",fontSize:12}}>Privacy Policy</button>
+          <button onClick=${()=>openLegalPage("/terms")} style=${{flex:1,background:"transparent",border:`1px solid ${P.border}`,color:P.muted,borderRadius:10,padding:"10px 12px",cursor:"pointer",fontSize:12}}>Terms</button>
+        </div>
+        <button onClick=${()=>requestAccountDeletion(profile.email || "")} style=${{width:"100%",background:"transparent",border:`1px solid ${P.red}55`,color:P.red,borderRadius:10,padding:"10px 12px",cursor:"pointer",fontSize:12,marginBottom:8}}>Request account deletion</button>
         <button onClick=${onClose} style=${{width:"100%",background:"transparent",border:"none",color:P.muted,padding:"8px 0",cursor:"pointer"}}>${t("cancel")}</button>
       </div>
     </div>`;
@@ -726,6 +805,77 @@ function Inp({value, onChange, placeholder, type="text", style={}}) {
 }
 
 // ── AUTH ──
+function PasswordRecoveryScreen({onDone, onCancel}) {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const savePassword = async () => {
+    if(password.length < 8) { setErr("Use at least 8 characters."); return; }
+    if(password !== confirmPassword) { setErr("Passwords do not match."); return; }
+    setLoading(true); setErr("");
+    try {
+      const {error} = await sb.auth.updateUser({password});
+      if(error) throw error;
+      clearAuthHash();
+      setSuccess(true);
+      setTimeout(onDone, 900);
+    } catch(e) {
+      captureError("password_recovery", e);
+      setErr(e.message || "Couldn't update your password.");
+    }
+    setLoading(false);
+  };
+
+  const cancel = async () => {
+    clearAuthHash();
+    try { await sb.auth.signOut(); } catch(e) {}
+    onCancel();
+  };
+
+  return html`
+    <div style=${{minHeight:"100vh",background:P.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div style=${{width:"100%",maxWidth:380}}>
+        <div style=${{textAlign:"center",marginBottom:24}}>
+          <div style=${{width:72,height:72,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,margin:"0 auto 16px"}}>🔐</div>
+          <div style=${{fontFamily:"Georgia,serif",fontSize:30,fontWeight:900,color:P.text}}>Reset your password</div>
+          <div style=${{color:P.muted,fontSize:14,marginTop:6}}>Choose a new password to get back into Giftmate.</div>
+        </div>
+        <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:20,padding:28}}>
+          <${Inp} value=${password} onChange=${setPassword} placeholder="New password" type="password" style=${{marginBottom:12}}/>
+          <${Inp} value=${confirmPassword} onChange=${setConfirmPassword} placeholder="Confirm new password" type="password" style=${{marginBottom:12}}/>
+          ${success && html`<div style=${{color:P.green,fontSize:13,marginBottom:12,textAlign:"center",background:`${P.green}11`,borderRadius:8,padding:"10px"}}>✓ Password updated. Redirecting you back into the app.</div>`}
+          ${err && html`<div style=${{color:P.red,fontSize:13,marginBottom:12,textAlign:"center"}}>${err}</div>`}
+          <button onClick=${savePassword} disabled=${loading} style=${{width:"100%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",border:"none",borderRadius:12,padding:"14px 0",fontSize:15,fontWeight:800,cursor:"pointer",marginBottom:10}}>
+            ${loading ? "…" : "Update password"}
+          </button>
+          <button onClick=${cancel} style=${{width:"100%",background:"transparent",border:"none",color:P.muted,padding:"8px 0",cursor:"pointer"}}>Cancel</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function RecoveryLinkErrorScreen({onBack}) {
+  return html`
+    <div style=${{minHeight:"100vh",background:P.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div style=${{width:"100%",maxWidth:380}}>
+        <div style=${{textAlign:"center",marginBottom:24}}>
+          <div style=${{width:72,height:72,borderRadius:"50%",background:`linear-gradient(135deg,${P.red},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,margin:"0 auto 16px"}}>⚠️</div>
+          <div style=${{fontFamily:"Georgia,serif",fontSize:30,fontWeight:900,color:P.text}}>Reset link expired</div>
+          <div style=${{color:P.muted,fontSize:14,marginTop:6}}>Please request a new password reset email and try again.</div>
+        </div>
+        <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:20,padding:28}}>
+          <button onClick=${onBack} style=${{width:"100%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",border:"none",borderRadius:12,padding:"14px 0",fontSize:15,fontWeight:800,cursor:"pointer",marginBottom:10}}>
+            Back to login
+          </button>
+          <button onClick=${()=>openLegalPage("/privacy")} style=${{width:"100%",background:"transparent",border:`1px solid ${P.border}`,color:P.muted,borderRadius:10,padding:"10px 12px",cursor:"pointer",fontSize:12}}>Privacy Policy</button>
+        </div>
+      </div>
+    </div>`;
+}
+
 function AuthScreen({onAuth}) {
   const [mode,setMode] = useState("login");
   const [email,setEmail] = useState(""), [pw,setPw] = useState("");
@@ -747,7 +897,7 @@ function AuthScreen({onAuth}) {
   const resetPassword = async () => {
     if(!email) { setErr("Enter your email above first"); return; }
     setLoading(true); setErr("");
-    const {error} = await sb.auth.resetPasswordForEmail(email, {redirectTo: window.location.origin});
+    const {error} = await sb.auth.resetPasswordForEmail(email, {redirectTo: `${window.location.origin}/`});
     setLoading(false);
     if(error) { setErr(error.message); return; }
     setResetSent(true);
@@ -778,6 +928,12 @@ function AuthScreen({onAuth}) {
           <button onClick=${submit} disabled=${loading} style=${{width:"100%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",border:"none",borderRadius:12,padding:"14px 0",fontSize:15,fontWeight:800,cursor:"pointer"}}>
             ${loading?"…":mode==="login"?"Log In":"Create Account"}
           </button>
+          <div style=${{textAlign:"center",color:P.muted,fontSize:12,marginTop:14,lineHeight:1.6}}>
+            By continuing, you agree to our
+            <button onClick=${()=>openLegalPage("/terms")} style=${{background:"none",border:"none",color:P.gold,cursor:"pointer",padding:"0 4px"}}>Terms</button>
+            and
+            <button onClick=${()=>openLegalPage("/privacy")} style=${{background:"none",border:"none",color:P.gold,cursor:"pointer",padding:"0 4px"}}>Privacy Policy</button>.
+          </div>
         </div>
         <div style=${{textAlign:"center",color:P.muted,fontSize:12,marginTop:20}}>Google & Apple login coming soon ✨</div>
       </div>
@@ -1224,11 +1380,10 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
     setGiftIdeas([]); setGiftLoading(true);
     const city = myProfile?.city||"Madrid";
     try {
-      const res = await fetch(API, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} for their ${occ.type} in ${city}. Interests: ${(friend.interests||[]).join(", ")||"unknown"}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}. Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60 (like Amazon pricing), experiences €25-80 (like GetYourGuide/Viator pricing). Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]})});
-      const data = await res.json();
+      const data = await callChatApi({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} for their ${occ.type} in ${city}. Interests: ${(friend.interests||[]).join(", ")||"unknown"}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}. Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60 (like Amazon pricing), experiences €25-80 (like GetYourGuide/Viator pricing). Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]});
       const text = (data.content?.[0]?.text||"[]").replace(/```json|```/g,"").trim();
       setGiftIdeas(JSON.parse(text));
-    } catch(e) { setToast("Couldn't load ideas — try again"); }
+    } catch(e) { captureError("friend_gift_ideas", e, {friendId: friend.id, occasion: occ.type}); setToast("Couldn't load ideas — try again"); }
     setGiftLoading(false);
   };
 
@@ -1249,19 +1404,13 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
 
   const addBirthdayToCalendar = async () => {
     if(!friend.birthday) return;
-    // Parse date parts directly from string to avoid timezone shift
-    const [,mm,dd] = friend.birthday.split("-").map(Number);
-    const today = new Date();
-    const thisYear = today.getFullYear();
-    let nextYear = thisYear;
-    const nextBday = new Date(thisYear, mm-1, dd);
-    if(nextBday < today) nextYear = thisYear + 1;
-    const dateStr = `${nextYear}-${String(mm).padStart(2,"0")}-${String(dd).padStart(2,"0")}`;
+    const dateStr = getNextBirthdayDate(friend.birthday);
     const {error} = await sb.from("occasions").insert({
       user_id: myProfile.id,
       type: `${friend.display_name}'s Birthday`,
       date: dateStr,
       color: "#EC4899",
+      note: getBirthdaySyncNote(friend.id),
       is_public: false
     });
     if(!error) { setLocalToast(`🎂 ${friend.display_name}'s birthday added!`); setTimeout(()=>setLocalToast(null),3000); }
@@ -2345,17 +2494,17 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
     setLoading(true);
     track("concierge_query", {query_text: msg.slice(0,200), session_id: SESSION_ID, message_count: newRaw.length});
     try {
-      const res = await fetch(API, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
+      const data = await callChatApi({
         model:MODEL, max_tokens:700, system:SYSTEM,
         messages: newRaw
-      })});
-      const data = await res.json();
+      });
       const raw = data.content?.[0]?.text || "";
       const {text:t, gifts} = parseReply(raw);
       setRawMessages(p => [...p, {role:"assistant", content:raw}]);
       setMessages(p => [...p, {role:"assistant", content:t, gifts}]);
       if(gifts?.length) track("concierge_gifts_shown", {gifts: gifts.map(g=>({name:g.name, price:g.price})), session_id: SESSION_ID});
     } catch(e) {
+      captureError("concierge_send", e, {messageCount: newRaw.length});
       setMessages(p => [...p, {role:"assistant", content:t("conciergeError")}]);
     }
     setLoading(false);
@@ -2706,6 +2855,8 @@ function Giftmate() {
   const [session,setSession] = useState(null);
   const [profile,setProfile] = useState(null);
   const [loading,setLoading] = useState(true);
+  const [recoveryMode,setRecoveryMode] = useState(isRecoveryFlow());
+  const [recoveryInvalid,setRecoveryInvalid] = useState(false);
   const [lang,setLangState] = useState("en");
   const [theme,setThemeState] = useState("midnight");
 
@@ -2722,17 +2873,44 @@ function Giftmate() {
   };
 
   useEffect(() => {
+    const handleRuntimeError = e => captureError("window_error", e.error || e.message || "Unknown runtime error");
+    const handleRejection = e => captureError("unhandled_rejection", e.reason || "Unhandled promise rejection");
+    window.addEventListener("error", handleRuntimeError);
+    window.addEventListener("unhandledrejection", handleRejection);
+
     sb.auth.getSession().then(({data:{session}}) => {
       setSession(session);
-      if(session) loadProfile(session.user.id);
+      if(isRecoveryFlow()) {
+        setRecoveryMode(true);
+        setRecoveryInvalid(!session && !hasRecoveryTokens());
+        setLoading(false);
+      }
+      else if(session) loadProfile(session.user.id);
       else setLoading(false);
     });
-    const {data:{subscription}} = sb.auth.onAuthStateChange((_e,session) => {
+    const {data:{subscription}} = sb.auth.onAuthStateChange((event,session) => {
       setSession(session);
-      if(session) loadProfile(session.user.id);
-      else { setSession(null); setProfile(null); setLoading(false); }
+      if(event==="PASSWORD_RECOVERY" || isRecoveryFlow()) {
+        setRecoveryMode(true);
+        setRecoveryInvalid(!session && !hasRecoveryTokens());
+        setLoading(false);
+      } else if(session) {
+        setRecoveryMode(false);
+        setRecoveryInvalid(false);
+        loadProfile(session.user.id);
+      } else {
+        setRecoveryMode(false);
+        setRecoveryInvalid(false);
+        setSession(null);
+        setProfile(null);
+        setLoading(false);
+      }
     });
-    return () => subscription.unsubscribe();
+    return () => {
+      window.removeEventListener("error", handleRuntimeError);
+      window.removeEventListener("unhandledrejection", handleRejection);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleAuth = (session, isNew) => {
@@ -2742,6 +2920,9 @@ function Giftmate() {
   };
 
   if(loading) return html`<${Spin}/>`;
+  if(recoveryMode && recoveryInvalid) return html`<${RecoveryLinkErrorScreen} onBack=${()=>{ clearAuthHash(); setRecoveryMode(false); setRecoveryInvalid(false); }}/>`;
+  if(recoveryMode && !session) return html`<${Spin}/>`;
+  if(recoveryMode) return html`<${PasswordRecoveryScreen} onDone=${()=>{ setRecoveryMode(false); clearAuthHash(); if(session) loadProfile(session.user.id); }} onCancel=${()=>{ setRecoveryMode(false); setSession(null); setProfile(null); }}/>`;
   if(!session) return html`<${AuthScreen} onAuth=${handleAuth}/>`;
   if(!profile) return html`<${Onboarding} userId=${session.user.id} onComplete=${()=>loadProfile(session.user.id)}/>`;
   return html`<${MainApp} key=${lang} session=${session} profile=${profile} setProfile=${setProfile} onLangChange=${changeLang} onThemeChange=${changeTheme}/>`;
