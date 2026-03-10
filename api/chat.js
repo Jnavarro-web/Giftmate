@@ -1,7 +1,4 @@
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const SUPABASE_URL = "https://xpvvutfojaqtrybwlnph.supabase.co";
-// Anon key is public — safe to embed as fallback (same key used in app.js)
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_S1FnE9dxWOZCZ77Bm93SSg_ObsDrMVc";
 
 const ALLOWED_MODELS = ["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022", "claude-3-5-sonnet-20241022", "claude-3-haiku-20240307"];
 const MAX_MESSAGE_LENGTH = 4000;
@@ -13,7 +10,11 @@ const rateLimitStore = globalThis.__giftmateRateLimitStore || new Map();
 globalThis.__giftmateRateLimitStore = rateLimitStore;
 
 function getAllowedOrigins() {
-  const origins = ["https://giftm8.app", "https://www.giftm8.app"];
+  const origins = [
+    "https://giftm8.app",
+    "https://www.giftm8.app",
+    "https://giftmate-sigma.vercel.app"
+  ];
   if (process.env.APP_ORIGIN) origins.push(process.env.APP_ORIGIN);
   return origins;
 }
@@ -72,24 +73,29 @@ function checkRateLimit(userId) {
   return entry.count <= RATE_LIMIT_MAX;
 }
 
-async function getAuthenticatedUser(req) {
+function decodeJwt(token) {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    // Buffer is available in Node.js (Vercel serverless runtime)
+    const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8"));
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+function getAuthenticatedUser(req) {
   const authHeader = req.headers.authorization || "";
   if (!authHeader.startsWith("Bearer ")) return null;
   const accessToken = authHeader.slice(7).trim();
   if (!accessToken) return null;
-  try {
-    const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        apikey: SUPABASE_ANON_KEY
-      }
-    });
-    if (!response.ok) return null;
-    const user = await response.json();
-    return { accessToken, user };
-  } catch {
-    return null;
-  }
+  const payload = decodeJwt(accessToken);
+  if (!payload?.sub) return null;
+  // Check token is not expired
+  const nowSecs = Math.floor(Date.now() / 1000);
+  if (payload.exp && payload.exp < nowSecs) return null;
+  return { accessToken, user: { id: payload.sub } };
 }
 
 export default async function handler(req, res) {
@@ -103,7 +109,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const auth = await getAuthenticatedUser(req);
+    const auth = getAuthenticatedUser(req);
     if (!auth?.user?.id) {
       return res.status(401).json({ error: "Authentication required" });
     }
