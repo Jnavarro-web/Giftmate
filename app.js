@@ -67,10 +67,10 @@ const GROUP_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"�
 const emojiToIconGroup = emoji => (GROUP_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 const LIST_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎄",i:"gift"},{e:"🌸",i:"flower"},{e:"✈️",i:"globe"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"💼",i:"package"}];
 const emojiToIconList = emoji => (LIST_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
-// Proposal form: unique icons for gift types
-const PROPOSAL_ICONS = ["gift","flower","package","box","wave","camera","thumbsUp","sparkle"];
-const iconToEmojiProposal = {gift:"🎁",flower:"🌸",package:"📚",box:"👟",wave:"🌴",camera:"💄",thumbsUp:"🎮",sparkle:"⌚"};
-const PROPOSAL_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🌸",i:"flower"},{e:"🍷",i:"gift"},{e:"📚",i:"package"},{e:"👟",i:"box"},{e:"💄",i:"camera"},{e:"🎮",i:"thumbsUp"},{e:"⌚",i:"sparkle"},{e:"🌴",i:"wave"},{e:"🎨",i:"package"},{e:"🍫",i:"gift"},{e:"💐",i:"flower"}];
+// Proposal form: unique icons for gift types (beauty->sparkle, romantic->heart)
+const PROPOSAL_ICONS = ["gift","flower","package","box","wave","sparkle","thumbsUp","heart"];
+const iconToEmojiProposal = {gift:"🎁",flower:"🌸",package:"📚",box:"👟",wave:"🌴",sparkle:"💄",thumbsUp:"🎮",heart:"❤️"};
+const PROPOSAL_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🌸",i:"flower"},{e:"🍷",i:"gift"},{e:"📚",i:"package"},{e:"👟",i:"box"},{e:"💄",i:"sparkle"},{e:"🎮",i:"thumbsUp"},{e:"⌚",i:"sparkle"},{e:"🌴",i:"wave"},{e:"🎨",i:"package"},{e:"🍫",i:"gift"},{e:"💐",i:"flower"},{e:"❤️",i:"heart"}];
 const emojiToIconProposal = emoji => (PROPOSAL_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 let P = {...THEMES.midnight};
 // Apply saved theme instantly
@@ -93,7 +93,7 @@ const TRANSLATIONS = {
     forgotPassword: "Forgot password?", resetSent: "✓ Reset link sent! Check your email.",
     loading: "Loading…", logOut: "Log out", save: "Save Changes ✓", cancel: "Cancel",
     editProfile: "✏️ Edit Profile", displayName: "DISPLAY NAME", username: "USERNAME",
-    emojiAvatar: "AVATAR ICON", interests: "INTERESTS (up to 8)", removePhoto: "Remove photo",
+    emojiAvatar: "GiftMind avatar icon", interests: "INTERESTS (up to 8)", removePhoto: "Remove photo",
     home: "Home", search: "Search", groups: "Groups", concierge: "GiftMind", profile: "Profile", stars: "Stars",
     searchPlaceholder: "Search by username…", noResults: "No users found",
     follow: "+ Follow", following: "✓ Following", viewProfile: "View", followers: "Followers", followingCount: "Following", noFollowers: "No followers yet", noFollowing: "Not following anyone yet",
@@ -134,7 +134,7 @@ const TRANSLATIONS = {
     starsEarned: "Stars earned", howToEarn: "How to earn ⭐", redeemStars: "Redeem Stars 🎁",
     earnFollow: "Follow a friend", earnOccasion: "Add an occasion", earnShare: "Share Giftmate", earnRefer: "Refer a friend",
     redeemLabel: "⭐ Redeem", needMore: "more needed", maxTier: "🏆 Maximum tier achieved!",
-    reward1Title: "5% Off Amazon", reward1Desc: "One-time code",
+    reward1Title: "5% Off Amazon", reward1Desc: "One-time code (partner link coming soon)",
     reward2Title: "Featured on Feed", reward2Desc: "Shown to all users",
     reward3Title: "10% Off Viator", reward3Desc: "Any experience",
     reward4Title: "1 Month Premium", reward4Desc: "Full access",
@@ -168,7 +168,7 @@ const TRANSLATIONS = {
     forgotPassword: "¿Olvidaste tu contraseña?", resetSent: "✓ ¡Enlace enviado! Revisa tu correo.",
     loading: "Cargando…", logOut: "Cerrar sesión", save: "Guardar Cambios ✓", cancel: "Cancelar",
     editProfile: "✏️ Editar Perfil", displayName: "NOMBRE", username: "USUARIO",
-    emojiAvatar: "AVATAR", interests: "INTERESES (máx. 8)", removePhoto: "Eliminar foto",
+    emojiAvatar: "GiftMind avatar icon", interests: "INTERESES (máx. 8)", removePhoto: "Eliminar foto",
     home: "Inicio", search: "Buscar", groups: "Grupos", concierge: "GiftMind", profile: "Perfil", stars: "Estrellas",
     searchPlaceholder: "Buscar por usuario…", noResults: "Sin resultados",
     follow: "+ Seguir", following: "✓ Siguiendo", viewProfile: "Ver", followers: "Seguidores", followingCount: "Siguiendo", noFollowers: "Aún sin seguidores", noFollowing: "No sigues a nadie aún",
@@ -244,7 +244,7 @@ const TRANSLATIONS = {
     forgotPassword: "Mot de passe oublié ?", resetSent: "✓ Lien envoyé ! Vérifiez votre email.",
     loading: "Chargement…", logOut: "Déconnexion", save: "Enregistrer ✓", cancel: "Annuler",
     editProfile: "✏️ Modifier le profil", displayName: "NOM AFFICHÉ", username: "PSEUDO",
-    emojiAvatar: "AVATAR", interests: "CENTRES D'INTÉRÊT (max 8)", removePhoto: "Supprimer la photo",
+    emojiAvatar: "GiftMind avatar icon", interests: "CENTRES D'INTÉRÊT (max 8)", removePhoto: "Supprimer la photo",
     home: "Accueil", search: "Chercher", groups: "Groupes", concierge: "GiftMind", profile: "Profil", stars: "Étoiles",
     searchPlaceholder: "Rechercher par pseudo…", noResults: "Aucun résultat",
     follow: "+ Suivre", following: "✓ Abonné", viewProfile: "Voir", followers: "Abonnés", followingCount: "Abonnements", noFollowers: "Pas encore d'abonnés", noFollowing: "Vous ne suivez personne",
@@ -320,7 +320,7 @@ const TRANSLATIONS = {
     forgotPassword: "Passwort vergessen?", resetSent: "✓ Link gesendet! Prüfe deine E-Mail.",
     loading: "Laden…", logOut: "Abmelden", save: "Änderungen speichern ✓", cancel: "Abbrechen",
     editProfile: "✏️ Profil bearbeiten", displayName: "ANZEIGENAME", username: "BENUTZERNAME",
-    emojiAvatar: "AVATAR", interests: "INTERESSEN (max. 8)", removePhoto: "Foto entfernen",
+    emojiAvatar: "GiftMind avatar icon", interests: "INTERESSEN (max. 8)", removePhoto: "Foto entfernen",
     home: "Start", search: "Suche", groups: "Gruppen", concierge: "GiftMind", profile: "Profil", stars: "Sterne",
     searchPlaceholder: "Nach Benutzername suchen…", noResults: "Keine Ergebnisse",
     follow: "+ Folgen", following: "✓ Gefolgt", viewProfile: "Ansehen", followers: "Follower", followingCount: "Folge ich", noFollowers: "Noch keine Follower", noFollowing: "Folgst noch niemandem",
@@ -395,7 +395,7 @@ const TRANSLATIONS = {
     forgotPassword: "Password dimenticata?", resetSent: "✓ Link inviato! Controlla la tua email.",
     loading: "Caricamento…", logOut: "Esci", save: "Salva modifiche ✓", cancel: "Annulla",
     editProfile: "✏️ Modifica profilo", displayName: "NOME VISUALIZZATO", username: "NOME UTENTE",
-    emojiAvatar: "AVATAR", interests: "INTERESSI (max 8)", removePhoto: "Rimuovi foto",
+    emojiAvatar: "GiftMind avatar icon", interests: "INTERESSI (max 8)", removePhoto: "Rimuovi foto",
     home: "Home", search: "Cerca", groups: "Gruppi", concierge: "GiftMind", profile: "Profilo", stars: "Stelle",
     searchPlaceholder: "Cerca per username…", noResults: "Nessun risultato",
     follow: "+ Segui", following: "✓ Seguito", viewProfile: "Vedi", followers: "Follower", followingCount: "Seguiti", noFollowers: "Ancora nessun follower", noFollowing: "Non segui ancora nessuno",
@@ -471,7 +471,7 @@ const TRANSLATIONS = {
     forgotPassword: "Esqueceu a senha?", resetSent: "✓ Link enviado! Verifique seu email.",
     loading: "Carregando…", logOut: "Sair", save: "Salvar alterações ✓", cancel: "Cancelar",
     editProfile: "✏️ Editar perfil", displayName: "NOME EXIBIDO", username: "NOME DE USUÁRIO",
-    emojiAvatar: "AVATAR", interests: "INTERESSES (máx. 8)", removePhoto: "Remover foto",
+    emojiAvatar: "GiftMind avatar icon", interests: "INTERESSES (máx. 8)", removePhoto: "Remover foto",
     home: "Início", search: "Buscar", groups: "Grupos", concierge: "GiftMind", profile: "Perfil", stars: "Estrelas",
     searchPlaceholder: "Buscar por usuário…", noResults: "Sem resultados",
     follow: "+ Seguir", following: "✓ Seguindo", viewProfile: "Ver", followers: "Seguidores", followingCount: "Seguindo", noFollowers: "Sem seguidores ainda", noFollowing: "Não segue ninguém ainda",
@@ -1597,7 +1597,7 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
         ${(friend.interests||[]).length>0 && html`<button onClick=${getGiftIdeasByInterests} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 12px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("heart",14,P.gold)} ${stripEmoji(t("ideasByInterests"))}</button>`}
         ${occasions.slice(0,3).map(o => html`<button key=${o.id} onClick=${()=>getGiftIdeas(o)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 12px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("gift",14,P.gold)} ${t("giftIdeasFor")} ${translateOccasion(o.type)}</button>`)}
       </div>
-      ${giftLoading && html`<div style=${{color:P.muted,fontSize:13,marginTop:10}}>${t("findingGifts")}</div>`}
+      ${giftLoading && html`<div style=${{color:P.muted,fontSize:13,marginTop:10,display:"flex",alignItems:"center",gap:6}}>${Icon("sparkle",14,P.muted)} ${stripEmoji(t("findingGifts"))}</div>`}
       <div style=${{display:"flex",gap:10,marginTop:10,overflowX:"auto",paddingBottom:4,flexWrap:"nowrap"}}>
       ${giftIdeas.map((g,i) => html`
         <div key=${i} style=${{background:P.bg,borderRadius:10,padding:"10px 12px",minWidth:200,maxWidth:200,flexShrink:0,display:"flex",flexDirection:"column",gap:8}}>
@@ -2485,7 +2485,8 @@ function StarsTab({profile, setProfile}) {
     const ns = stars-r.cost;
     await sb.from("profiles").update({stars:ns}).eq("id",profile.id);
     setProfile(p => ({...p, stars:ns}));
-    setToast(`🎁 "${r.title}" redeemed!`);
+    const msg = r.id===1 ? `"${r.title}" redeemed! Partner links coming soon — contact us for discount codes.` : `"${r.title}" redeemed!`;
+    setToast(msg);
   };
 
   const share = async via => {
@@ -2551,11 +2552,14 @@ function renderBold(text) {
   let cleaned = text.replace(/\n{3,}/g, '\n\n').trim();
   // Ensure bullet points (• or -) each get their own line when run together
   cleaned = cleaned.replace(/([^\n])([•\-] )/g, '$1\n$2');
-  return cleaned.split('\n').map((line, li, arr) => {
-    const parts = line.split(/\*\*(.+?)\*\*/g);
-    const rendered = parts.map((p,i) => i%2===1 ? html`<strong key=${i}>${p}</strong>` : p);
-    return html`<span key=${li}>${rendered}${li < arr.length-1 ? html`<br/>` : ''}</span>`;
-  });
+  const lines = cleaned.split('\n');
+  return html`<div style=${{display:"flex",flexDirection:"column",gap:8}}>
+    ${lines.map((line, li) => {
+      const parts = line.split(/\*\*(.+?)\*\*/g);
+      const rendered = parts.map((p,i) => i%2===1 ? html`<strong key=${i}>${p}</strong>` : p);
+      return html`<div key=${li} style=${{lineHeight:1.5}}>${rendered}</div>`;
+    })}
+  </div>`;
 }
 
 function GiftCards({gifts, city}) {
