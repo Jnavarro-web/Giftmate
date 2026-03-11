@@ -546,6 +546,33 @@ const hasRecoveryTokens = () => {
     params.get("token_hash")
   );
 };
+const getRecoveryErrorMessage = () => {
+  const params = getAuthUrlParams();
+  return params.get("error_description") || params.get("error_code") || "";
+};
+const initializeRecoverySession = async () => {
+  const params = getAuthUrlParams();
+
+  if(hasRecoveryError()) {
+    return {session:null, error:new Error(getRecoveryErrorMessage() || "Reset link expired")};
+  }
+
+  if(params.get("code")) {
+    const {data, error} = await sb.auth.exchangeCodeForSession(params.get("code"));
+    return {session:data?.session || null, error:error || null};
+  }
+
+  if(params.get("token_hash") && params.get("type")==="recovery") {
+    const {data, error} = await sb.auth.verifyOtp({
+      token_hash: params.get("token_hash"),
+      type: "recovery"
+    });
+    return {session:data?.session || null, error:error || null};
+  }
+
+  const {data:{session}} = await sb.auth.getSession();
+  return {session, error:null};
+};
 const clearAuthHash = () => {
   const cleanUrl = `${window.location.pathname}`;
   if(window.location.hash || window.location.search) {
@@ -2903,16 +2930,23 @@ function Giftmate() {
     window.addEventListener("error", handleRuntimeError);
     window.addEventListener("unhandledrejection", handleRejection);
 
-    sb.auth.getSession().then(({data:{session}}) => {
-      setSession(session);
+    const boot = async () => {
       if(isRecoveryFlow() || hasRecoveryError()) {
+        const {session, error} = await initializeRecoverySession();
+        setSession(session);
         setRecoveryMode(true);
-        setRecoveryInvalid(hasRecoveryError() || (!session && !hasRecoveryTokens()));
+        setRecoveryInvalid(Boolean(error) || (!session && !hasRecoveryTokens()));
         setLoading(false);
       }
-      else if(session) loadProfile(session.user.id);
-      else setLoading(false);
-    });
+      else {
+        const {data:{session}} = await sb.auth.getSession();
+        setSession(session);
+        if(session) loadProfile(session.user.id);
+        else setLoading(false);
+      }
+    };
+    boot();
+
     const {data:{subscription}} = sb.auth.onAuthStateChange((event,session) => {
       setSession(session);
       if(event==="PASSWORD_RECOVERY" || isRecoveryFlow() || hasRecoveryError()) {
