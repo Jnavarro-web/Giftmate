@@ -46,10 +46,15 @@ const Icon = (name, size=20, color="currentColor") => {
     share: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`,
     calendar: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
     map: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>`,
-    globe: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`
+    globe: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+    check: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    thumbsUp: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1z"/><path d="M11 10h6a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-6"/><path d="M11 10V5a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v5"/></svg>`,
+    thumbsDown: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 13V5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M13 14H7a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h6"/><path d="M13 14v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-5"/></svg>`,
+    box: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`
   };
   return icons[name] ? html`<span style=${{display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${icons[name]}</span>` : null;
 };
+const stripEmoji = s => (s||"").replace(/^[^\w\s]+/g,"").replace(/\s+[^\w\s]+$/g,"").replace(/\s+/g," ").trim();
 let P = {...THEMES.midnight};
 // Apply saved theme instantly
 try { const saved=localStorage.getItem("giftmate_theme"); if(saved&&THEMES[saved]) setThemeKey(saved); } catch(e) {}
@@ -1287,7 +1292,7 @@ function SendGiftModal({friend, myProfile, onClose, toast}) {
     <div style=${{position:"fixed",inset:0,background:"#000a",zIndex:1000,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick=${onClose}>
       <div style=${{background:P.card,borderRadius:"20px 20px 0 0",padding:24,width:"100%",maxWidth:480}} onClick=${e=>e.stopPropagation()}>
         <div style=${{textAlign:"center",marginBottom:20}}>
-          <div style=${{fontSize:36}}>🎁</div>
+          <div style=${{display:"flex",justifyContent:"center",marginBottom:8}}>${Icon("gift",36,P.gold)}</div>
           <div style=${{fontWeight:800,fontSize:18,color:P.text}}>${t("sendGiftTitle").replace("{name}", friend.display_name)}</div>
           <div style=${{color:P.muted,fontSize:13,marginTop:4}}>They'll get a notification and can say thank you</div>
         </div>
@@ -1342,7 +1347,7 @@ function GiftInbox({profile, toast}) {
   const MsgCard = ({m, isSent}) => html`
     <div style=${{background:P.card,border:`1px solid ${m.status==="thanked"?(isSent?P.green:P.border):P.gold+"66"}`,borderRadius:14,padding:16,marginBottom:10}}>
       <div style=${{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-        <div style=${{width:36,height:36,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>${(isSent?m.receiver?.emoji:m.sender?.emoji)||"🎁"}</div>
+        <div style=${{width:36,height:36,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",16,"#0A0A18")}</div>
         <div style=${{flex:1}}>
           <div style=${{fontWeight:700,color:P.text,fontSize:14}}>${isSent?`You gifted ${m.receiver?.display_name}!`:`${m.sender?.display_name} gifted you!`}</div>
           <div style=${{color:P.muted,fontSize:12}}>${new Date(m.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</div>
@@ -1508,9 +1513,9 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
       <div style=${{display:"inline-flex",alignItems:"center",gap:6,background:tier.color+"22",border:`1px solid ${tier.color}44`,borderRadius:99,padding:"4px 12px",marginBottom:10}}>
         ${Icon(tier.svgIcon, 14, tier.color)}
         <span style=${{color:tier.color,fontWeight:700,fontSize:12}}>${tier.name}</span>
-        <span style=${{color:P.faint,fontSize:11}}>· ${friend.stars||0}⭐</span>
+        <span style=${{color:P.faint,fontSize:11,display:"inline-flex",alignItems:"center",gap:2}}>· ${friend.stars||0} ${Icon("star",10,P.faint)}</span>
       </div>
-      ${friend.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:6}}>🎂 ${fmtDate(friend.birthday)} · ${t("inDays")} ${daysUntil(friend.birthday)} ${t("daysWord")}</div>`}
+      ${friend.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:6,display:"flex",alignItems:"center",gap:6}}>${Icon("calendar",14,P.gold)} ${fmtDate(friend.birthday)} · ${t("inDays")} ${daysUntil(friend.birthday)} ${t("daysWord")}</div>`}
       ${friend.birthday && html`<button onClick=${addBirthdayToCalendar} style=${{background:`${P.gold}11`,border:`1px solid ${P.gold}33`,color:P.goldL,borderRadius:8,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",marginBottom:10}}>${t("addToCalendar")}</button>`}
       <div style=${{display:"flex",gap:20,justifyContent:"center",marginBottom:12}}>
         <button onClick=${()=>setFollowModal("followers")} style=${{background:"none",border:"none",cursor:"pointer",textAlign:"center",padding:0}}>
@@ -1712,7 +1717,8 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
   };
 
   const reqCount = followRequests.length;
-  const SECS = [["occasions",t("secOccasions")],["wishlist",t("secWishlist")],["gifts",t("secReceived")],["inbox",t("secInbox")],["requests",`👤 Requests${reqCount>0?` (${reqCount})`:""}`]];
+  const secColor = id => section===id ? "#000" : P.muted;
+  const SECS = [["occasions",html`${Icon("calendar",12,secColor("occasions"))} ${stripEmoji(t("secOccasions"))}`],["wishlist",html`${Icon("gift",12,secColor("wishlist"))} ${stripEmoji(t("secWishlist"))}`],["gifts",html`${Icon("gift",12,secColor("gifts"))} ${stripEmoji(t("secReceived"))}`],["inbox",html`${Icon("gift",12,secColor("inbox"))} ${stripEmoji(t("secInbox"))}`],["requests",html`${Icon("profile",12,secColor("requests"))} Requests${reqCount>0?` (${reqCount})`:""}`]];
 
   return html`<div>
     ${followModal && html`<${FollowListModal} userId=${profile.id} mode=${followModal} onClose=${()=>setFollowModal(null)} onViewProfile=${u=>{ setFollowModal(null); setViewingUser(u); }} myProfile=${profile} following=${following} onToggleFollow=${onToggleFollow}/>`}
@@ -1732,7 +1738,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
           <div style=${{color:tier.color,fontWeight:800,fontSize:13}}>${tier.name}</div>
           <div style=${{color:P.faint,fontSize:10}}>${tier.desc}</div>
         </div>
-        <span style=${{color:P.muted,fontSize:11,marginLeft:4}}>${localProfile.stars||0}⭐</span>
+        <span style=${{color:P.muted,fontSize:11,marginLeft:4,display:"inline-flex",alignItems:"center",gap:2}}>${localProfile.stars||0} ${Icon("star",10,P.muted)}</span>
       </div>
       <div style=${{display:"flex",gap:20,justifyContent:"center",margin:"10px 0"}}>
         <button onClick=${()=>setFollowModal("followers")} style=${{background:"none",border:"none",cursor:"pointer",textAlign:"center",padding:0}}>
@@ -1745,7 +1751,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
           <div style=${{fontSize:11,color:P.muted}}>${t("followingCount")}</div>
         </button>
       </div>
-      ${localProfile.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:8}}>🎂 ${fmtDate(localProfile.birthday)}</div>`}
+      ${localProfile.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:8,display:"flex",alignItems:"center",gap:6}}>${Icon("calendar",14,P.gold)} ${fmtDate(localProfile.birthday)}</div>`}
       ${(localProfile.interests||[]).length>0 && html`<div style=${{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center",marginTop:8}}>
         ${localProfile.interests.map(i => html`<span key=${i} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}33`,borderRadius:99,padding:"3px 10px",fontSize:11,color:P.goldL,fontWeight:600}}>${translateInterest(i)}</span>`)}
       </div>`}
@@ -2004,7 +2010,7 @@ function GroupsTab({profile, following, feed, groupUnread=0, onGroupUnreadChange
   return html`<div>
     <div style=${{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
       <div>
-        <div style=${{fontWeight:800,fontSize:18,color:P.text}}>${t("giftGroups")}</div>
+        <div style=${{fontWeight:800,fontSize:18,color:P.text,display:"flex",alignItems:"center",gap:8}}>${Icon("gift",20,P.text)} ${stripEmoji(t("giftGroups"))}</div>
         <div style=${{color:P.muted,fontSize:13}}>${t("planSplit")}</div>
       </div>
       <button onClick=${()=>setShowCreate(true)} style=${{background:`linear-gradient(135deg,${P.goldD},${P.gold})`,border:"none",color:"#000",borderRadius:10,padding:"9px 16px",fontWeight:700,fontSize:13,cursor:"pointer"}}>${t("newGroup")}</button>
@@ -2012,7 +2018,7 @@ function GroupsTab({profile, following, feed, groupUnread=0, onGroupUnreadChange
 
     ${loading && html`<div style=${{textAlign:"center",padding:40,color:P.muted}}>Loading…</div>`}
     ${!loading && groups.length===0 && html`<div style=${{textAlign:"center",padding:40}}>
-      <div style=${{fontSize:48,marginBottom:12}}>🎁</div>
+      <div style=${{marginBottom:12,display:"flex",justifyContent:"center"}}>${Icon("gift",48,P.gold)}</div>
       <div style=${{fontWeight:700,fontSize:16,color:P.text,marginBottom:8}}>${t("noGroups")}</div>
       <div style=${{color:P.muted,fontSize:14,marginBottom:20}}>${t("noGroupsDesc")}</div>
       <button onClick=${()=>setShowCreate(true)} style=${{background:`linear-gradient(135deg,${P.goldD},${P.gold})`,border:"none",color:"#000",borderRadius:12,padding:"12px 24px",fontWeight:700,cursor:"pointer"}}>${t("createFirstGroup")}</button>
@@ -2021,7 +2027,7 @@ function GroupsTab({profile, following, feed, groupUnread=0, onGroupUnreadChange
     ${groups.map(g => html`
       <div key=${g.id} onClick=${()=>openGroup(g)} style=${{background:P.card,border:`1px solid ${groupCounts[g.id]>0?P.gold:P.border}`,borderRadius:14,padding:16,marginBottom:10,cursor:"pointer",display:"flex",gap:12,alignItems:"center"}}>
         <div style=${{position:"relative",flexShrink:0}}>
-          <div style=${{width:48,height:48,borderRadius:12,background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>${g.emoji||"🎁"}</div>
+          <div style=${{width:48,height:48,borderRadius:12,background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",24,"#0A0A18")}</div>
           ${groupCounts[g.id]>0 && html`<span style=${{position:"absolute",top:-4,right:-4,background:P.red,color:"#fff",borderRadius:99,fontSize:9,fontWeight:800,minWidth:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}>${groupCounts[g.id]>9?"9+":groupCounts[g.id]}</span>`}
         </div>
         <div style=${{flex:1,minWidth:0}}>
@@ -2223,16 +2229,16 @@ function GroupChat({group, profile, feed, following, onBack}) {
         ${proposals.map(p=>html`
           <div key=${p.id} style=${{background:P.card,border:`2px solid ${p.status==="approved"?P.green:p.votes_up?.length>=(memberCount/2)?P.gold:P.border}`,borderRadius:12,padding:"10px 12px",minWidth:180,flexShrink:0}}>
             <div style=${{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
-              <span style=${{fontSize:18}}>${p.emoji||"🎁"}</span>
+              ${Icon("gift",18,P.gold)}
               <div style=${{fontWeight:700,fontSize:13,color:P.text,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>${p.gift_name}</div>
             </div>
             ${p.description && html`<div style=${{fontSize:11,color:P.muted,marginBottom:4}}>${p.description}</div>`}
             <div style=${{color:P.gold,fontWeight:700,fontSize:13,marginBottom:6}}>€${p.price||"?"}</div>
             ${p.status==="approved"
-              ? html`<div style=${{color:P.green,fontWeight:700,fontSize:12}}>✅ Approved!</div>`
+              ? html`<div style=${{color:P.green,fontWeight:700,fontSize:12,display:"flex",alignItems:"center",gap:4}}>${Icon("check",12,P.green)} Approved!</div>`
               : html`<div style=${{display:"flex",gap:6,alignItems:"center"}}>
-                  <button onClick=${()=>vote(p.id,"up")} style=${{background:p.votes_up?.includes(profile.id)?P.gold+"33":"transparent",border:`1px solid ${P.border}`,borderRadius:6,padding:"3px 8px",cursor:"pointer",fontSize:12}}>👍 ${p.votes_up?.length||0}</button>
-                  <button onClick=${()=>vote(p.id,"down")} style=${{background:p.votes_down?.includes(profile.id)?"#ef444433":"transparent",border:`1px solid ${P.border}`,borderRadius:6,padding:"3px 8px",cursor:"pointer",fontSize:12}}>👎 ${p.votes_down?.length||0}</button>
+                  <button onClick=${()=>vote(p.id,"up")} style=${{background:p.votes_up?.includes(profile.id)?P.gold+"33":"transparent",border:`1px solid ${P.border}`,borderRadius:6,padding:"3px 8px",cursor:"pointer",fontSize:12,display:"inline-flex",alignItems:"center",gap:4}}>${Icon("thumbsUp",12,P.text)} ${p.votes_up?.length||0}</button>
+                  <button onClick=${()=>vote(p.id,"down")} style=${{background:p.votes_down?.includes(profile.id)?"#ef444433":"transparent",border:`1px solid ${P.border}`,borderRadius:6,padding:"3px 8px",cursor:"pointer",fontSize:12,display:"inline-flex",alignItems:"center",gap:4}}>${Icon("thumbsDown",12,P.text)} ${p.votes_down?.length||0}</button>
                   ${isAdmin && html`<button onClick=${()=>approveProposal(p)} style=${{background:P.green+"22",border:`1px solid ${P.green}44`,color:P.green,borderRadius:6,padding:"3px 8px",cursor:"pointer",fontSize:11,fontWeight:700}}>✓ Pick</button>`}
                   <button onClick=${()=>setShowSplit(p)} style=${{background:`${P.teal}22`,border:`1px solid ${P.teal}44`,color:P.teal,borderRadius:6,padding:"3px 8px",cursor:"pointer",fontSize:11,fontWeight:700}}>Split</button>
                 </div>`}
@@ -2367,7 +2373,7 @@ function SplitModal({proposal, group, profile, members, onClose, onDone}) {
     <div style=${{position:"fixed",inset:0,background:"#000b",zIndex:2000,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick=${onClose}>
       <div style=${{background:P.card,borderRadius:"20px 20px 0 0",padding:24,width:"100%",maxWidth:480,maxHeight:"80vh",overflowY:"auto"}} onClick=${e=>e.stopPropagation()}>
         <div style=${{fontWeight:800,fontSize:17,marginBottom:4}}>Split the Cost 💸</div>
-        <div style=${{color:P.muted,fontSize:13,marginBottom:16}}>${proposal.emoji||"🎁"} ${proposal.gift_name} · Total: €${total}</div>
+        <div style=${{color:P.muted,fontSize:13,marginBottom:16,display:"flex",alignItems:"center",gap:6}}>${Icon("gift",14,P.muted)} ${proposal.gift_name} · Total: €${total}</div>
 
         <div style=${{display:"flex",justifyContent:"space-between",marginBottom:8,fontSize:11,color:P.muted,fontWeight:700}}>
           <span>MEMBER</span><span>AMOUNT (€)</span>
@@ -2407,7 +2413,7 @@ function StarsTab({profile, setProfile}) {
   const nextTier = nextTierIdx >= 0 ? getTier(TIER_RANGES[nextTierIdx].min) : null;
   const progress = nextTier ? Math.round(((stars - tier.min) / (nextTier.min - tier.min)) * 100) : 100;
   const REWARDS = [
-    {id:1,title:t("reward1Title"),cost:200,svgIcon:"package",desc:t("reward1Desc")},
+    {id:1,title:t("reward1Title"),cost:200,svgIcon:"box",desc:t("reward1Desc")},
     {id:2,title:t("reward2Title"),cost:300,svgIcon:"star",desc:t("reward2Desc")},
     {id:3,title:t("reward3Title"),cost:400,svgIcon:"map",desc:t("reward3Desc")},
     {id:4,title:t("reward4Title"),cost:500,svgIcon:"sparkle",desc:t("reward4Desc")}
@@ -2467,7 +2473,7 @@ function StarsTab({profile, setProfile}) {
     <div style=${{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
       ${REWARDS.map(r => { const can = stars>=r.cost; return html`
         <div key=${r.id} style=${{background:P.card,border:`1px solid ${can?P.gold+"44":P.border}`,borderRadius:14,padding:14}}>
-          <div style=${{marginBottom:6}}>${Icon(r.svgIcon, 28, P.gold)}</div>
+          <div style=${{width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:6}}>${Icon(r.svgIcon, 24, P.gold)}</div>
           <div style=${{fontWeight:700,fontSize:13,color:P.text,marginBottom:2}}>${r.title}</div>
           <div style=${{fontSize:11,color:P.muted,marginBottom:10}}>${r.desc}</div>
           <button onClick=${()=>redeem(r)} disabled=${!can} style=${{width:"100%",background:can?`linear-gradient(135deg,${P.goldD},${P.gold})`:P.border,color:can?"#000":P.muted,border:"none",borderRadius:8,padding:"7px 0",fontSize:11,fontWeight:700,cursor:can?"pointer":"not-allowed"}}>
@@ -2495,7 +2501,7 @@ function GiftCards({gifts, city}) {
   return html`<div style=${{display:"flex",flexDirection:"column",gap:8,marginTop:8}}>
     ${gifts.map((g,i) => html`
       <div key=${i} style=${{background:P.bg,border:`1px solid ${P.border}`,borderRadius:14,padding:"12px 14px",display:"flex",gap:12,alignItems:"center"}}>
-        <span style=${{fontSize:28,flexShrink:0}}>${g.emoji||"🎁"}</span>
+        ${Icon("gift",28,P.gold)}
         <div style=${{flex:1,minWidth:0}}>
           <div style=${{fontWeight:700,fontSize:13,color:P.text}}>${g.name}</div>
           <div style=${{fontSize:12,color:P.muted,marginTop:2}}>${g.description}</div>
@@ -2594,13 +2600,13 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
 
   return html`<div style=${{display:"flex",flexDirection:"column",height:"calc(100vh - 130px)"}}>
     <div style=${{marginBottom:10}}>
-      <div style=${{fontWeight:800,fontSize:18,color:P.text,marginBottom:2}}>${t("aiConcierge")}</div>
+      <div style=${{fontWeight:800,fontSize:18,color:P.text,marginBottom:2,display:"flex",alignItems:"center",gap:8}}>${Icon("chat",20,P.text)} ${stripEmoji(t("aiConcierge"))}</div>
       <div style=${{color:P.muted,fontSize:13}}>${t("yourCompanion")}</div>
     </div>
     <div style=${{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:12,paddingBottom:12}}>
       ${messages.map((m,i) => html`
         <div key=${i} style=${{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",gap:8,alignItems:"flex-end"}}>
-          ${m.role==="assistant" && html`<div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,flexShrink:0}}>🎁</div>`}
+          ${m.role==="assistant" && html`<div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${Icon("gift",14,"#0A0A18")}</div>`}
           <div style=${{maxWidth:"82%"}}>
             ${m.role==="assistant" ? html`
               <div style=${{background:P.card,color:P.text,borderRadius:"18px 18px 18px 4px",padding:"11px 15px",fontSize:14,lineHeight:1.6,border:`1px solid ${P.border}`}}>
@@ -2614,13 +2620,13 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
           </div>
         </div>`)}
       ${loading && html`<div style=${{display:"flex",gap:8,alignItems:"flex-end"}}>
-        <div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🎁</div>
+        <div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",14,"#0A0A18")}</div>
         <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:"18px 18px 18px 4px",padding:"11px 15px",color:P.muted,fontSize:14}}>${t("findingGifts")}</div>
       </div>`}
       <div ref=${bottomRef}/>
     </div>
     <div style=${{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
-      ${QUICK.map(q => html`<button key=${q} onClick=${()=>send(q)} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:99,padding:"6px 12px",fontSize:11,color:P.muted,cursor:"pointer",fontWeight:600}}>${q}</button>`)}
+      ${QUICK.map(q => html`<button key=${q} onClick=${()=>send(q)} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:99,padding:"6px 12px",fontSize:11,color:P.muted,cursor:"pointer",fontWeight:600,display:"inline-flex",alignItems:"center",gap:4}}>${Icon("gift",12,P.muted)} ${stripEmoji(q)}</button>`)}
     </div>
     <div style=${{display:"flex",gap:8}}>
       <textarea value=${input} onInput=${e=>{setInput(e.target.value);e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,120)+"px";}} onKeyDown=${e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}} placeholder=${t("conciergeInput")} rows="1" style=${{flex:1,background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"8px 12px",color:P.text,fontSize:14,resize:"none",outline:"none",lineHeight:1.4,maxHeight:"120px",overflowY:"auto"}}/>
@@ -2857,13 +2863,13 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
           ? html`<div style=${{textAlign:"center",padding:40,color:P.muted}}>Loading feed… 🎁</div>`
           : feed.length===0
             ? html`<div style=${{textAlign:"center",padding:40}}>
-                <div style=${{fontSize:52,marginBottom:12}}>👥</div>
+                <div style=${{marginBottom:12}}>${Icon("groups",52,P.gold)}</div>
                 <div style=${{fontWeight:700,fontSize:18,color:P.text,marginBottom:8}}>${t("findFriends")}</div>
                 <div style=${{color:P.muted,fontSize:14,lineHeight:1.5,marginBottom:18}}>${t("searchFriendsHint")}</div>
-                <button onClick=${()=>goTab("search")} style=${{background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",border:"none",borderRadius:12,padding:"12px 28px",fontWeight:700,fontSize:14,cursor:"pointer"}}>${t("search")} 🔍</button>
+                <button onClick=${()=>goTab("search")} style=${{background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",border:"none",borderRadius:12,padding:"12px 28px",fontWeight:700,fontSize:14,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("search",18,"#000")} ${t("search")}</button>
               </div>`
             : html`<div>
-                <div style=${{fontWeight:700,fontSize:18,color:P.text,marginBottom:14}}>${t("upcomingOccasions")}</div>
+                <div style=${{fontWeight:700,fontSize:18,color:P.text,marginBottom:14,display:"flex",alignItems:"center",gap:8}}>${Icon("gift",20,P.text)} ${stripEmoji(t("upcomingOccasions"))}</div>
                 ${feed.map(({profile:fr,occasions:occs}) => html`
                   <div key=${fr.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:16,padding:16,marginBottom:12}}>
                     <div style=${{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
@@ -2887,7 +2893,7 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
               </div>`)}
 
         ${tab==="search" && html`<div>
-          <div style=${{fontWeight:700,fontSize:18,color:P.text,marginBottom:14}}>${t("search")} 🔍</div>
+          <div style=${{fontWeight:700,fontSize:18,color:P.text,marginBottom:14,display:"flex",alignItems:"center",gap:8}}>${Icon("search",20,P.text)} ${t("search")}</div>
           <input value=${searchQ} onInput=${e=>setSearchQ(e.target.value)} placeholder="${t("searchPlaceholder")}" style=${{width:"100%",background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"13px 16px",color:P.text,fontSize:14,marginBottom:14,boxSizing:"border-box",outline:"none"}}/>
           ${searchResults.map(u => html`
             <div key=${u.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:12}}>
