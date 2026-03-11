@@ -8,21 +8,48 @@ const API = "https://giftmate-sigma.vercel.app/api/chat", MODEL = "claude-sonnet
 const SUPPORT_EMAIL = "support@giftm8.app";
 
 const THEMES = {
-  // Midnight: classic — warm amber drives everything on deep navy
-  midnight: { name:"Midnight", icon:"🌙", bg:"#0A0A18", card:"#12122A", border:"#F4A43828", text:"#F0F0FF", muted:"#9090B0", faint:"#50507080", gold:"#F4A438", goldL:"#FFD580", goldD:"#D4841A", teal:"#14B8A6", green:"#22C55E", red:"#EF4444" },
-  // Rose: hot pink drives all buttons/accents, deep wine bg
-  rose:     { name:"Rose",     icon:"🌸", bg:"#130810", card:"#1E0E18", border:"#FF6B9D28", text:"#FFE8F4", muted:"#B06888", faint:"#70405080", gold:"#FF6B9D", goldL:"#FFAECF", goldD:"#C4316A", teal:"#FFB347", green:"#4ADE80", red:"#FF4D6D" },
-  // Lavender: purple drives all buttons, warm amber pop for secondary
-  lavender: { name:"Lavender", icon:"💜", bg:"#0C0818", card:"#180F28", border:"#C084FC28", text:"#F2EAFF", muted:"#9878C0", faint:"#60488080", gold:"#C084FC", goldL:"#DDB6FF", goldD:"#8B22E8", teal:"#F4A438", green:"#4ADE80", red:"#EF4444" },
-  // Blush: rose-gold drives all buttons, deeper pink secondary
-  blush:    { name:"Blush",    icon:"🎀", bg:"#160B10", card:"#241220", border:"#F0A09028", text:"#FFEDF5", muted:"#B08090", faint:"#7850608f", gold:"#F0A090", goldL:"#F8C8BC", goldD:"#CC6050", teal:"#FF6B9D", green:"#4ADE80", red:"#EF4444" },
-  // Ocean: amber/coral drives all buttons on deep navy — the warm/cool contrast
-  ocean:    { name:"Ocean",    icon:"🌊", bg:"#060F1C", card:"#0D1C30", border:"#F4A43828", text:"#E0F4FF", muted:"#5888A8", faint:"#38587080", gold:"#F4A438", goldL:"#FFD580", goldD:"#D4841A", teal:"#38BDF8", green:"#4ADE80", red:"#F87171" },
-  // Sage: amber drives all buttons on forest bg — warm fire in the woods
-  sage:     { name:"Sage",     icon:"🌿", bg:"#06100A", card:"#0E1E12", border:"#F4A43828", text:"#EAFAF0", muted:"#60986A", faint:"#40604880", gold:"#F4A438", goldL:"#FFD580", goldD:"#D4841A", teal:"#4ADE80", green:"#4ADE80", red:"#EF4444" },
+  midnight: { name:"Midnight", svgIcon:"moon", bg:"#0A0A18", card:"#12122A", border:"#F4A43828", text:"#F0F0FF", muted:"#9090B0", faint:"#50507080", gold:"#F4A438", goldL:"#FFD580", goldD:"#D4841A", teal:"#14B8A6", green:"#22C55E", red:"#EF4444" },
+  rose:     { name:"Rose",     svgIcon:"flower", bg:"#130810", card:"#1E0E18", border:"#FF6B9D28", text:"#FFE8F4", muted:"#B06888", faint:"#70405080", gold:"#FF6B9D", goldL:"#FFAECF", goldD:"#C4316A", teal:"#FFB347", green:"#4ADE80", red:"#FF4D6D" },
+  lavender: { name:"Lavender", svgIcon:"heart", bg:"#0C0818", card:"#180F28", border:"#C084FC28", text:"#F2EAFF", muted:"#9878C0", faint:"#60488080", gold:"#C084FC", goldL:"#DDB6FF", goldD:"#8B22E8", teal:"#F4A438", green:"#4ADE80", red:"#EF4444" },
+  blush:    { name:"Blush",    svgIcon:"bow", bg:"#160B10", card:"#241220", border:"#F0A09028", text:"#FFEDF5", muted:"#B08090", faint:"#7850608f", gold:"#F0A090", goldL:"#F8C8BC", goldD:"#CC6050", teal:"#FF6B9D", green:"#4ADE80", red:"#EF4444" },
+  ocean:    { name:"Ocean",    svgIcon:"wave", bg:"#060F1C", card:"#0D1C30", border:"#F4A43828", text:"#E0F4FF", muted:"#5888A8", faint:"#38587080", gold:"#F4A438", goldL:"#FFD580", goldD:"#D4841A", teal:"#38BDF8", green:"#4ADE80", red:"#F87171" },
+  sage:     { name:"Sage",     svgIcon:"leaf", bg:"#06100A", card:"#0E1E12", border:"#F4A43828", text:"#EAFAF0", muted:"#60986A", faint:"#40604880", gold:"#F4A438", goldL:"#FFD580", goldD:"#D4841A", teal:"#4ADE80", green:"#4ADE80", red:"#EF4444" },
 };
 let _theme = "midnight";
 const setThemeKey = key => { if(THEMES[key]) { _theme=key; Object.assign(P, THEMES[key]); document.body.style.background=THEMES[key].bg; const m=document.querySelector("meta[name=theme-color]"); if(m) m.content=THEMES[key].gold; try{localStorage.setItem("giftmate_theme",key);}catch(e){} } };
+
+// ── SVG ICONS (reliable on iOS WebView; emojis often render as ?) ──
+const Icon = (name, size=20, color="currentColor") => {
+  const s = size;
+  const icons = {
+    home: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+    search: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    groups: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    chat: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+    profile: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+    star: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill=${color} stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    camera: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+    lock: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+    gift: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>`,
+    moon: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
+    flower: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>`,
+    heart: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+    bow: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M4 9h16"/><path d="M8 21l4-6 4 6"/><path d="M4 9c0 4 4 6 8 6s8-2 8-6"/></svg>`,
+    wave: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>`,
+    leaf: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`,
+    sprout: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>`,
+    package: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+    crown: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>`,
+    trophy: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
+    sparkle: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>`,
+    pencil: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`,
+    share: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`,
+    calendar: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+    map: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>`,
+    globe: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`
+  };
+  return icons[name] ? html`<span style=${{display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${icons[name]}</span>` : null;
+};
 let P = {...THEMES.midnight};
 // Apply saved theme instantly
 try { const saved=localStorage.getItem("giftmate_theme"); if(saved&&THEMES[saved]) setThemeKey(saved); } catch(e) {}
@@ -620,7 +647,7 @@ const getOccasions = () => OCCASION_TRANSLATIONS[_lang] || OCCASION_TRANSLATIONS
 const translateOccasion = key => { const i = OCCASIONS.indexOf(key); return i>=0 ? (getOccasions()[i]||key) : key; };
 const OCCASIONS = OCCASION_KEYS; // keep for DB storage (always English keys)
 
-const TIER_ICONS = ["🌱","💌","✨","🎊","👑","🏆"];
+const TIER_SVG_ICONS = ["sprout","heart","sparkle","gift","crown","trophy"];
 const TIER_COLORS = ["#6EE7B7","#93C5FD","#F4A438","#C084FC","#F87171","#FFD700"];
 const TIER_RANGES = [{min:0,max:99},{min:100,max:299},{min:300,max:699},{min:700,max:1499},{min:1500,max:2999},{min:3000,max:Infinity}];
 const getTier = stars => {
@@ -628,9 +655,9 @@ const getTier = stars => {
   const idx = i >= 0 ? i : 0;
   const names = t("tierNames") || ["Gift Curious","Thoughtful Soul","Gift Whisperer","Joy Spreader","Legendary Giver","Giftmate Icon"];
   const descs = t("tierDescs") || ["Just getting started!","You really care","Gifts are your love language","You light up people's lives","A true gifting legend","The ultimate gifting master"];
-  return {min:TIER_RANGES[idx].min, max:TIER_RANGES[idx].max, icon:TIER_ICONS[idx], color:TIER_COLORS[idx], name:names[idx], desc:descs[idx]};
+  return {min:TIER_RANGES[idx].min, max:TIER_RANGES[idx].max, svgIcon:TIER_SVG_ICONS[idx], color:TIER_COLORS[idx], name:names[idx], desc:descs[idx]};
 };
-const TIERS = TIER_RANGES.map((r,i) => ({...r, icon:TIER_ICONS[i], color:TIER_COLORS[i], name:"", desc:""}));
+const TIERS = TIER_RANGES.map((r,i) => ({...r, svgIcon:TIER_SVG_ICONS[i], color:TIER_COLORS[i], name:"", desc:""}));
 
 const daysUntil = d => {
   if(!d) return 999;
@@ -656,8 +683,11 @@ function Spin() {
 }
 
 function Avatar({emoji, avatarUrl, size=40, style={}}) {
-  if(avatarUrl) return html`<div style=${{width:size,height:size,borderRadius:"50%",overflow:"hidden",flexShrink:0,...style}}><img src=${avatarUrl} style=${{width:"100%",height:"100%",objectFit:"cover"}}/></div>`;
-  return html`<div style=${{width:size,height:size,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:size*0.45,flexShrink:0,...style}}>${emoji||"🎁"}</div>`;
+  const [imgError, setImgError] = useState(false);
+  useEffect(() => { setImgError(false); }, [avatarUrl]);
+  const showImg = avatarUrl && !imgError;
+  if(showImg) return html`<div style=${{width:size,height:size,borderRadius:"50%",overflow:"hidden",flexShrink:0,...style}}><img src=${avatarUrl} onError=${()=>setImgError(true)} style=${{width:"100%",height:"100%",objectFit:"cover"}}/></div>`;
+  return html`<div style=${{width:size,height:size,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:size*0.45,flexShrink:0,fontFamily:"Apple Color Emoji,Segoe UI Emoji,sans-serif",...style}}>${emoji||"🎁"}</div>`;
 }
 
 // ── PHOTO PICKER HELPER ──
@@ -753,7 +783,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
         <div style=${{textAlign:"center",marginBottom:20}}>
           <div style=${{position:"relative",display:"inline-block"}}>
             <${Avatar} emoji=${emoji} avatarUrl=${avatarUrl} size=${80}/>
-            <button onClick=${()=>pickPhoto(setAvatarUrl)} style=${{position:"absolute",bottom:0,right:0,width:28,height:28,borderRadius:"50%",background:P.gold,border:"none",fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>📷</button>
+            <button onClick=${()=>pickPhoto(setAvatarUrl)} style=${{position:"absolute",bottom:0,right:0,width:28,height:28,borderRadius:"50%",background:P.gold,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"#0A0A18"}}>${Icon("camera",14,"#0A0A18")}</button>
           </div>
           ${avatarUrl && html`<div><button onClick=${()=>setAvatarUrl("")} style=${{background:"none",border:"none",color:P.muted,fontSize:12,cursor:"pointer",marginTop:6}}>${t("removePhoto")}</button></div>`}
         </div>
@@ -809,7 +839,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
                   <div style=${{width:10,height:10,borderRadius:"50%",background:th.gold}}/>
                   <div style=${{width:10,height:10,borderRadius:"50%",background:th.teal}}/>
                 </div>
-                <span style=${{fontSize:14}}>${th.icon}</span>
+                ${Icon(th.svgIcon, 14, th.gold)}
                 <span style=${{fontSize:10,color:selectedTheme===key?th.goldL:P.muted,fontWeight:selectedTheme===key?700:400}}>${th.name}</span>
               </button>`)}
           </div>
@@ -831,7 +861,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
 
         <div style=${{marginBottom:16,background:P.bg,borderRadius:12,padding:"12px 14px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
-            <div style=${{fontWeight:700,color:P.text,fontSize:14}}>🔒 Private profile</div>
+            <div style=${{fontWeight:700,color:P.text,fontSize:14,display:"flex",alignItems:"center",gap:6}}>${Icon("lock",14,P.text)} Private profile</div>
             <div style=${{color:P.muted,fontSize:12,marginTop:2}}>People must request to follow you</div>
           </div>
           <div onClick=${()=>setIsPrivate(v=>!v)} style=${{width:44,height:24,borderRadius:99,background:isPrivate?P.gold:P.border,cursor:"pointer",position:"relative",transition:"background 0.2s",flexShrink:0}}>
@@ -1473,10 +1503,10 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
     <button onClick=${onBack} style=${{background:"none",border:"none",color:P.muted,fontSize:14,cursor:"pointer",marginBottom:14,padding:0}}>← Back</button>
     <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:20,padding:20,marginBottom:14,textAlign:"center"}}>
       <${Avatar} emoji=${friend.emoji} avatarUrl=${friend.avatar_url} size=${72} style=${{margin:"0 auto 12px"}}/>
-      <div style=${{fontWeight:800,fontSize:20,color:P.text}}>${friend.display_name} ${friend.is_private?html`<span style=${{fontSize:14}}>🔒</span>`:""}</div>
+      <div style=${{fontWeight:800,fontSize:20,color:P.text}}>${friend.display_name} ${friend.is_private?Icon("lock",14,P.text):""}</div>
       <div style=${{color:P.muted,fontSize:14,marginBottom:4}}>@${friend.username}</div>
       <div style=${{display:"inline-flex",alignItems:"center",gap:6,background:tier.color+"22",border:`1px solid ${tier.color}44`,borderRadius:99,padding:"4px 12px",marginBottom:10}}>
-        <span style=${{fontSize:14}}>${tier.icon}</span>
+        ${Icon(tier.svgIcon, 14, tier.color)}
         <span style=${{color:tier.color,fontWeight:700,fontSize:12}}>${tier.name}</span>
         <span style=${{color:P.faint,fontSize:11}}>· ${friend.stars||0}⭐</span>
       </div>
@@ -1692,12 +1722,12 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
     <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:20,padding:20,marginBottom:14,textAlign:"center"}}>
       <div style=${{position:"relative",display:"inline-block",marginBottom:12}}>
         <${Avatar} emoji=${localProfile.emoji} avatarUrl=${localProfile.avatar_url} size=${80}/>
-        <button onClick=${()=>setShowEdit(true)} style=${{position:"absolute",bottom:0,right:-4,width:26,height:26,borderRadius:"50%",background:P.gold,border:"none",fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>✏️</button>
+        <button onClick=${()=>setShowEdit(true)} style=${{position:"absolute",bottom:0,right:-4,width:26,height:26,borderRadius:"50%",background:P.gold,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"#0A0A18"}}>${Icon("pencil",12,"#0A0A18")}</button>
       </div>
       <div style=${{fontWeight:800,fontSize:20,color:P.text}}>${localProfile.display_name}</div>
       <div style=${{color:P.muted,fontSize:14,marginBottom:6}}>@${localProfile.username}</div>
       <div style=${{display:"inline-flex",alignItems:"center",gap:6,background:tier.color+"22",border:`1px solid ${tier.color}44`,borderRadius:99,padding:"5px 14px",marginBottom:8}}>
-        <span style=${{fontSize:16}}>${tier.icon}</span>
+        ${Icon(tier.svgIcon, 16, tier.color)}
         <div>
           <div style=${{color:tier.color,fontWeight:800,fontSize:13}}>${tier.name}</div>
           <div style=${{color:P.faint,fontSize:10}}>${tier.desc}</div>
@@ -1761,9 +1791,9 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
             <div><div style=${{fontWeight:600,color:P.text}}>${translateOccasion(o.type)}</div><div style=${{fontSize:13,color:P.muted}}>${fmtDate(o.date)}</div></div>
           </div>
           <div style=${{display:"flex",gap:6,alignItems:"center"}}>
-            <button onClick=${async()=>{const np=!o.is_public;await sb.from("occasions").update({is_public:np}).eq("id",o.id);setOccasions(prev=>prev.map(x=>x.id===o.id?{...x,is_public:np}:x));}} style=${{background:"none",border:`1px solid ${P.border}`,borderRadius:6,padding:"3px 8px",fontSize:10,color:o.is_public?P.teal:P.muted,cursor:"pointer",fontWeight:700}}>${o.is_public?t("publicLabel"):t("privateLabel")}</button>
+            <button onClick=${async()=>{const np=!o.is_public;await sb.from("occasions").update({is_public:np}).eq("id",o.id);setOccasions(prev=>prev.map(x=>x.id===o.id?{...x,is_public:np}:x));}} style=${{background:"none",border:`1px solid ${P.border}`,borderRadius:6,padding:"3px 8px",fontSize:10,color:o.is_public?P.teal:P.muted,cursor:"pointer",fontWeight:700,display:"flex",alignItems:"center",gap:4}}>${o.is_public?Icon("globe",10,o.is_public?P.teal:P.muted):Icon("lock",10,o.is_public?P.teal:P.muted)} ${(o.is_public?t("publicLabel"):t("privateLabel")).split(/\s+/).slice(1).join(" ")||(o.is_public?"Public":"Private")}</button>
             <div style=${{color:daysUntil(o.date)<=30?P.gold:P.muted,fontWeight:700,fontSize:13}}>${daysUntil(o.date)}d</div>
-            <button onClick=${()=>setEditingOcc({id:o.id,type:o.type,date:o.date,color:o.color||"#F4A438",is_public:o.is_public!==false})} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",fontSize:14}}>✏️</button>
+            <button onClick=${()=>setEditingOcc({id:o.id,type:o.type,date:o.date,color:o.color||"#F4A438",is_public:o.is_public!==false})} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",display:"flex",alignItems:"center"}}>${Icon("pencil",14,P.muted)}</button>
             <button onClick=${()=>delOcc(o.id)} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",fontSize:16}}>✕</button>
           </div>
         </div>
@@ -2377,10 +2407,10 @@ function StarsTab({profile, setProfile}) {
   const nextTier = nextTierIdx >= 0 ? getTier(TIER_RANGES[nextTierIdx].min) : null;
   const progress = nextTier ? Math.round(((stars - tier.min) / (nextTier.min - tier.min)) * 100) : 100;
   const REWARDS = [
-    {id:1,title:t("reward1Title"),cost:200,icon:"📦",desc:t("reward1Desc")},
-    {id:2,title:t("reward2Title"),cost:300,icon:"🌟",desc:t("reward2Desc")},
-    {id:3,title:t("reward3Title"),cost:400,icon:"🗺️",desc:t("reward3Desc")},
-    {id:4,title:t("reward4Title"),cost:500,icon:"✨",desc:t("reward4Desc")}
+    {id:1,title:t("reward1Title"),cost:200,svgIcon:"package",desc:t("reward1Desc")},
+    {id:2,title:t("reward2Title"),cost:300,svgIcon:"star",desc:t("reward2Desc")},
+    {id:3,title:t("reward3Title"),cost:400,svgIcon:"map",desc:t("reward3Desc")},
+    {id:4,title:t("reward4Title"),cost:500,svgIcon:"sparkle",desc:t("reward4Desc")}
   ];
   const [toast,setToast] = useState(null);
 
@@ -2405,14 +2435,14 @@ function StarsTab({profile, setProfile}) {
 
   return html`<div>
     <div style=${{background:`linear-gradient(135deg,${tier.color}22,${P.goldD}22)`,border:`1px solid ${tier.color}44`,borderRadius:20,padding:24,marginBottom:16,textAlign:"center"}}>
-      <div style=${{fontSize:42,marginBottom:4}}>${tier.icon}</div>
+      <div style=${{marginBottom:4}}>${Icon(tier.svgIcon, 42, tier.color)}</div>
       <div style=${{color:tier.color,fontWeight:800,fontSize:16,marginBottom:2}}>${tier.name}</div>
       <div style=${{color:P.muted,fontSize:12,marginBottom:10,fontStyle:"italic"}}>"${tier.desc}"</div>
       <div style=${{fontFamily:"Georgia,serif",fontSize:48,fontWeight:900,color:P.goldL,lineHeight:1}}>${stars.toLocaleString()}</div>
       <div style=${{color:P.muted,fontSize:13,marginBottom:12}}>${t("starsEarned")}</div>
       ${nextTier && html`<div>
         <div style=${{display:"flex",justifyContent:"space-between",fontSize:11,color:P.muted,marginBottom:5}}>
-          <span>${tier.name}</span><span>${nextTier.min - stars} ⭐ to ${nextTier.name} ${nextTier.icon}</span>
+          <span>${tier.name}</span><span>${nextTier.min - stars} to ${nextTier.name} ${Icon("star",12,P.gold)}</span>
         </div>
         <div style=${{background:P.border,borderRadius:99,height:6,overflow:"hidden"}}>
           <div style=${{height:"100%",borderRadius:99,background:`linear-gradient(90deg,${P.goldD},${tier.color})`,width:`${progress}%`,transition:"width 1s ease"}}/>
@@ -2422,9 +2452,9 @@ function StarsTab({profile, setProfile}) {
     </div>
     <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:16,padding:18,marginBottom:14}}>
       <div style=${{fontWeight:700,fontSize:15,marginBottom:12}}>${t("howToEarn")}</div>
-      ${[["👥",t("earnFollow"),"+15"],["🗓️",t("earnOccasion"),"+10"],["📲",t("earnShare"),"+10"],["🤝",t("earnRefer"),"+80"]].map(([icon,label,pts]) => html`
+      ${[[Icon("groups",18,P.gold),t("earnFollow"),"+15"],[Icon("calendar",18,P.gold),t("earnOccasion"),"+10"],[Icon("share",18,P.gold),t("earnShare"),"+10"],[Icon("groups",18,P.gold),t("earnRefer"),"+80"]].map(([icon,label,pts]) => html`
         <div key=${label} style=${{display:"flex",alignItems:"center",gap:10,marginBottom:8,background:P.bg,borderRadius:10,padding:"10px 12px"}}>
-          <span style=${{fontSize:18}}>${icon}</span>
+          ${icon}
           <div style=${{flex:1,fontSize:13,color:P.muted}}>${label}</div>
           <div style=${{color:P.gold,fontWeight:700,fontSize:13}}>${pts} ⭐</div>
         </div>`)}
@@ -2437,7 +2467,7 @@ function StarsTab({profile, setProfile}) {
     <div style=${{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
       ${REWARDS.map(r => { const can = stars>=r.cost; return html`
         <div key=${r.id} style=${{background:P.card,border:`1px solid ${can?P.gold+"44":P.border}`,borderRadius:14,padding:14}}>
-          <div style=${{fontSize:28,marginBottom:6}}>${r.icon}</div>
+          <div style=${{marginBottom:6}}>${Icon(r.svgIcon, 28, P.gold)}</div>
           <div style=${{fontWeight:700,fontSize:13,color:P.text,marginBottom:2}}>${r.title}</div>
           <div style=${{fontSize:11,color:P.muted,marginBottom:10}}>${r.desc}</div>
           <button onClick=${()=>redeem(r)} disabled=${!can} style=${{width:"100%",background:can?`linear-gradient(135deg,${P.goldD},${P.gold})`:P.border,color:can?"#000":P.muted,border:"none",borderRadius:8,padding:"7px 0",fontSize:11,fontWeight:700,cursor:can?"pointer":"not-allowed"}}>
@@ -2801,12 +2831,12 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
 
   const viewFriend = p => { setViewingFriend(p); setTab("friend"); track("friend_view", {friend_id: p.id, friend_name: p.display_name}); };
   const TABS = [
-    {id:"home",icon:"🏠",label:t("home")},
-    {id:"search",icon:"🔍",label:t("search")},
-    {id:"groups",icon:"👥",label:t("groups")},
-    {id:"concierge",icon:"💬",label:t("concierge")},
-    {id:"profile",icon:"👤",label:t("profile")},
-    {id:"stars",icon:"⭐",label:t("stars")}
+    {id:"home",svgIcon:"home",label:t("home")},
+    {id:"search",svgIcon:"search",label:t("search")},
+    {id:"groups",svgIcon:"groups",label:t("groups")},
+    {id:"concierge",svgIcon:"chat",label:t("concierge")},
+    {id:"profile",svgIcon:"profile",label:t("profile")},
+    {id:"stars",svgIcon:"star",label:t("stars")}
   ];
 
   return html`
@@ -2816,9 +2846,9 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
           <svg width="32" height="32" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="22" fill="#F4A438"/><text x="22" y="20" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="900" font-size="11" fill="#0A0A18" letter-spacing="0.5">gift</text><text x="22" y="32" text-anchor="middle" font-family="Arial Black,Impact,sans-serif" font-weight="900" font-size="13.5" fill="#0A0A18" letter-spacing="0.8">MATE</text></svg>
           <div style=${{fontFamily:"Georgia,serif",fontSize:22,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}>mate</span></div>
         </div>
-        <div style=${{display:"flex",alignItems:"center",gap:10}}>
-          <div style=${{fontSize:13,color:P.gold,fontWeight:700}}>⭐ ${profile.stars||0}</div>
-          <${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${32}/>
+        <div style=${{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+          <div style=${{fontSize:13,color:P.gold,fontWeight:700,display:"flex",alignItems:"center",gap:4}}>${Icon("star",14,P.gold)} ${profile.stars||0}</div>
+          <${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${32} style=${{flexShrink:0}}/>
         </div>
       </div>
 
@@ -2863,7 +2893,7 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
             <div key=${u.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:12}}>
               <${Avatar} emoji=${u.emoji} avatarUrl=${u.avatar_url} size=${46}/>
               <div style=${{flex:1}}>
-                <div style=${{fontWeight:700,color:P.text}}>${u.display_name} ${u.is_private?html`<span style=${{fontSize:12}}>🔒</span>`:""}</div>
+                <div style=${{fontWeight:700,color:P.text,display:"flex",alignItems:"center",gap:4}}>${u.display_name} ${u.is_private?Icon("lock",12,P.text):""}</div>
                 <div style=${{fontSize:13,color:P.muted}}>@${u.username}</div>
                 ${u.interests?.length>0 && html`<div style=${{fontSize:11,color:P.muted,marginTop:2}}>${u.interests.slice(0,3).join(" · ")}</div>`}
               </div>
@@ -2892,7 +2922,7 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
       <div style=${{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:480,background:P.card,borderTop:`1px solid ${P.border}`,display:"flex",zIndex:100}}>
         ${TABS.map(tb => html`
           <button key=${tb.id} onClick=${()=>goTab(tb.id)} style=${{flex:1,padding:"8px 0",background:"none",border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:1,position:"relative"}}>
-            <span style=${{fontSize:18}}>${tb.icon}</span>
+            ${Icon(tb.svgIcon, 20, tab===tb.id ? P.gold : P.muted)}
             ${tb.id==="profile" && unreadCount>0 && html`<span style=${{position:"absolute",top:4,right:"18%",background:P.red,color:"#fff",borderRadius:99,fontSize:9,fontWeight:800,minWidth:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 4px",lineHeight:1}}>${unreadCount>9?"9+":unreadCount}</span>`}
             ${tb.id==="groups" && groupUnread>0 && html`<span style=${{position:"absolute",top:4,right:"18%",background:P.red,color:"#fff",borderRadius:99,fontSize:9,fontWeight:800,minWidth:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 4px",lineHeight:1}}>${groupUnread>9?"9+":groupUnread}</span>`}
             <span style=${{fontSize:9,color:tab===tb.id?P.gold:P.muted,fontWeight:tab===tb.id?700:400}}>${tb.label}</span>
