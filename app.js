@@ -524,13 +524,26 @@ const getAuthUrlParams = () => {
 };
 const isRecoveryFlow = () => {
   const params = getAuthUrlParams();
-  return params.get("type") === "recovery";
+  return (
+    params.get("type") === "recovery" ||
+    Boolean(params.get("code")) ||
+    Boolean(params.get("token_hash")) ||
+    Boolean(params.get("access_token"))
+  );
+};
+const hasRecoveryError = () => {
+  const params = getAuthUrlParams();
+  return Boolean(
+    params.get("error_code") ||
+    params.get("error_description")
+  );
 };
 const hasRecoveryTokens = () => {
   const params = getAuthUrlParams();
   return Boolean(
     (params.get("access_token") && params.get("refresh_token")) ||
-    params.get("code")
+    params.get("code") ||
+    params.get("token_hash")
   );
 };
 const clearAuthHash = () => {
@@ -2867,8 +2880,8 @@ function Giftmate() {
   const [session,setSession] = useState(null);
   const [profile,setProfile] = useState(null);
   const [loading,setLoading] = useState(true);
-  const [recoveryMode,setRecoveryMode] = useState(isRecoveryFlow());
-  const [recoveryInvalid,setRecoveryInvalid] = useState(false);
+  const [recoveryMode,setRecoveryMode] = useState(isRecoveryFlow() || hasRecoveryError());
+  const [recoveryInvalid,setRecoveryInvalid] = useState(hasRecoveryError());
   const [lang,setLangState] = useState("en");
   const [theme,setThemeState] = useState("midnight");
 
@@ -2892,9 +2905,9 @@ function Giftmate() {
 
     sb.auth.getSession().then(({data:{session}}) => {
       setSession(session);
-      if(isRecoveryFlow()) {
+      if(isRecoveryFlow() || hasRecoveryError()) {
         setRecoveryMode(true);
-        setRecoveryInvalid(!session && !hasRecoveryTokens());
+        setRecoveryInvalid(hasRecoveryError() || (!session && !hasRecoveryTokens()));
         setLoading(false);
       }
       else if(session) loadProfile(session.user.id);
@@ -2902,9 +2915,9 @@ function Giftmate() {
     });
     const {data:{subscription}} = sb.auth.onAuthStateChange((event,session) => {
       setSession(session);
-      if(event==="PASSWORD_RECOVERY" || isRecoveryFlow()) {
+      if(event==="PASSWORD_RECOVERY" || isRecoveryFlow() || hasRecoveryError()) {
         setRecoveryMode(true);
-        setRecoveryInvalid(!session && !hasRecoveryTokens());
+        setRecoveryInvalid(hasRecoveryError() || (!session && !hasRecoveryTokens()));
         setLoading(false);
       } else if(session) {
         setRecoveryMode(false);
