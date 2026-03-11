@@ -57,6 +57,7 @@ const Icon = (name, size=20, color="currentColor") => {
   return icons[name] ? html`<span style=${{display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${icons[name]}</span>` : null;
 };
 const stripEmoji = s => (s||"").replace(/^[^\w\s]+/g,"").replace(/\s+[^\w\s]+$/g,"").replace(/\s+/g," ").trim();
+const stripAllEmoji = s => (s||"").replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F1E0}-\u{1F1FF}]/gu,"").replace(/\s{2,}/g," ").trim();
 const AVATAR_OPTIONS = [{e:"🎁",i:"gift"},{e:"😊",i:"heart"},{e:"🌟",i:"star"},{e:"🎯",i:"trophy"},{e:"🦋",i:"flower"},{e:"🌈",i:"wave"},{e:"🎨",i:"package"},{e:"🎵",i:"share"},{e:"🌺",i:"flower"},{e:"🦁",i:"crown"},{e:"🐺",i:"heart"},{e:"🦊",i:"heart"},{e:"🐬",i:"wave"},{e:"🌙",i:"moon"},{e:"⭐",i:"star"},{e:"🔥",i:"sparkle"},{e:"💫",i:"sparkle"},{e:"🎭",i:"heart"}];
 const emojiToIcon = emoji => (AVATAR_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 const GROUP_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"🍾",i:"sparkle"},{e:"✈️",i:"globe"},{e:"🎸",i:"sparkle"},{e:"⚽",i:"sparkle"},{e:"🐶",i:"heart"},{e:"🌸",i:"flower"},{e:"🎨",i:"sparkle"},{e:"🎭",i:"heart"},{e:"🍕",i:"sparkle"},{e:"☕",i:"sparkle"},{e:"🏖️",i:"wave"},{e:"🎪",i:"sparkle"}];
@@ -69,12 +70,12 @@ try { const saved=localStorage.getItem("giftmate_theme"); if(saved&&THEMES[saved
 
 // ── I18N ──────────────────────────────────────────────────────
 const LANGUAGES = {
-  en: { name:"English", flag:"🇬🇧" },
-  es: { name:"Español", flag:"🇪🇸" },
-  fr: { name:"Français", flag:"🇫🇷" },
-  de: { name:"Deutsch", flag:"🇩🇪" },
-  it: { name:"Italiano", flag:"🇮🇹" },
-  pt: { name:"Português", flag:"🇵🇹" },
+  en: { name:"English", flagCode:"gb" },
+  es: { name:"Español", flagCode:"es" },
+  fr: { name:"Français", flagCode:"fr" },
+  de: { name:"Deutsch", flagCode:"de" },
+  it: { name:"Italiano", flagCode:"it" },
+  pt: { name:"Português", flagCode:"pt" },
 };
 
 const TRANSLATIONS = {
@@ -791,7 +792,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
   return html`
     <div style=${{position:"fixed",inset:0,background:"#000b",zIndex:2000,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick=${onClose}>
       <div style=${{background:P.card,borderRadius:"20px 20px 0 0",padding:24,width:"100%",maxWidth:480,maxHeight:"85vh",overflowY:"auto"}} onClick=${e=>e.stopPropagation()}>
-        <div style=${{fontWeight:800,fontSize:18,color:P.text,marginBottom:20,textAlign:"center"}}>${t("editProfile")}</div>
+        <div style=${{fontWeight:800,fontSize:18,color:P.text,marginBottom:20,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("pencil",18,P.text)} ${stripEmoji(t("editProfile"))}</div>
         
         <div style=${{textAlign:"center",marginBottom:20}}>
           <div style=${{position:"relative",display:"inline-block"}}>
@@ -831,7 +832,8 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
           <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
             ${Object.entries(LANGUAGES).map(([code,lang]) => html`
               <button key=${code} onClick=${()=>setLanguage(code)} style=${{background:language===code?`${P.gold}33`:"transparent",border:`1px solid ${language===code?P.gold:P.border}`,borderRadius:99,padding:"6px 12px",fontSize:13,cursor:"pointer",color:language===code?P.goldL:P.muted,fontWeight:language===code?700:400,display:"inline-flex",alignItems:"center",gap:6}}>
-                <span style=${{fontSize:16,lineHeight:1}}>${lang.flag}</span> ${lang.name}
+                <img src=${`https://flagcdn.com/w40/${lang.flagCode}.png`} alt="" style=${{width:20,height:15,objectFit:"cover",borderRadius:2}}/>
+                ${lang.name}
               </button>`)}
           </div>
         </div>
@@ -1764,7 +1766,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
         ${localProfile.interests.map(i => html`<span key=${i} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}33`,borderRadius:99,padding:"3px 10px",fontSize:11,color:P.goldL,fontWeight:600}}>${translateInterest(i)}</span>`)}
       </div>`}
       <div style=${{display:"flex",gap:8,justifyContent:"center",marginTop:14}}>
-        <button onClick=${()=>setShowEdit(true)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 16px",fontSize:12,fontWeight:700,cursor:"pointer"}}>${t("editProfileBtn")}</button>
+        <button onClick=${()=>setShowEdit(true)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 16px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("pencil",14,P.gold)} ${stripEmoji(t("editProfileBtn"))}</button>
         <button onClick=${()=>sb.auth.signOut()} style=${{background:"none",border:`1px solid ${P.border}`,color:P.muted,borderRadius:8,padding:"7px 16px",fontSize:12,cursor:"pointer"}}>${t("logOut")}</button>
       </div>
     </div>
@@ -2573,7 +2575,7 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
 
   useEffect(() => { bottomRef.current?.scrollIntoView({behavior:"smooth"}); }, [messages]);
 
-  const QUICK = [t("quickChip1"), t("quickChip2"), t("quickChip3"), t("quickChip4").replace("✈️", `${city} ✈️`)];
+  const QUICK = [t("quickChip1"), t("quickChip2"), t("quickChip3"), t("quickChip4").replace("✈️", city)];
 
   const parseReply = raw => {
     const match = raw.match(/<gifts>([\s\S]*?)<\/gifts>/);
@@ -2621,23 +2623,23 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
           <div style=${{maxWidth:"82%"}}>
             ${m.role==="assistant" ? html`
               <div style=${{background:P.card,color:P.text,borderRadius:"18px 18px 18px 4px",padding:"11px 15px",fontSize:14,lineHeight:1.6,border:`1px solid ${P.border}`}}>
-                ${m.content && renderBold(m.content)}
+                ${m.content && renderBold(stripAllEmoji(m.content))}
               </div>
               ${m.gifts && html`<${GiftCards} gifts=${m.gifts} city=${city}/>`}
             ` : html`
               <div style=${{background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",borderRadius:"18px 18px 4px 18px",padding:"11px 15px",fontSize:14,lineHeight:1.5,fontWeight:600}}>
-                ${m.content}
+                ${stripAllEmoji(m.content)}
               </div>`}
           </div>
         </div>`)}
       ${loading && html`<div style=${{display:"flex",gap:8,alignItems:"flex-end"}}>
         <div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",14,"#0A0A18")}</div>
-        <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:"18px 18px 18px 4px",padding:"11px 15px",color:P.muted,fontSize:14}}>${t("findingGifts")}</div>
+        <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:"18px 18px 18px 4px",padding:"11px 15px",color:P.muted,fontSize:14,display:"flex",alignItems:"center",gap:6}}>${Icon("sparkle",14,P.muted)} ${stripEmoji(t("findingGifts"))}</div>
       </div>`}
       <div ref=${bottomRef}/>
     </div>
     <div style=${{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
-      ${QUICK.map(q => html`<button key=${q} onClick=${()=>send(q)} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:99,padding:"6px 12px",fontSize:11,color:P.muted,cursor:"pointer",fontWeight:600,display:"inline-flex",alignItems:"center",gap:4}}>${Icon("gift",12,P.muted)} ${stripEmoji(q)}</button>`)}
+      ${QUICK.map(q => html`<button key=${q} onClick=${()=>send(stripEmoji(q))} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:99,padding:"6px 12px",fontSize:11,color:P.muted,cursor:"pointer",fontWeight:600,display:"inline-flex",alignItems:"center",gap:4}}>${Icon("gift",12,P.muted)} ${stripEmoji(q)}</button>`)}
     </div>
     <div style=${{display:"flex",gap:8}}>
       <textarea value=${input} onInput=${e=>{setInput(e.target.value);e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,120)+"px";}} onKeyDown=${e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}} placeholder=${t("conciergeInput")} rows="1" style=${{flex:1,background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"8px 12px",color:P.text,fontSize:14,resize:"none",outline:"none",lineHeight:1.4,maxHeight:"120px",overflowY:"auto"}}/>
@@ -2659,6 +2661,12 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
   const [toast,setToast] = useState(null);
   const [unreadCount,setUnreadCount] = useState(0);
   const [groupUnread,setGroupUnread] = useState(0);
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  const [showAddToIos, setShowAddToIos] = useState(() => {
+    if(!isIOS || isStandalone) return false;
+    try { return !localStorage.getItem("giftmate_addtoios_dismissed"); } catch(e) { return true; }
+  });
 
   // Load unread inbox count
   const loadUnread = async () => {
@@ -2751,7 +2759,7 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
         if(payload.new.status==="accepted") {
           setPendingRequests(p=>p.filter(id=>id!==payload.new.target_id));
           setFollowing(f=>[...f, payload.new.target_id]);
-          setToast("✅ Follow request accepted!");
+          setToast("Follow request accepted!");
           loadFeed();
           loadFollowing(); // refresh full following list from DB
         } else if(payload.new.status==="rejected") {
@@ -2832,12 +2840,12 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
       const {error} = await sb.from("follow_requests").insert({requester_id:profile.id, target_id:targetId, status:"pending"});
       if(error) { setToast("Error: "+error.message); return; }
       setPendingRequests(p => [...p, targetId]);
-      setToast("Follow request sent 📨");
+      setToast("Follow request sent!");
     } else {
       const {error} = await sb.from("follows").insert({follower_id:profile.id, following_id:targetId});
       if(error) { setToast("Error: "+error.message); return; }
       setFollowing(f => [...f,targetId]);
-      setToast("Following! 🎉 +15⭐");
+      setToast("Following! +15 stars");
       const ns = (profile.stars||0)+15;
       await sb.from("profiles").update({stars:ns}).eq("id",profile.id);
       setProfile(p => ({...p, stars:ns}));
@@ -2951,6 +2959,14 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
             <span style=${{fontSize:9,color:tab===tb.id?P.gold:P.muted,fontWeight:tab===tb.id?700:400}}>${tb.label}</span>
           </button>`)}
       </div>
+      ${showAddToIos && html`<div style=${{position:"fixed",bottom:74,left:"50%",transform:"translateX(-50%)",width:"calc(100% - 32px)",maxWidth:448,background:P.card,border:`1px solid ${P.gold}55`,borderRadius:12,padding:"12px 16px",zIndex:99,boxShadow:"0 4px 20px #0006",display:"flex",alignItems:"center",gap:12}}>
+        <div style=${{width:40,height:40,borderRadius:10,background:`${P.gold}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${Icon("gift",22,P.gold)}</div>
+        <div style=${{flex:1}}>
+          <div style=${{fontWeight:700,fontSize:14,color:P.text}}>Add to iPhone</div>
+          <div style=${{fontSize:12,color:P.muted,marginTop:2}}>Tap Share → Add to Home Screen</div>
+        </div>
+        <button onClick=${()=>{ try{ localStorage.setItem("giftmate_addtoios_dismissed","1"); }catch(e){} setShowAddToIos(false); }} style=${{background:"none",border:"none",color:P.muted,fontSize:18,cursor:"pointer",padding:4}}>×</button>
+      </div>`}
       ${toast && html`<${Toast} msg=${toast} onDone=${()=>setToast(null)}/>`}
     </div>`;
 }
