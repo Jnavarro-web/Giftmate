@@ -67,6 +67,11 @@ const GROUP_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"�
 const emojiToIconGroup = emoji => (GROUP_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 const LIST_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎄",i:"gift"},{e:"🌸",i:"flower"},{e:"✈️",i:"globe"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"💼",i:"package"}];
 const emojiToIconList = emoji => (LIST_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
+// Proposal form: unique icons for gift types
+const PROPOSAL_ICONS = ["gift","flower","package","box","wave","camera","thumbsUp","sparkle"];
+const iconToEmojiProposal = {gift:"🎁",flower:"🌸",package:"📚",box:"👟",wave:"🌴",camera:"💄",thumbsUp:"🎮",sparkle:"⌚"};
+const PROPOSAL_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🌸",i:"flower"},{e:"🍷",i:"gift"},{e:"📚",i:"package"},{e:"👟",i:"box"},{e:"💄",i:"camera"},{e:"🎮",i:"thumbsUp"},{e:"⌚",i:"sparkle"},{e:"🌴",i:"wave"},{e:"🎨",i:"package"},{e:"🍫",i:"gift"},{e:"💐",i:"flower"}];
+const emojiToIconProposal = emoji => (PROPOSAL_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 let P = {...THEMES.midnight};
 // Apply saved theme instantly
 try { const saved=localStorage.getItem("giftmate_theme"); if(saved&&THEMES[saved]) setThemeKey(saved); } catch(e) {}
@@ -138,6 +143,8 @@ const TRANSLATIONS = {
     giftIdeasFor: "For", findingGifts: "✨ Finding perfect gifts…",
     getAIIdeas: "✨ Get AI Gift Ideas",
     ideasByInterests: "Based on their interests",
+    interestsHint: "Add your interests in Profile → Edit Profile so friends get better gift ideas for you.",
+    interestsWhy: "Friends use these to get AI gift ideas for you.",
     upcomingOccasions: "Upcoming Occasions 🎁",
     searchFriendsHint: "Search for friends to see their upcoming occasions and get AI gift ideas.",
     friendsGiftHint: "Friends will get gift ideas for you!",
@@ -212,6 +219,8 @@ const TRANSLATIONS = {
     giftIdeasFor: "Para", findingGifts: "✨ Buscando regalos perfectos…",
     getAIIdeas: "✨ Ideas de Regalo con IA",
     ideasByInterests: "Según sus intereses",
+    interestsHint: "Añade tus intereses en Perfil → Editar perfil para que tus amigos reciban mejores ideas.",
+    interestsWhy: "Tus amigos usan esto para obtener ideas de regalo con IA.",
     upcomingOccasions: "Próximas Ocasiones 🎁",
     searchFriendsHint: "Busca amigos para ver sus próximas ocasiones y obtener ideas de regalo con IA.",
     friendsGiftHint: "¡Los amigos podrán obtener ideas de regalo para ti!",
@@ -286,6 +295,8 @@ const TRANSLATIONS = {
     giftIdeasFor: "Pour", findingGifts: "✨ Recherche des cadeaux parfaits…",
     getAIIdeas: "✨ Idées cadeaux par IA",
     ideasByInterests: "Selon leurs centres d'intérêt",
+    interestsHint: "Ajoute tes centres d'intérêt dans Profil → Modifier pour de meilleures idées.",
+    interestsWhy: "Tes amis les utilisent pour des idées cadeaux IA.",
     upcomingOccasions: "Occasions à venir 🎁",
     searchFriendsHint: "Recherchez des amis pour voir leurs prochaines occasions et obtenir des idées cadeaux.",
     friendsGiftHint: "Vos amis pourront trouver des idées cadeaux pour vous !",
@@ -359,6 +370,8 @@ const TRANSLATIONS = {
     giftIdeasFor: "Für", findingGifts: "✨ Perfekte Geschenke werden gesucht…",
     getAIIdeas: "✨ KI-Geschenkideen",
     ideasByInterests: "Basierend auf ihren Interessen",
+    interestsHint: "Füge Interessen unter Profil → Bearbeiten hinzu für bessere Ideen.",
+    interestsWhy: "Freunde nutzen diese für KI-Geschenkideen.",
     upcomingOccasions: "Bevorstehende Anlässe 🎁",
     searchFriendsHint: "Suche nach Freunden, um ihre bevorstehenden Anlässe zu sehen und KI-Geschenkideen zu erhalten.",
     friendsGiftHint: "Freunde können Geschenkideen für dich bekommen!",
@@ -433,6 +446,8 @@ const TRANSLATIONS = {
     giftIdeasFor: "Per", findingGifts: "✨ Ricerca regali perfetti…",
     getAIIdeas: "✨ Idee regalo con IA",
     ideasByInterests: "In base ai loro interessi",
+    interestsHint: "Aggiungi i tuoi interessi in Profilo → Modifica per idee migliori.",
+    interestsWhy: "Gli amici li usano per idee regalo con IA.",
     upcomingOccasions: "Occasioni in arrivo 🎁",
     searchFriendsHint: "Cerca amici per vedere le loro prossime occasioni e ottenere idee regalo con IA.",
     friendsGiftHint: "Gli amici potranno trovare idee regalo per te!",
@@ -506,6 +521,8 @@ const TRANSLATIONS = {
     giftIdeasFor: "Para", findingGifts: "✨ Encontrando presentes perfeitos…",
     getAIIdeas: "✨ Ideias de presente com IA",
     ideasByInterests: "Baseado nos interesses deles",
+    interestsHint: "Adicione seus interesses em Perfil → Editar para melhores ideias.",
+    interestsWhy: "Amigos usam para ideias de presente com IA.",
     upcomingOccasions: "Próximas Ocasiões 🎁",
     searchFriendsHint: "Busque amigos para ver suas próximas ocasiões e obter ideias de presente com IA.",
     friendsGiftHint: "Amigos poderão encontrar ideias de presente para você!",
@@ -880,6 +897,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
 
         <div style=${{marginBottom:20}}>
           <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:8}}>${t("interests")}</div>
+          <div style=${{fontSize:11,color:P.muted,marginBottom:6}}>${t("interestsWhy")||"Friends use these to get AI gift ideas for you."}</div>
           <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
             ${INTERESTS.map(i => html`<button key=${i} onClick=${()=>toggleI(i)} style=${{background:interests.includes(i)?`${P.gold}33`:"transparent",border:`1px solid ${interests.includes(i)?P.gold:P.border}`,borderRadius:99,padding:"5px 12px",fontSize:12,color:interests.includes(i)?P.goldL:P.muted,cursor:"pointer",fontWeight:interests.includes(i)?700:400}}>${translateInterest(i)}</button>`)}
           </div>
@@ -1374,7 +1392,7 @@ function GiftInbox({profile, toast}) {
           <div style=${{color:P.muted,fontSize:12}}>${new Date(m.created_at).toLocaleDateString("en-GB",{day:"numeric",month:"short"})}</div>
         </div>
         ${m.status==="pending" && html`<div style=${{color:isSent?P.muted:P.gold,fontSize:isSent?11:8,fontWeight:700}}>${isSent?t("pending"):html`<div style=${{width:8,height:8,borderRadius:"50%",background:P.gold}}/>`}</div>`}
-        ${m.status==="thanked" && html`<div style=${{color:isSent?P.green:P.green,fontSize:12,fontWeight:700}}>${isSent?t("thanked"):t("thanked")}</div>`}
+        ${m.status==="thanked" && html`<div style=${{color:P.green,fontSize:12,fontWeight:700,display:"flex",alignItems:"center",gap:4}}>${Icon("heart",12,P.green)} ${stripEmoji(t("thanked"))}</div>`}
       </div>
       <div style=${{background:P.bg,borderRadius:10,padding:"10px 12px",marginBottom:isSent||m.status==="thanked"?0:10}}>
         <div style=${{fontWeight:700,color:P.text,fontSize:14,display:"flex",alignItems:"center",gap:6}}>${Icon("gift",16,P.gold)} ${m.gift_name}</div>
@@ -1573,25 +1591,28 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
     </div>
     ${showSendGift && html`<${SendGiftModal} friend=${friend} myProfile=${myProfile} onClose=${()=>setShowSendGift(false)} toast=${msg=>{setLocalToast(msg);setTimeout(()=>setLocalToast(null),3000);}}/>`}
     ${(occasions.length>0 || (friend.interests||[]).length>0) && html`<div style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:16,padding:16,marginBottom:14}}>
-      <div style=${{fontWeight:700,fontSize:15,marginBottom:10}}>${t("getAIIdeas")}</div>
+      <div style=${{fontWeight:700,fontSize:15,marginBottom:10,color:P.text}}>${Icon("sparkle",14,P.gold)} ${stripEmoji(t("getAIIdeas"))}</div>
+      ${(friend.interests||[]).length===0 && html`<div style=${{fontSize:12,color:P.muted,marginBottom:8}}>${t("interestsHint")||"Add your interests in Profile → Edit Profile so friends get better gift ideas."}</div>`}
       <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
         ${(friend.interests||[]).length>0 && html`<button onClick=${getGiftIdeasByInterests} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 12px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("heart",14,P.gold)} ${stripEmoji(t("ideasByInterests"))}</button>`}
         ${occasions.slice(0,3).map(o => html`<button key=${o.id} onClick=${()=>getGiftIdeas(o)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 12px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("gift",14,P.gold)} ${t("giftIdeasFor")} ${translateOccasion(o.type)}</button>`)}
       </div>
       ${giftLoading && html`<div style=${{color:P.muted,fontSize:13,marginTop:10}}>${t("findingGifts")}</div>`}
+      <div style=${{display:"flex",gap:10,marginTop:10,overflowX:"auto",paddingBottom:4,flexWrap:"nowrap"}}>
       ${giftIdeas.map((g,i) => html`
-        <div key=${i} style=${{background:P.bg,borderRadius:10,padding:"10px 12px",marginTop:10,display:"flex",gap:10,alignItems:"flex-start",flexWrap:"wrap"}}>
+        <div key=${i} style=${{background:P.bg,borderRadius:10,padding:"10px 12px",minWidth:200,maxWidth:200,flexShrink:0,display:"flex",flexDirection:"column",gap:8}}>
           <div style=${{width:36,height:36,borderRadius:8,background:`${P.gold}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${Icon("gift",20,P.gold)}</div>
           <div style=${{flex:1,minWidth:0}}>
             <div style=${{fontWeight:700,fontSize:13,color:P.text}}>${g.name}</div>
             <div style=${{fontSize:12,color:P.muted,marginTop:2}}>${g.description}</div>
             <div style=${{color:P.gold,fontWeight:700,fontSize:13,marginTop:4}}>~€${g.price}</div>
           </div>
-          <div style=${{display:"flex",gap:6,flexWrap:"wrap"}}>
+          <div style=${{display:"flex",flexDirection:"column",gap:6}}>
             <${SmartBuyButton} name=${g.name} city=${myProfile?.city||"Madrid"}/>
-            <button onClick=${()=>{setGiftIdeas(prev=>prev.filter((_,idx)=>idx!==i));}} style=${{background:`${P.green}22`,border:`1px solid ${P.green}44`,color:P.green,borderRadius:8,padding:"5px 10px",fontSize:11,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:4}}>${Icon("check",12,P.green)} ${stripEmoji(t("markBought"))}</button>
+            <button onClick=${()=>{setGiftIdeas(prev=>prev.filter((_,idx)=>idx!==i));}} style=${{background:`${P.green}22`,border:`1px solid ${P.green}44`,color:P.green,borderRadius:8,padding:"5px 10px",fontSize:11,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center",gap:4}}>${Icon("check",12,P.green)} ${stripEmoji(t("markBought"))}</button>
           </div>
         </div>`)}
+      </div>
     </div>`}
     <div style=${{display:"flex",background:P.card,borderRadius:10,padding:3,marginBottom:12,gap:2}}>
       ${SECS.map(([id,label]) => html`<button key=${id} onClick=${()=>setSection(id)} style=${{flex:1,padding:"8px 0",borderRadius:8,border:"none",background:section===id?`linear-gradient(135deg,${P.goldD},${P.gold})`:"transparent",color:section===id?"#000":P.muted,fontWeight:700,fontSize:11,cursor:"pointer"}}>${label}</button>`)}
@@ -2292,14 +2313,17 @@ function GroupChat({group, profile, feed, following, onBack}) {
         const senderEmoji = isMe ? profile.emoji : m.sender?.emoji;
         const senderAvatar = isMe ? profile.avatar_url : m.sender?.avatar_url;
         const senderName = isMe ? profile.display_name : m.sender?.display_name;
+        const isProposal = m.message_type==="proposal";
+        const proposalMatch = isProposal && m.content && m.content.match(/^(.*?proposed:\s*)([\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F1E0}-\u{1F1FF}]+)\s*(.*)$/u);
+        const msgContent = proposalMatch ? html`${proposalMatch[1]}${Icon(emojiToIconProposal(proposalMatch[2]),14,isMe?"#000":P.text)} ${proposalMatch[3]}` : (isProposal ? stripAllEmoji(m.content) : m.content);
         return html`<div key=${m.id} style=${{display:"flex",gap:8,alignItems:"flex-end",flexDirection:isMe?"row-reverse":"row"}}>
           <div onClick=${()=>setViewingMember(isMe?profile:{id:m.sender_id,...m.sender})} style=${{cursor:"pointer",flexShrink:0}}>
             <${Avatar} emoji=${senderEmoji} avatarUrl=${senderAvatar} size=${28}/>
           </div>
           <div style=${{maxWidth:"70%"}}>
             <div style=${{fontSize:10,color:P.muted,marginBottom:2,textAlign:isMe?"right":"left",marginLeft:isMe?0:4}}>${senderName}</div>
-            <div style=${{background:isMe?`linear-gradient(135deg,${P.goldD},${P.gold})`:P.card,color:isMe?"#000":P.text,borderRadius:isMe?"14px 14px 4px 14px":"14px 14px 14px 4px",padding:"9px 13px",fontSize:14,border:isMe?"none":`1px solid ${P.border}`}}>
-              ${m.content}
+            <div style=${{background:isMe?`linear-gradient(135deg,${P.goldD},${P.gold})`:P.card,color:isMe?"#000":P.text,borderRadius:isMe?"14px 14px 4px 14px":"14px 14px 14px 4px",padding:"9px 13px",fontSize:14,border:isMe?"none":`1px solid ${P.border}`,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+              ${msgContent}
             </div>
             <div style=${{fontSize:9,color:P.muted,marginTop:2,textAlign:isMe?"right":"left",marginLeft:isMe?0:4}}>
               ${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
@@ -2360,10 +2384,10 @@ function ProposalForm({group, profile, members, onClose, onDone}) {
   return html`
     <div style=${{position:"fixed",inset:0,background:"#000b",zIndex:2000,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick=${onClose}>
       <div style=${{background:P.card,borderRadius:"20px 20px 0 0",padding:24,width:"100%",maxWidth:480}} onClick=${e=>e.stopPropagation()}>
-        <div style=${{fontWeight:800,fontSize:17,marginBottom:16}}>Propose a Gift 💡</div>
-        <div style=${{display:"flex",gap:8,marginBottom:10}}>
-          ${["🎁","🌸","🍷","📚","👟","💄","🎮","⌚","🌴","🎨","🍫","💐"].map(e=>html`
-            <button key=${e} onClick=${()=>setEmoji(e)} style=${{fontSize:20,background:emoji===e?`${P.gold}33`:"none",border:`1px solid ${emoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"5px 7px",cursor:"pointer"}}>${e}</button>`)}
+        <div style=${{fontWeight:800,fontSize:17,marginBottom:16,color:P.text,display:"flex",alignItems:"center",gap:8}}>${Icon("sparkle",18,P.gold)} ${stripEmoji(t("proposeGiftTitle"))}</div>
+        <div style=${{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}}>
+          ${PROPOSAL_ICONS.map(icon=>html`
+            <button key=${icon} onClick=${()=>setEmoji(iconToEmojiProposal[icon]||"🎁")} style=${{background:emoji===(iconToEmojiProposal[icon]||"🎁")?`${P.gold}33`:"none",border:`1px solid ${emoji===(iconToEmojiProposal[icon]||"🎁")?P.gold:"transparent"}`,borderRadius:8,padding:"5px 7px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(icon,20,P.text)}</button>`)}
         </div>
         <${Inp} value=${name} onChange=${setName} placeholder="Gift name" style=${{marginBottom:10}}/>
         <${Inp} value=${desc} onChange=${setDesc} placeholder="Description (optional)" style=${{marginBottom:10}}/>
@@ -2493,11 +2517,11 @@ function StarsTab({profile, setProfile}) {
       ${!nextTier && html`<div style=${{color:P.gold,fontWeight:700,fontSize:13}}>${t("maxTier")}</div>`}
     </div>
     <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:16,padding:18,marginBottom:14}}>
-      <div style=${{fontWeight:700,fontSize:15,marginBottom:12,display:"flex",alignItems:"center",gap:6}}>${Icon("star",14,P.gold)} ${stripEmoji(t("howToEarn"))}</div>
+      <div style=${{fontWeight:700,fontSize:15,marginBottom:12,display:"flex",alignItems:"center",gap:6,color:P.text}}>${Icon("star",14,P.gold)} ${stripEmoji(t("howToEarn"))}</div>
       ${[[Icon("groups",18,P.gold),t("earnFollow"),"+15"],[Icon("calendar",18,P.gold),t("earnOccasion"),"+10"],[Icon("share",18,P.gold),t("earnShare"),"+10"],[Icon("groups",18,P.gold),t("earnRefer"),"+80"]].map(([icon,label,pts]) => html`
         <div key=${label} style=${{display:"flex",alignItems:"center",gap:10,marginBottom:8,background:P.bg,borderRadius:10,padding:"10px 12px"}}>
           ${icon}
-          <div style=${{flex:1,fontSize:13,color:P.muted}}>${label}</div>
+          <div style=${{flex:1,fontSize:13,color:P.text}}>${label}</div>
           <div style=${{color:P.gold,fontWeight:700,fontSize:13,display:"flex",alignItems:"center",gap:4}}>${pts} ${Icon("star",14,P.gold)}</div>
         </div>`)}
       <div style=${{display:"flex",gap:8,marginTop:12}}>
