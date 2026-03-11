@@ -2786,7 +2786,7 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
     <div style=${{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:12,paddingBottom:12}}>
       ${messages.map((m,i) => html`
         <div key=${i} style=${{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start",gap:8,alignItems:"flex-end"}}>
-          ${m.role==="assistant" && html`<div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${Icon("gift",14,"#0A0A18")}</div>`}
+          ${m.role==="assistant" && html`<div key=${"concierge-avatar-"+profile.emoji+(profile.avatar_url||"")} style=${{flexShrink:0}}><${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${28}/></div>`}
           <div style=${{maxWidth:"82%"}}>
             ${m.role==="assistant" ? html`
               <div style=${{background:P.card,color:P.text,borderRadius:"18px 18px 18px 4px",padding:"11px 15px",fontSize:14,lineHeight:1.6,border:`1px solid ${P.border}`}}>
@@ -2801,7 +2801,7 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
           ${m.role==="user" && html`<div style=${{flexShrink:0}} key=${"avatar-"+profile.emoji+(profile.avatar_url||"")}><${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${28}/></div>`}
         </div>`)}
       ${loading && html`<div style=${{display:"flex",gap:8,alignItems:"flex-end"}}>
-        <div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",14,"#0A0A18")}</div>
+        <div style=${{flexShrink:0}}><${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${28}/></div>
         <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:"18px 18px 18px 4px",padding:"11px 15px",color:P.muted,fontSize:14,display:"flex",alignItems:"center",gap:6}}>${Icon("sparkle",14,P.muted)} ${stripEmoji(t("findingGifts"))}</div>
       </div>`}
       <div ref=${bottomRef}/>
