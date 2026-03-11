@@ -949,7 +949,7 @@ function AuthScreen({onAuth}) {
   const resetPassword = async () => {
     if(!email) { setErr("Enter your email above first"); return; }
     setLoading(true); setErr("");
-    const {error} = await sb.auth.resetPasswordForEmail(email, {redirectTo: `${window.location.origin}/`});
+    const {error} = await sb.auth.resetPasswordForEmail(email, {redirectTo: `${window.location.origin}/reset-password.html`});
     setLoading(false);
     if(error) { setErr(error.message); return; }
     setResetSent(true);

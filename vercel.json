@@ -20,6 +20,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/reset-password", "destination": "/reset-password.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/account-deletion", "destination": "/account-deletion.html" },

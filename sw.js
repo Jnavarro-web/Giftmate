@@ -1,9 +1,10 @@
-const CACHE_NAME = "giftmate-v4";
+const CACHE_NAME = "giftmate-v5";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/app.js",
   "/manifest.json",
+  "/reset-password.html",
   "/privacy.html",
   "/terms.html",
   "/account-deletion.html",
