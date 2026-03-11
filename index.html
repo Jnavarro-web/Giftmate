@@ -115,23 +115,16 @@
       }, 4000);
 
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').then(function(reg) {
-          // When a new SW takes over, reload the page to get fresh assets
-          reg.addEventListener('updatefound', function() {
-            var newWorker = reg.installing;
-            if (newWorker) {
-              newWorker.addEventListener('statechange', function() {
-                if (newWorker.state === 'activated') {
-                  window.location.reload();
-                }
-              });
-            }
-          });
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          return Promise.all(registrations.map(function(registration) {
+            return registration.unregister();
+          }));
         }).catch(function(){});
-        // Also reload if controller changes (SW swap mid-session)
-        navigator.serviceWorker.addEventListener('controllerchange', function() {
-          window.location.reload();
-        });
+      }
+      if (window.caches && caches.keys) {
+        caches.keys().then(function(keys) {
+          return Promise.all(keys.map(function(key) { return caches.delete(key); }));
+        }).catch(function(){});
       }
     });
   </script>
