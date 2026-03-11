@@ -4,7 +4,7 @@ const html = htm.bind(React.createElement);
 const SUPABASE_URL = "https://xpvvutfojaqtrybwlnph.supabase.co";
 const SUPABASE_KEY = "sb_publishable_S1FnE9dxWOZCZ77Bm93SSg_ObsDrMVc";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const API = "/api/chat", MODEL = "claude-sonnet-4-20250514";
+const API = "https://giftmate-sigma.vercel.app/api/chat", MODEL = "claude-sonnet-4-20250514";
 const SUPPORT_EMAIL = "support@giftm8.app";
 
 const THEMES = {
