@@ -145,6 +145,16 @@ const TRANSLATIONS = {
     ideasByInterests: "Based on their interests",
     interestsHint: "Add your interests in Profile → Edit Profile so friends get better gift ideas for you.",
     interestsWhy: "Friends use these to get AI gift ideas for you.",
+    questionnaire: "Gift preferences (for better AI ideas)",
+    qBudget: "Typical gift budget",
+    qPreference: "Prefer experiences or physical gifts?",
+    qLifeStage: "Life stage",
+    qBrands: "Favourite brands (comma-separated)",
+    qBrandsPlaceholder: "e.g. Apple, Nike, local artisans",
+    qDietary: "Dietary (for food gifts)",
+    qDietaryPlaceholder: "e.g. vegan, gluten-free, none",
+    qNotes: "Anything else for gift ideas?",
+    qNotesPlaceholder: "e.g. love surprises, prefer sustainable, no alcohol",
     upcomingOccasions: "Upcoming Occasions 🎁",
     searchFriendsHint: "Search for friends to see their upcoming occasions and get AI gift ideas.",
     friendsGiftHint: "Friends will get gift ideas for you!",
@@ -221,6 +231,16 @@ const TRANSLATIONS = {
     ideasByInterests: "Según sus intereses",
     interestsHint: "Añade tus intereses en Perfil → Editar perfil para que tus amigos reciban mejores ideas.",
     interestsWhy: "Tus amigos usan esto para obtener ideas de regalo con IA.",
+    questionnaire: "Preferencias de regalo (para mejores ideas con IA)",
+    qBudget: "Presupuesto típico de regalo",
+    qPreference: "¿Prefieres experiencias o regalos físicos?",
+    qLifeStage: "Etapa de vida",
+    qBrands: "Marcas favoritas (separadas por comas)",
+    qBrandsPlaceholder: "p.ej. Apple, Nike, artesanos locales",
+    qDietary: "Dieta (para regalos de comida)",
+    qDietaryPlaceholder: "p.ej. vegano, sin gluten, ninguna",
+    qNotes: "¿Algo más para ideas de regalo?",
+    qNotesPlaceholder: "p.ej. me encantan las sorpresas, prefiero sostenible, sin alcohol",
     upcomingOccasions: "Próximas Ocasiones 🎁",
     searchFriendsHint: "Busca amigos para ver sus próximas ocasiones y obtener ideas de regalo con IA.",
     friendsGiftHint: "¡Los amigos podrán obtener ideas de regalo para ti!",
@@ -297,6 +317,16 @@ const TRANSLATIONS = {
     ideasByInterests: "Selon leurs centres d'intérêt",
     interestsHint: "Ajoute tes centres d'intérêt dans Profil → Modifier pour de meilleures idées.",
     interestsWhy: "Tes amis les utilisent pour des idées cadeaux IA.",
+    questionnaire: "Préférences cadeaux (pour de meilleures idées IA)",
+    qBudget: "Budget cadeau typique",
+    qPreference: "Préfères-tu expériences ou cadeaux physiques ?",
+    qLifeStage: "Étape de vie",
+    qBrands: "Marques préférées (séparées par des virgules)",
+    qBrandsPlaceholder: "ex. Apple, Nike, artisans locaux",
+    qDietary: "Régime (pour cadeaux alimentaires)",
+    qDietaryPlaceholder: "ex. végan, sans gluten, aucune",
+    qNotes: "Autre chose pour les idées cadeaux ?",
+    qNotesPlaceholder: "ex. j'adore les surprises, préfère durable, pas d'alcool",
     upcomingOccasions: "Occasions à venir 🎁",
     searchFriendsHint: "Recherchez des amis pour voir leurs prochaines occasions et obtenir des idées cadeaux.",
     friendsGiftHint: "Vos amis pourront trouver des idées cadeaux pour vous !",
@@ -372,6 +402,16 @@ const TRANSLATIONS = {
     ideasByInterests: "Basierend auf ihren Interessen",
     interestsHint: "Füge Interessen unter Profil → Bearbeiten hinzu für bessere Ideen.",
     interestsWhy: "Freunde nutzen diese für KI-Geschenkideen.",
+    questionnaire: "Geschenkpräferenzen (für bessere KI-Ideen)",
+    qBudget: "Typisches Geschenkbudget",
+    qPreference: "Erlebnisse oder physische Geschenke?",
+    qLifeStage: "Lebensphase",
+    qBrands: "Lieblingsmarken (kommagetrennt)",
+    qBrandsPlaceholder: "z.B. Apple, Nike, lokale Handwerker",
+    qDietary: "Ernährung (für Essensgeschenke)",
+    qDietaryPlaceholder: "z.B. vegan, glutenfrei, keine",
+    qNotes: "Sonstiges für Geschenkideen?",
+    qNotesPlaceholder: "z.B. liebe Überraschungen, nachhaltig, kein Alkohol",
     upcomingOccasions: "Bevorstehende Anlässe 🎁",
     searchFriendsHint: "Suche nach Freunden, um ihre bevorstehenden Anlässe zu sehen und KI-Geschenkideen zu erhalten.",
     friendsGiftHint: "Freunde können Geschenkideen für dich bekommen!",
@@ -448,6 +488,16 @@ const TRANSLATIONS = {
     ideasByInterests: "In base ai loro interessi",
     interestsHint: "Aggiungi i tuoi interessi in Profilo → Modifica per idee migliori.",
     interestsWhy: "Gli amici li usano per idee regalo con IA.",
+    questionnaire: "Preferenze regalo (per idee IA migliori)",
+    qBudget: "Budget regalo tipico",
+    qPreference: "Preferisci esperienze o regali fisici?",
+    qLifeStage: "Fase di vita",
+    qBrands: "Marchi preferiti (separati da virgola)",
+    qBrandsPlaceholder: "es. Apple, Nike, artigiani locali",
+    qDietary: "Dieta (per regali alimentari)",
+    qDietaryPlaceholder: "es. vegano, senza glutine, nessuna",
+    qNotes: "Altro per idee regalo?",
+    qNotesPlaceholder: "es. amo le sorprese, preferisco sostenibile, no alcol",
     upcomingOccasions: "Occasioni in arrivo 🎁",
     searchFriendsHint: "Cerca amici per vedere le loro prossime occasioni e ottenere idee regalo con IA.",
     friendsGiftHint: "Gli amici potranno trovare idee regalo per te!",
@@ -523,6 +573,16 @@ const TRANSLATIONS = {
     ideasByInterests: "Baseado nos interesses deles",
     interestsHint: "Adicione seus interesses em Perfil → Editar para melhores ideias.",
     interestsWhy: "Amigos usam para ideias de presente com IA.",
+    questionnaire: "Preferências de presente (para melhores ideias com IA)",
+    qBudget: "Orçamento típico de presente",
+    qPreference: "Prefere experiências ou presentes físicos?",
+    qLifeStage: "Fase da vida",
+    qBrands: "Marcas favoritas (separadas por vírgula)",
+    qBrandsPlaceholder: "ex. Apple, Nike, artesãos locais",
+    qDietary: "Dieta (para presentes de comida)",
+    qDietaryPlaceholder: "ex. vegano, sem glúten, nenhuma",
+    qNotes: "Algo mais para ideias de presente?",
+    qNotesPlaceholder: "ex. amo surpresas, prefiro sustentável, sem álcool",
     upcomingOccasions: "Próximas Ocasiões 🎁",
     searchFriendsHint: "Busque amigos para ver suas próximas ocasiões e obter ideias de presente com IA.",
     friendsGiftHint: "Amigos poderão encontrar ideias de presente para você!",
@@ -787,6 +847,9 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
   const [selectedTheme, setSelectedTheme] = useState(profile.theme||_theme||"midnight");
   const [isPrivate, setIsPrivate] = useState(profile.is_private||false);
   const [loading, setLoading] = useState(false);
+  const [questionnaire, setQuestionnaire] = useState(() => {
+    try { return profile.questionnaire_answers && typeof profile.questionnaire_answers==="object" ? profile.questionnaire_answers : (typeof profile.questionnaire_answers==="string" ? JSON.parse(profile.questionnaire_answers||"{}") : {}); } catch(e){ return {}; }
+  });
   const toggleI = i => setInterests(p => p.includes(i)?p.filter(x=>x!==i):[...p,i]);
 
   const save = async () => {
@@ -794,8 +857,8 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
     setLoading(true);
     try {
       const updates = {display_name:name, username:username.toLowerCase().replace(/[^a-z0-9_]/g,""), emoji, interests, birthday:birthday||null, avatar_url:avatarUrl||null, city:city||null, country:country||null, language, is_private:isPrivate};
-      // Save theme separately in case migration_theme.sql hasn't been run yet
       const {error} = await sb.from("profiles").update(updates).eq("id", profile.id);
+      await sb.from("profiles").update({questionnaire_answers:questionnaire}).eq("id", profile.id).then(()=>{}).catch(()=>{});
       if(error) { console.error("Save error:", error); setLoading(false); return; }
       await sb.from("profiles").update({theme:selectedTheme}).eq("id", profile.id).then(()=>{}).catch(()=>{});
       if(profile.display_name !== name || (profile.birthday||null) !== (birthday||null)) {
@@ -809,9 +872,11 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
       }
       setLang(language);
       if(onLangChange) onLangChange(language);
-      const fullUpdates = {...updates, theme:selectedTheme};
+      const fullUpdates = {...updates, theme:selectedTheme, questionnaire_answers:questionnaire};
       if(onThemeChange && selectedTheme !== (profile.theme||"midnight")) onThemeChange(selectedTheme);
-      onSave({...profile, ...fullUpdates});
+      const p = {...profile, ...fullUpdates};
+      const r = onSave(p);
+      if (r && typeof r.then === "function") await r;
       onClose();
     } catch(e) { console.error("Save failed:", e); }
     setLoading(false);
@@ -900,6 +965,44 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
           <div style=${{fontSize:11,color:P.muted,marginBottom:6}}>${t("interestsWhy")||"Friends use these to get AI gift ideas for you."}</div>
           <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
             ${INTERESTS.map(i => html`<button key=${i} onClick=${()=>toggleI(i)} style=${{background:interests.includes(i)?`${P.gold}33`:"transparent",border:`1px solid ${interests.includes(i)?P.gold:P.border}`,borderRadius:99,padding:"5px 12px",fontSize:12,color:interests.includes(i)?P.goldL:P.muted,cursor:"pointer",fontWeight:interests.includes(i)?700:400}}>${translateInterest(i)}</button>`)}
+          </div>
+        </div>
+
+        <div style=${{marginBottom:20}}>
+          <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:8}}>${Icon("sparkle",12,P.gold)} ${t("questionnaire")||"Gift preferences"}</div>
+          <div style=${{fontSize:11,color:P.muted,marginBottom:10}}>Edit anytime — helps GiftMind recommend better gifts for you</div>
+          <div style=${{marginBottom:10}}>
+            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qBudget")||"Budget"}</div>
+            <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
+              ${["Budget (€15-30)","Medium (€30-80)","Premium (€80-150)","Luxury (€150+)"].map(opt=>
+                html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,budget:opt}))} style=${{background:(questionnaire.budget===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.budget===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.budget===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.budget===opt)?700:400}}>${opt}</button>`)}
+            </div>
+          </div>
+          <div style=${{marginBottom:10}}>
+            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qPreference")||"Preference"}</div>
+            <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
+              ${["Both","Experiences","Physical gifts","Personalised"].map(opt=>
+                html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,preference:opt}))} style=${{background:(questionnaire.preference===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.preference===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.preference===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.preference===opt)?700:400}}>${opt}</button>`)}
+            </div>
+          </div>
+          <div style=${{marginBottom:10}}>
+            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qLifeStage")||"Life stage"}</div>
+            <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
+              ${["Student","Professional","Parent","Homeowner","Retired","Other"].map(opt=>
+                html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,life_stage:opt}))} style=${{background:(questionnaire.life_stage===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.life_stage===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.life_stage===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.life_stage===opt)?700:400}}>${opt}</button>`)}
+            </div>
+          </div>
+          <div style=${{marginBottom:10}}>
+            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qBrands")||"Favourite brands"}</div>
+            <${Inp} value=${questionnaire.brands||""} onChange=${v=>setQuestionnaire(q=>({...q,brands:v}))} placeholder=${t("qBrandsPlaceholder")||"e.g. Apple, Nike"} style=${{marginBottom:0}}/>
+          </div>
+          <div style=${{marginBottom:10}}>
+            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qDietary")||"Dietary"}</div>
+            <${Inp} value=${questionnaire.dietary||""} onChange=${v=>setQuestionnaire(q=>({...q,dietary:v}))} placeholder=${t("qDietaryPlaceholder")||"e.g. vegan, none"} style=${{marginBottom:0}}/>
+          </div>
+          <div style=${{marginBottom:10}}>
+            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qNotes")||"Anything else?"}</div>
+            <${Inp} value=${questionnaire.notes||""} onChange=${v=>setQuestionnaire(q=>({...q,notes:v}))} placeholder=${t("qNotesPlaceholder")||"e.g. love surprises"} style=${{marginBottom:0}}/>
           </div>
         </div>
 
@@ -1505,8 +1608,11 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
   const getGiftIdeas = async occ => {
     setGiftIdeas([]); setGiftLoading(true);
     const city = myProfile?.city||"Madrid";
+    const q = friend.questionnaire_answers || {};
+    const qStr = Object.entries(q).filter(([k,v])=>v&&String(v).trim()).map(([k,v])=>`${k}: ${v}`).join("; ");
+    const pref = qStr ? ` Gift preferences: ${qStr}.` : "";
     try {
-      const data = await callChatApi({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} for their ${occ.type} in ${city}. Interests: ${(friend.interests||[]).join(", ")||"unknown"}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}. Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60 (like Amazon pricing), experiences €25-80 (like GetYourGuide/Viator pricing). Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]});
+      const data = await callChatApi({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} for their ${occ.type} in ${city}. Interests: ${(friend.interests||[]).join(", ")||"unknown"}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}.${pref} Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60 (like Amazon pricing), experiences €25-80 (like GetYourGuide/Viator pricing). Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]});
       const text = (data.content?.[0]?.text||"[]").replace(/```json|```/g,"").trim();
       setGiftIdeas(JSON.parse(text));
     } catch(e) { captureError("friend_gift_ideas", e, {friendId: friend.id, occasion: occ.type}); setToast("Couldn't load ideas — try again"); }
@@ -1517,8 +1623,11 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
     setGiftIdeas([]); setGiftLoading(true);
     const city = myProfile?.city||"Madrid";
     const interests = (friend.interests||[]).join(", ")||"various things";
+    const q = friend.questionnaire_answers || {};
+    const qStr = Object.entries(q).filter(([k,v])=>v&&String(v).trim()).map(([k,v])=>`${k}: ${v}`).join("; ");
+    const pref = qStr ? ` Gift preferences: ${qStr}.` : "";
     try {
-      const data = await callChatApi({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} based on their interests: ${interests}. They live in/near ${city}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}. Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60, experiences €25-80. Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]});
+      const data = await callChatApi({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} based on their interests: ${interests}. They live in/near ${city}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}.${pref} Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60, experiences €25-80. Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]});
       const text = (data.content?.[0]?.text||"[]").replace(/```json|```/g,"").trim();
       setGiftIdeas(JSON.parse(text));
     } catch(e) { captureError("friend_gift_ideas_interests", e, {friendId: friend.id}); setToast("Couldn't load ideas — try again"); }
@@ -1641,7 +1750,7 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
 }
 
 // ── MY PROFILE ──
-function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onThemeChange, following=[], onToggleFollow}) {
+function MyProfile({profile, setProfile, refreshProfile, friendsOccasions=[], onLangChange, onThemeChange, following=[], onToggleFollow}) {
   const [occasions,setOccasions] = useState([]);
   const [wishlist,setWishlist] = useState([]);
   const [giftsReceived,setGiftsReceived] = useState([]);
@@ -1783,7 +1892,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
     ${followModal && html`<${FollowListModal} userId=${profile.id} mode=${followModal} onClose=${()=>setFollowModal(null)} onViewProfile=${u=>{ setFollowModal(null); setViewingUser(u); }} myProfile=${profile} following=${following} onToggleFollow=${onToggleFollow}/>`}
     ${viewingUser && html`<${FriendProfile} friend=${viewingUser} myProfile=${profile} following=${[]} onToggleFollow=${()=>{}} onBack=${()=>setViewingUser(null)}/>`}
     ${!viewingUser && html`<div>
-    ${showEdit && html`<${EditProfileModal} profile=${localProfile} onSave=${p=>{setProfile(p);setLocalProfile(p);}} onLangChange=${onLangChange} onThemeChange=${onThemeChange} onClose=${()=>setShowEdit(false)}/>`}
+    ${showEdit && html`<${EditProfileModal} profile=${localProfile} onSave=${async p=>{setProfile(p);setLocalProfile(p);if(refreshProfile) await refreshProfile();}} onLangChange=${onLangChange} onThemeChange=${onThemeChange} onClose=${()=>setShowEdit(false)}/>`}
     <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:20,padding:20,marginBottom:14,textAlign:"center"}}>
       <div style=${{position:"relative",display:"inline-block",marginBottom:12}}>
         <${Avatar} emoji=${localProfile.emoji} avatarUrl=${localProfile.avatar_url} size=${80}/>
@@ -2586,7 +2695,9 @@ function ConciergeTab({profile}) {
   const name = profile.display_name||profile.username||"there";
   const lang = _lang;
   const langNames = {en:"English",es:"Spanish",fr:"French",de:"German",it:"Italian",pt:"Portuguese"};
-  const SYSTEM = `You are Giftmate, the wittiest, most thoughtful AI gift concierge in the world. The user is ${name}, based in ${city}, with interests: ${(profile.interests||[]).join(", ")||"various things"}.
+  const q = profile.questionnaire_answers || {};
+  const qStr = Object.entries(q).filter(([k,v])=>v&&String(v).trim()).map(([k,v])=>`${k}: ${v}`).join("; ");
+  const SYSTEM = `You are Giftmate, the wittiest, most thoughtful AI gift concierge in the world. The user is ${name}, based in ${city}, with interests: ${(profile.interests||[]).join(", ")||"various things"}.${qStr?" Gift preferences: "+qStr+". Use these to tailor recommendations.":""}
 
 IMPORTANT: You MUST respond entirely in ${langNames[lang]||"English"}. Every word of your response must be in ${langNames[lang]||"English"}.
 
@@ -2687,7 +2798,7 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
                 ${stripAllEmoji(m.content)}
               </div>`}
           </div>
-          ${m.role==="user" && html`<div style=${{flexShrink:0}}><${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${28}/></div>`}
+          ${m.role==="user" && html`<div style=${{flexShrink:0}} key=${"avatar-"+profile.emoji+(profile.avatar_url||"")}><${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${28}/></div>`}
         </div>`)}
       ${loading && html`<div style=${{display:"flex",gap:8,alignItems:"flex-end"}}>
         <div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",14,"#0A0A18")}</div>
@@ -2706,7 +2817,7 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
 }
 
 // ── MAIN APP ──
-function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
+function MainApp({session, profile, setProfile, refreshProfile, onLangChange, onThemeChange}) {
   const [tab,setTab] = useState("home");
   const [viewingFriend,setViewingFriend] = useState(null);
   const [feed,setFeed] = useState([]);
@@ -3003,7 +3114,7 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
         ${tab==="friend" && viewingFriend && html`<${FriendProfile} friend=${viewingFriend} myProfile=${profile} following=${following} pendingRequests=${pendingRequests} onToggleFollow=${toggleFollow} onBack=${()=>setTab("home")}/>`}
         ${tab==="groups" && html`<${GroupsTab} profile=${profile} following=${following} feed=${feed} onGroupUnreadChange=${setGroupUnread}/>`}
         ${tab==="concierge" && html`<${ConciergeTab} profile=${profile}/>`}
-        ${tab==="profile" && html`<${MyProfile} profile=${profile} setProfile=${setProfile} friendsOccasions=${feed.flatMap(f=>f.occasions)} onLangChange=${onLangChange} onThemeChange=${onThemeChange} following=${following} onToggleFollow=${toggleFollow}/>`}
+        ${tab==="profile" && html`<${MyProfile} profile=${profile} setProfile=${setProfile} refreshProfile=${refreshProfile} friendsOccasions=${feed.flatMap(f=>f.occasions)} onLangChange=${onLangChange} onThemeChange=${onThemeChange} following=${following} onToggleFollow=${toggleFollow}/>`}
         ${tab==="stars" && html`<${StarsTab} profile=${profile} setProfile=${setProfile}/>`}
       </div>
 
@@ -3110,7 +3221,8 @@ function Giftmate() {
   if(recoveryMode) return html`<${PasswordRecoveryScreen} onDone=${()=>{ setRecoveryMode(false); clearAuthHash(); if(session) loadProfile(session.user.id); }} onCancel=${()=>{ setRecoveryMode(false); setSession(null); setProfile(null); }}/>`;
   if(!session) return html`<${AuthScreen} onAuth=${handleAuth}/>`;
   if(!profile) return html`<${Onboarding} userId=${session.user.id} onComplete=${()=>loadProfile(session.user.id)}/>`;
-  return html`<${MainApp} key=${lang} session=${session} profile=${profile} setProfile=${setProfile} onLangChange=${changeLang} onThemeChange=${changeTheme}/>`;
+  const refreshProfile = () => session?.user?.id && loadProfile(session.user.id);
+  return html`<${MainApp} key=${lang} session=${session} profile=${profile} setProfile=${setProfile} refreshProfile=${refreshProfile} onLangChange=${changeLang} onThemeChange=${changeTheme}/>`;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(html`<${Giftmate}/>`);
