@@ -41,6 +41,35 @@
 
   <div id="root"></div>
 
+  <script>
+    (function() {
+      try {
+        var searchParams = new URLSearchParams(window.location.search);
+        var hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+        var hashParams = new URLSearchParams(hash);
+        var getParam = function(key) { return searchParams.get(key) || hashParams.get(key); };
+        var isRecoveryUrl =
+          getParam("type") === "recovery" ||
+          !!getParam("code") ||
+          !!getParam("token_hash") ||
+          !!getParam("access_token") ||
+          !!getParam("error_code") ||
+          !!getParam("error_description");
+
+        var isResetPage =
+          window.location.pathname === "/reset-password" ||
+          window.location.pathname === "/reset-password.html";
+
+        if (isRecoveryUrl && !isResetPage) {
+          var target = new URL("/reset-password.html", window.location.origin);
+          if (window.location.search) target.search = window.location.search;
+          if (window.location.hash) target.hash = window.location.hash;
+          window.location.replace(target.toString());
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/htm@3/dist/htm.umd.js"></script>

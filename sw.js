@@ -1,4 +1,4 @@
-const CACHE_NAME = "giftmate-v5";
+const CACHE_NAME = "giftmate-v6";
 const APP_SHELL = [
   "/",
   "/index.html",
