@@ -50,11 +50,18 @@ const Icon = (name, size=20, color="currentColor") => {
     check: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
     thumbsUp: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1z"/><path d="M11 10h6a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-6"/><path d="M11 10V5a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v5"/></svg>`,
     thumbsDown: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 13V5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M13 14H7a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h6"/><path d="M13 14v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-5"/></svg>`,
-    box: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`
+    box: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
+    close: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
   };
   return icons[name] ? html`<span style=${{display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${icons[name]}</span>` : null;
 };
 const stripEmoji = s => (s||"").replace(/^[^\w\s]+/g,"").replace(/\s+[^\w\s]+$/g,"").replace(/\s+/g," ").trim();
+const AVATAR_OPTIONS = [{e:"🎁",i:"gift"},{e:"😊",i:"heart"},{e:"🌟",i:"star"},{e:"🎯",i:"sparkle"},{e:"🦋",i:"flower"},{e:"🌈",i:"wave"},{e:"🎨",i:"sparkle"},{e:"🎵",i:"sparkle"},{e:"🌺",i:"flower"},{e:"🦁",i:"crown"},{e:"🐺",i:"heart"},{e:"🦊",i:"heart"},{e:"🐬",i:"wave"},{e:"🌙",i:"moon"},{e:"⭐",i:"star"},{e:"🔥",i:"sparkle"},{e:"💫",i:"sparkle"},{e:"🎭",i:"heart"}];
+const emojiToIcon = emoji => (AVATAR_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
+const GROUP_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"🍾",i:"sparkle"},{e:"✈️",i:"globe"},{e:"🎸",i:"sparkle"},{e:"⚽",i:"sparkle"},{e:"🐶",i:"heart"},{e:"🌸",i:"flower"},{e:"🎨",i:"sparkle"},{e:"🎭",i:"heart"},{e:"🍕",i:"sparkle"},{e:"☕",i:"sparkle"},{e:"🏖️",i:"wave"},{e:"🎪",i:"sparkle"}];
+const emojiToIconGroup = emoji => (GROUP_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
+const LIST_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎄",i:"gift"},{e:"🌸",i:"flower"},{e:"✈️",i:"globe"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"💼",i:"package"}];
+const emojiToIconList = emoji => (LIST_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 let P = {...THEMES.midnight};
 // Apply saved theme instantly
 try { const saved=localStorage.getItem("giftmate_theme"); if(saved&&THEMES[saved]) setThemeKey(saved); } catch(e) {}
@@ -684,7 +691,7 @@ function Toast({msg, onDone}) {
 }
 
 function Spin() {
-  return html`<div style=${{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:P.bg,color:P.gold,fontSize:18}}>🎁 Loading Giftmate…</div>`;
+  return html`<div style=${{display:"flex",alignItems:"center",justifyContent:"center",gap:8,height:"100vh",background:P.bg,color:P.gold,fontSize:18}}>${Icon("gift",24,P.gold)} Loading Giftmate…</div>`;
 }
 
 function Avatar({emoji, avatarUrl, size=40, style={}}) {
@@ -692,7 +699,7 @@ function Avatar({emoji, avatarUrl, size=40, style={}}) {
   useEffect(() => { setImgError(false); }, [avatarUrl]);
   const showImg = avatarUrl && !imgError;
   if(showImg) return html`<div style=${{width:size,height:size,borderRadius:"50%",overflow:"hidden",flexShrink:0,...style}}><img src=${avatarUrl} onError=${()=>setImgError(true)} style=${{width:"100%",height:"100%",objectFit:"cover"}}/></div>`;
-  return html`<div style=${{width:size,height:size,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:size*0.45,flexShrink:0,fontFamily:"Apple Color Emoji,Segoe UI Emoji,sans-serif",...style}}>${emoji||"🎁"}</div>`;
+  return html`<div style=${{width:size,height:size,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,color:"#1a1a2e",...style}}>${Icon(emojiToIcon(emoji||"🎁"),Math.round(size*0.5),"#1a1a2e")}</div>`;
 }
 
 // ── PHOTO PICKER HELPER ──
@@ -822,8 +829,8 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
           <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:8}}>${t("language")}</div>
           <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
             ${Object.entries(LANGUAGES).map(([code,lang]) => html`
-              <button key=${code} onClick=${()=>setLanguage(code)} style=${{background:language===code?`${P.gold}33`:"transparent",border:`1px solid ${language===code?P.gold:P.border}`,borderRadius:99,padding:"6px 12px",fontSize:13,cursor:"pointer",color:language===code?P.goldL:P.muted,fontWeight:language===code?700:400}}>
-                ${lang.flag} ${lang.name}
+              <button key=${code} onClick=${()=>setLanguage(code)} style=${{background:language===code?`${P.gold}33`:"transparent",border:`1px solid ${language===code?P.gold:P.border}`,borderRadius:99,padding:"6px 12px",fontSize:13,cursor:"pointer",color:language===code?P.goldL:P.muted,fontWeight:language===code?700:400,display:"inline-flex",alignItems:"center",gap:6}}>
+                ${Icon("globe",14,language===code?P.goldL:P.muted)} ${lang.name}
               </button>`)}
           </div>
         </div>
@@ -853,7 +860,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
         <div style=${{marginBottom:14}}>
           <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:8}}>${t("emojiAvatar")}</div>
           <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
-            ${EMOJIS.map(e => html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{fontSize:22,background:emoji===e?`${P.gold}33`:"none",border:`1px solid ${emoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer"}}>${e}</button>`)}
+            ${EMOJIS.map(e => html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{background:emoji===e?`${P.gold}33`:"none",border:`1px solid ${emoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIcon(e),20,P.text)}</button>`)}
           </div>
         </div>
 
@@ -1050,7 +1057,7 @@ function Onboarding({userId, onComplete}) {
 
   const steps = [
     html`<div key="s0">
-      <div style=${{fontSize:26,textAlign:"center",marginBottom:6}}>👋 Welcome!</div>
+      <div style=${{fontSize:26,textAlign:"center",marginBottom:6,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("heart",28,P.gold)} Welcome!</div>
       <div style=${{color:P.muted,textAlign:"center",marginBottom:22,fontSize:14}}>Let's set up your profile</div>
       <div style=${{marginBottom:12}}>
         <div style=${{fontSize:11,color:P.muted,marginBottom:5,fontWeight:700}}>USERNAME</div>
@@ -1066,12 +1073,12 @@ function Onboarding({userId, onComplete}) {
       <div style=${{fontSize:26,textAlign:"center",marginBottom:6}}>Pick your emoji</div>
       <div style=${{color:P.muted,textAlign:"center",marginBottom:18,fontSize:14}}>This will be your avatar</div>
       <div style=${{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:8,marginBottom:14}}>
-        ${EMOJIS.map(e => html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{fontSize:26,padding:"10px 0",borderRadius:12,border:`2px solid ${emoji===e?P.gold:"transparent"}`,background:emoji===e?P.gold+"22":P.bg,cursor:"pointer"}}>${e}</button>`)}
+        ${EMOJIS.map(e => html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{padding:"10px 0",borderRadius:12,border:`2px solid ${emoji===e?P.gold:"transparent"}`,background:emoji===e?P.gold+"22":P.bg,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIcon(e),24,P.text)}</button>`)}
       </div>
-      <div style=${{textAlign:"center",fontSize:52}}>${emoji}</div>
+      <div style=${{textAlign:"center",display:"flex",justifyContent:"center",alignItems:"center"}}>${Icon(emojiToIcon(emoji),48,P.gold)}</div>
     </div>`,
     html`<div key="s2">
-      <div style=${{fontSize:26,textAlign:"center",marginBottom:6}}>🎂 Your birthday</div>
+      <div style=${{fontSize:26,textAlign:"center",marginBottom:6,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("calendar",28,P.gold)} Your birthday</div>
       <div style=${{color:P.muted,textAlign:"center",marginBottom:20,fontSize:14}}>${t("friendsGiftHint")}</div>
       <${Inp} value=${birthday} onChange=${setBirthday} type="date" style=${{textAlign:"center",fontSize:16}}/>
       <div style=${{color:P.muted,fontSize:12,textAlign:"center",marginTop:10}}>You can skip this and add it later</div>
@@ -1088,15 +1095,15 @@ function Onboarding({userId, onComplete}) {
       <div style=${{color:P.muted,textAlign:"center",marginBottom:22,fontSize:13,lineHeight:1.5}}>Allow Giftmate to send you notifications for gift messages, upcoming birthdays and group activity.</div>
       <div style=${{background:P.bg,borderRadius:14,padding:16,marginBottom:12}}>
         <div style=${{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
-          <span style=${{fontSize:24}}>🎁</span>
+          <span style=${{display:"flex",alignItems:"center"}}>${Icon("gift",24,P.gold)}</span>
           <div><div style=${{fontWeight:700,color:P.text,fontSize:14}}>Gift messages</div><div style=${{color:P.muted,fontSize:12}}>Know when someone sends you a gift</div></div>
         </div>
         <div style=${{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
-          <span style=${{fontSize:24}}>🎂</span>
+          <span style=${{display:"flex",alignItems:"center"}}>${Icon("calendar",24,P.gold)}</span>
           <div><div style=${{fontWeight:700,color:P.text,fontSize:14}}>Birthday reminders</div><div style=${{color:P.muted,fontSize:12}}>Never miss a friend's birthday</div></div>
         </div>
         <div style=${{display:"flex",alignItems:"center",gap:12}}>
-          <span style=${{fontSize:24}}>👥</span>
+          <span style=${{display:"flex",alignItems:"center"}}>${Icon("groups",24,P.gold)}</span>
           <div><div style=${{fontWeight:700,color:P.text,fontSize:14}}>Group activity</div><div style=${{color:P.muted,fontSize:12}}>Messages and gift proposals</div></div>
         </div>
       </div>
@@ -1424,7 +1431,7 @@ function FollowListModal({userId, mode, onClose, onViewProfile, myProfile, follo
       <div onClick=${e=>e.stopPropagation()} style=${{background:P.card,borderRadius:"20px 20px 0 0",padding:24,width:"100%",maxWidth:480,maxHeight:"70vh",display:"flex",flexDirection:"column"}}>
         <div style=${{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
           <div style=${{fontWeight:800,fontSize:17,color:P.text}}>${mode==="followers"?t("followers"):t("followingCount")}</div>
-          <button onClick=${onClose} style=${{background:"none",border:"none",color:P.muted,fontSize:20,cursor:"pointer"}}>✕</button>
+          <button onClick=${onClose} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",display:"flex",alignItems:"center"}}>${Icon("close",20,P.muted)}</button>
         </div>
         <div style=${{overflowY:"auto",flex:1}}>
           ${loading ? html`<div style=${{textAlign:"center",padding:30,color:P.muted}}>...</div>` :
@@ -1769,7 +1776,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
         <div key=${o.id} style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:14,padding:16,marginBottom:10}}>
           <select value=${OCCASIONS.includes(editingOcc.type)?editingOcc.type:"custom"} onChange=${e=>{if(e.target.value==="custom"){setEditingOcc(x=>({...x,type:""}))}else{setEditingOcc(x=>({...x,type:e.target.value}))}}} style=${{width:"100%",background:P.bg,border:`1px solid ${P.border}`,borderRadius:8,padding:"10px",color:P.text,fontSize:14,marginBottom:10,boxSizing:"border-box"}}>
             ${OCCASIONS.map((op,i) => html`<option key=${op} value=${op}>${getOccasions()[i]||op}</option>`)}
-            <option value="custom">✏️ ${t("customOccasion").split("…")[0]}…</option>
+            <option value="custom">Custom…</option>
           </select>
           ${!OCCASIONS.includes(editingOcc.type) && html`<input value=${editingOcc.type} onInput=${e=>setEditingOcc(x=>({...x,type:e.target.value}))} placeholder=${t("customOccasion")} style=${{width:"100%",background:P.bg,border:`1px solid ${P.gold}55`,borderRadius:8,padding:"10px",color:P.text,fontSize:14,marginBottom:10,boxSizing:"border-box",outline:"none"}}/>`}
           <div style=${{marginBottom:10}}>
@@ -1793,21 +1800,21 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
       ` : html`
         <div key=${o.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"12px 14px",marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <div style=${{display:"flex",alignItems:"center",gap:10}}>
-            <div style=${{width:12,height:12,borderRadius:"50%",background:o.color||P.gold,flexShrink:0}}/>
+            <div style=${{width:28,height:28,borderRadius:8,background:`${(o.color||P.gold)}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${Icon("gift",14,o.color||P.gold)}</div>
             <div><div style=${{fontWeight:600,color:P.text}}>${translateOccasion(o.type)}</div><div style=${{fontSize:13,color:P.muted}}>${fmtDate(o.date)}</div></div>
           </div>
           <div style=${{display:"flex",gap:6,alignItems:"center"}}>
             <button onClick=${async()=>{const np=!o.is_public;await sb.from("occasions").update({is_public:np}).eq("id",o.id);setOccasions(prev=>prev.map(x=>x.id===o.id?{...x,is_public:np}:x));}} style=${{background:"none",border:`1px solid ${P.border}`,borderRadius:6,padding:"3px 8px",fontSize:10,color:o.is_public?P.teal:P.muted,cursor:"pointer",fontWeight:700,display:"flex",alignItems:"center",gap:4}}>${o.is_public?Icon("globe",10,o.is_public?P.teal:P.muted):Icon("lock",10,o.is_public?P.teal:P.muted)} ${(o.is_public?t("publicLabel"):t("privateLabel")).split(/\s+/).slice(1).join(" ")||(o.is_public?"Public":"Private")}</button>
             <div style=${{color:daysUntil(o.date)<=30?P.gold:P.muted,fontWeight:700,fontSize:13}}>${daysUntil(o.date)}d</div>
             <button onClick=${()=>setEditingOcc({id:o.id,type:o.type,date:o.date,color:o.color||"#F4A438",is_public:o.is_public!==false})} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",display:"flex",alignItems:"center"}}>${Icon("pencil",14,P.muted)}</button>
-            <button onClick=${()=>delOcc(o.id)} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",fontSize:16}}>✕</button>
+            <button onClick=${()=>delOcc(o.id)} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",display:"flex",alignItems:"center"}}>${Icon("close",14,P.muted)}</button>
           </div>
         </div>
       `)}
       ${addingOcc ? html`<div style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:14,padding:16,marginBottom:10}}>
         <select value=${OCCASIONS.includes(newOcc.type)?newOcc.type:"custom"} onChange=${e=>{if(e.target.value==="custom"){setNewOcc(o=>({...o,type:""}))}else{setNewOcc(o=>({...o,type:e.target.value}))}}} style=${{width:"100%",background:P.bg,border:`1px solid ${P.border}`,borderRadius:8,padding:"10px",color:P.text,fontSize:14,marginBottom:10,boxSizing:"border-box"}}>
           ${OCCASIONS.map((o,i) => html`<option key=${o} value=${o}>${getOccasions()[i]||o}</option>`)}
-          <option value="custom">✏️ ${t("customOccasion").split("…")[0]}…</option>
+          <option value="custom">Custom…</option>
         </select>
         ${!OCCASIONS.includes(newOcc.type) && html`<input value=${newOcc.type} onInput=${e=>setNewOcc(o=>({...o,type:e.target.value}))} placeholder=${t("customOccasion")} style=${{width:"100%",background:P.bg,border:`1px solid ${P.gold}55`,borderRadius:8,padding:"10px",color:P.text,fontSize:14,marginBottom:10,boxSizing:"border-box",outline:"none"}}/>`}
         <div style=${{marginBottom:10}}>
@@ -1845,7 +1852,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
       ${showCreateList && html`<div style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:14,padding:14,marginBottom:12}}>
         <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:6}}>${t("listEmoji")}</div>
         <div style=${{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
-          ${LIST_EMOJIS.map(e => html`<button key=${e} onClick=${()=>setNewListEmoji(e)} style=${{fontSize:20,background:newListEmoji===e?`${P.gold}33`:"none",border:`1px solid ${newListEmoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"4px 7px",cursor:"pointer"}}>${e}</button>`)}
+          ${LIST_EMOJIS.map(e => html`<button key=${e} onClick=${()=>setNewListEmoji(e)} style=${{background:newListEmoji===e?`${P.gold}33`:"none",border:`1px solid ${newListEmoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"4px 7px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIconList(e),18,P.text)}</button>`)}
         </div>
         <${Inp} value=${newListName} onChange=${setNewListName} placeholder="e.g. My Birthday 🎂" style=${{marginBottom:8}}/>
         <div style=${{display:"flex",gap:8}}>
@@ -1867,7 +1874,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
           ${w.description&&html`<div style=${{fontSize:13,color:P.muted}}>${w.description}</div>`}
           ${w.list_name&&activeList==="all"&&html`<div style=${{fontSize:11,color:P.gold,marginTop:3,fontWeight:600}}>${w.list_name}</div>`}
         </div>
-        <div style=${{display:"flex",gap:10,alignItems:"center"}}>${w.price&&html`<div style=${{color:P.gold,fontWeight:700}}>€${w.price}</div>`}<button onClick=${()=>delWish(w.id)} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",fontSize:16}}>✕</button></div>
+        <div style=${{display:"flex",gap:10,alignItems:"center"}}>${w.price&&html`<div style=${{color:P.gold,fontWeight:700}}>€${w.price}</div>`}<button onClick=${()=>delWish(w.id)} style=${{background:"none",border:"none",color:P.muted,cursor:"pointer",display:"flex",alignItems:"center"}}>${Icon("close",14,P.muted)}</button></div>
       </div>`)}
 
       ${filteredWish.length===0 && !addingWish && html`<div style=${{color:P.muted,textAlign:"center",padding:20,fontSize:14}}>${t("noListItems")}</div>`}
@@ -2027,7 +2034,7 @@ function GroupsTab({profile, following, feed, groupUnread=0, onGroupUnreadChange
     ${groups.map(g => html`
       <div key=${g.id} onClick=${()=>openGroup(g)} style=${{background:P.card,border:`1px solid ${groupCounts[g.id]>0?P.gold:P.border}`,borderRadius:14,padding:16,marginBottom:10,cursor:"pointer",display:"flex",gap:12,alignItems:"center"}}>
         <div style=${{position:"relative",flexShrink:0}}>
-          <div style=${{width:48,height:48,borderRadius:12,background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",24,"#0A0A18")}</div>
+          <div style=${{width:48,height:48,borderRadius:12,background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIconGroup(g.emoji||"🎁"),24,"#0A0A18")}</div>
           ${groupCounts[g.id]>0 && html`<span style=${{position:"absolute",top:-4,right:-4,background:P.red,color:"#fff",borderRadius:99,fontSize:9,fontWeight:800,minWidth:16,height:16,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}>${groupCounts[g.id]>9?"9+":groupCounts[g.id]}</span>`}
         </div>
         <div style=${{flex:1,minWidth:0}}>
@@ -2091,7 +2098,7 @@ function CreateGroup({profile, feed, following, onCreate, onClose}) {
       <div style=${{marginBottom:14}}>
         <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:6}}>GROUP EMOJI</div>
         <div style=${{display:"flex",gap:8,flexWrap:"wrap"}}>
-          ${GROUP_EMOJIS.map(e=>html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{fontSize:22,background:emoji===e?`${P.gold}33`:"none",border:`1px solid ${emoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer"}}>${e}</button>`)}
+          ${GROUP_EMOJIS.map(e=>html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{background:emoji===e?`${P.gold}33`:"none",border:`1px solid ${emoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIconGroup(e),20,P.text)}</button>`)}
         </div>
       </div>
       <div style=${{marginBottom:12}}>
@@ -2209,9 +2216,9 @@ function GroupChat({group, profile, feed, following, onBack}) {
     <!-- Header -->
     <div style=${{background:P.card,borderRadius:14,padding:"12px 14px",marginBottom:10,display:"flex",gap:10,alignItems:"center"}}>
       <button onClick=${onBack} style=${{background:"none",border:"none",color:P.muted,fontSize:18,cursor:"pointer",padding:0}}>←</button>
-      <div onClick=${()=>isAdmin&&setEditingEmoji(v=>!v)} style=${{width:40,height:40,borderRadius:10,background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,cursor:isAdmin?"pointer":"default",position:"relative",flexShrink:0}}>
-        ${currentEmoji}
-        ${isAdmin && html`<span style=${{position:"absolute",bottom:-2,right:-2,fontSize:8,background:P.card,borderRadius:99,padding:"1px 2px"}}>✏️</span>`}
+      <div onClick=${()=>isAdmin&&setEditingEmoji(v=>!v)} style=${{width:40,height:40,borderRadius:10,background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",cursor:isAdmin?"pointer":"default",position:"relative",flexShrink:0}}>
+        ${Icon(emojiToIconGroup(currentEmoji),22,"#1a1a2e")}
+        ${isAdmin && html`<span style=${{position:"absolute",bottom:-2,right:-2,background:P.card,borderRadius:99,padding:"1px 2px",display:"flex",alignItems:"center"}}>${Icon("pencil",8,P.gold)}</span>`}
       </div>
       <div style=${{flex:1,minWidth:0}}>
         <div style=${{fontWeight:700,fontSize:15,color:P.text}}>${group.name}</div>
@@ -2220,7 +2227,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
       <button onClick=${()=>setShowProposalForm(true)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"6px 10px",fontSize:11,fontWeight:700,cursor:"pointer"}}>+ Propose</button>
     </div>
     ${editingEmoji && html`<div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:12,marginBottom:10,display:"flex",flexWrap:"wrap",gap:6}}>
-      ${GROUP_EMOJIS.map(e=>html`<button key=${e} onClick=${()=>changeEmoji(e)} style=${{fontSize:22,background:currentEmoji===e?`${P.gold}33`:"none",border:`1px solid ${currentEmoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer"}}>${e}</button>`)}
+      ${GROUP_EMOJIS.map(e=>html`<button key=${e} onClick=${()=>changeEmoji(e)} style=${{background:currentEmoji===e?`${P.gold}33`:"none",border:`1px solid ${currentEmoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIconGroup(e),20,P.text)}</button>`)}
     </div>`}
 
     <!-- Proposals bar -->
@@ -2860,7 +2867,7 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
 
       <div style=${{padding:"16px 16px 0"}}>
         ${tab==="home" && (feedLoading
-          ? html`<div style=${{textAlign:"center",padding:40,color:P.muted}}>Loading feed… 🎁</div>`
+          ? html`<div style=${{textAlign:"center",padding:40,color:P.muted,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("gift",20,P.muted)} Loading feed…</div>`
           : feed.length===0
             ? html`<div style=${{textAlign:"center",padding:40}}>
                 <div style=${{marginBottom:12}}>${Icon("groups",52,P.gold)}</div>
@@ -2881,12 +2888,18 @@ function MainApp({session, profile, setProfile, onLangChange, onThemeChange}) {
                       <button onClick=${()=>viewFriend(fr)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"6px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}}>${t("viewProfile")} →</button>
                     </div>
                     ${fr.birthday && html`<div style=${{background:P.bg,borderRadius:10,padding:"9px 12px",marginBottom:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                      <div><div style=${{fontSize:13,fontWeight:600,color:P.text}}>${t("birthdayLabel")}</div><div style=${{fontSize:12,color:P.muted}}>${fmtDate(fr.birthday)}</div></div>
+                      <div style=${{display:"flex",alignItems:"center",gap:8}}>
+                        <div style=${{width:24,height:24,borderRadius:6,background:`${P.gold}22`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",12,P.gold)}</div>
+                        <div><div style=${{fontSize:13,fontWeight:600,color:P.text}}>${stripEmoji(t("birthdayLabel"))}</div><div style=${{fontSize:12,color:P.muted}}>${fmtDate(fr.birthday)}</div></div>
+                      </div>
                       <div style=${{fontSize:12,fontWeight:700,color:daysUntil(fr.birthday)<=30?P.gold:P.muted}}>${daysUntil(fr.birthday)}d</div>
                     </div>`}
                     ${occs.slice(0,2).map(o => { const d=daysUntil(o.date); return html`
                       <div key=${o.id} style=${{background:P.bg,borderRadius:10,padding:"9px 12px",marginBottom:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                        <div><div style=${{fontSize:13,fontWeight:600,color:P.text}}>${translateOccasion(o.type)}</div><div style=${{fontSize:12,color:P.muted}}>${fmtDate(o.date)}</div></div>
+                        <div style=${{display:"flex",alignItems:"center",gap:8}}>
+                          <div style=${{width:24,height:24,borderRadius:6,background:`${P.gold}22`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",12,P.gold)}</div>
+                          <div><div style=${{fontSize:13,fontWeight:600,color:P.text}}>${translateOccasion(o.type)}</div><div style=${{fontSize:12,color:P.muted}}>${fmtDate(o.date)}</div></div>
+                        </div>
                         <div style=${{fontSize:12,fontWeight:700,color:d<=7?P.red:d<=30?P.gold:P.muted}}>${d===0?t("todayLabel"):d===1?t("tomorrowLabel"):`${d}${t("daysLabel")}`}</div>
                       </div>`; })}
                   </div>`)}
