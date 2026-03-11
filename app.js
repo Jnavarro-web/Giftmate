@@ -1270,7 +1270,7 @@ function CalendarView({occasions, friendsOccasions, onExport}) {
         <span><span style=${{color:P.gold}}>●</span> ${t("yours")}</span>
         <span><span style=${{color:P.teal}}>●</span> ${t("friends")}</span>
       </div>
-      <button onClick=${exportICS} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"5px 10px",fontSize:11,fontWeight:700,cursor:"pointer"}}>${t("exportToPhone")}</button>
+      <button onClick=${exportICS} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"5px 10px",fontSize:11,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("calendar",14,P.gold)} ${stripEmoji(t("exportToPhone"))}</button>
     </div>
   </div>`;
 }
@@ -2498,7 +2498,9 @@ function StarsTab({profile, setProfile}) {
 // ── CONCIERGE TAB ──
 function renderBold(text) {
   // Collapse multiple blank lines into one, trim leading/trailing
-  const cleaned = text.replace(/\n{3,}/g, '\n\n').trim();
+  let cleaned = text.replace(/\n{3,}/g, '\n\n').trim();
+  // Ensure bullet points (• or -) each get their own line when run together
+  cleaned = cleaned.replace(/([^\n])([•\-] )/g, '$1\n$2');
   return cleaned.split('\n').map((line, li, arr) => {
     const parts = line.split(/\*\*(.+?)\*\*/g);
     const rendered = parts.map((p,i) => i%2===1 ? html`<strong key=${i}>${p}</strong>` : p);
@@ -2631,6 +2633,7 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
                 ${stripAllEmoji(m.content)}
               </div>`}
           </div>
+          ${m.role==="user" && html`<div style=${{flexShrink:0}}><${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${28}/></div>`}
         </div>`)}
       ${loading && html`<div style=${{display:"flex",gap:8,alignItems:"flex-end"}}>
         <div style=${{width:28,height:28,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",14,"#0A0A18")}</div>
