@@ -514,18 +514,30 @@ const requestAccountDeletion = email => {
   const body = encodeURIComponent(`Please delete my Giftmate account.\n\nEmail: ${email || ""}\nUsername: \nReason (optional): `);
   window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
 };
-const isRecoveryFlow = () => {
+const getAuthUrlParams = () => {
+  const searchParams = new URLSearchParams(window.location.search);
   const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
-  const params = new URLSearchParams(hash);
+  const hashParams = new URLSearchParams(hash);
+  const merged = new URLSearchParams(searchParams.toString());
+  for(const [key, value] of hashParams.entries()) merged.set(key, value);
+  return merged;
+};
+const isRecoveryFlow = () => {
+  const params = getAuthUrlParams();
   return params.get("type") === "recovery";
 };
 const hasRecoveryTokens = () => {
-  const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
-  const params = new URLSearchParams(hash);
-  return Boolean(params.get("access_token") && params.get("refresh_token"));
+  const params = getAuthUrlParams();
+  return Boolean(
+    (params.get("access_token") && params.get("refresh_token")) ||
+    params.get("code")
+  );
 };
 const clearAuthHash = () => {
-  if(window.location.hash) window.history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+  const cleanUrl = `${window.location.pathname}`;
+  if(window.location.hash || window.location.search) {
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
 };
 const callChatApi = async payload => {
   const {data:{session}} = await sb.auth.getSession();
