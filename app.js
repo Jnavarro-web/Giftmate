@@ -58,9 +58,12 @@ const Icon = (name, size=20, color="currentColor") => {
 };
 const stripEmoji = s => (s||"").replace(/^[^\w\s]+/g,"").replace(/\s+[^\w\s]+$/g,"").replace(/\s+/g," ").trim();
 const stripAllEmoji = s => (s||"").replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F1E0}-\u{1F1FF}]/gu,"").replace(/\s{2,}/g," ").trim();
-const AVATAR_OPTIONS = [{e:"🎁",i:"gift"},{e:"😊",i:"heart"},{e:"🌟",i:"star"},{e:"🎯",i:"trophy"},{e:"🦋",i:"flower"},{e:"🌈",i:"wave"},{e:"🎨",i:"package"},{e:"🎵",i:"share"},{e:"🌺",i:"leaf"},{e:"🦁",i:"crown"},{e:"🐺",i:"box"},{e:"🦊",i:"sparkle"},{e:"🐬",i:"globe"},{e:"🌙",i:"moon"},{e:"⭐",i:"star"},{e:"🔥",i:"thumbsUp"},{e:"💫",i:"sparkle"},{e:"🎭",i:"camera"}];
+const AVATAR_OPTIONS = [{e:"🎁",i:"gift"},{e:"😊",i:"heart"},{e:"🌟",i:"star"},{e:"🎯",i:"trophy"},{e:"🦋",i:"flower"},{e:"🌈",i:"wave"},{e:"🎨",i:"package"},{e:"🎵",i:"share"},{e:"🌺",i:"leaf"},{e:"🦁",i:"crown"},{e:"🐺",i:"box"},{e:"🦊",i:"sparkle"},{e:"🐬",i:"globe"},{e:"🌙",i:"moon"},{e:"🔥",i:"thumbsUp"},{e:"🎭",i:"camera"}];
 const emojiToIcon = emoji => (AVATAR_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
-const GROUP_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"🍾",i:"sparkle"},{e:"✈️",i:"globe"},{e:"🎸",i:"sparkle"},{e:"⚽",i:"sparkle"},{e:"🐶",i:"heart"},{e:"🌸",i:"flower"},{e:"🎨",i:"sparkle"},{e:"🎭",i:"heart"},{e:"🍕",i:"sparkle"},{e:"☕",i:"sparkle"},{e:"🏖️",i:"wave"},{e:"🎪",i:"sparkle"}];
+// Unique icon names for pickers (no duplicates); map icon->emoji for saving to DB
+const GROUP_ICONS = ["gift","calendar","heart","star","sparkle","globe","flower","wave","package","trophy"];
+const iconToEmojiGroup = {gift:"🎁",calendar:"🎂",heart:"❤️",star:"🌟",sparkle:"🎉",globe:"✈️",flower:"🌸",wave:"🏖️",package:"💼",trophy:"🎯"};
+const GROUP_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"🍾",i:"sparkle"},{e:"✈️",i:"globe"},{e:"🎸",i:"sparkle"},{e:"⚽",i:"sparkle"},{e:"🐶",i:"heart"},{e:"🌸",i:"flower"},{e:"🎨",i:"sparkle"},{e:"🎭",i:"heart"},{e:"🍕",i:"sparkle"},{e:"☕",i:"sparkle"},{e:"🏖️",i:"wave"},{e:"🎪",i:"sparkle"},{e:"💼",i:"package"},{e:"🎯",i:"trophy"}];
 const emojiToIconGroup = emoji => (GROUP_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 const LIST_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎄",i:"gift"},{e:"🌸",i:"flower"},{e:"✈️",i:"globe"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"💼",i:"package"}];
 const emojiToIconList = emoji => (LIST_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
@@ -134,13 +137,14 @@ const TRANSLATIONS = {
     bookBtn: "Book →", buyBtn: "Buy →", nightlifeBtn: "🎉 Book", hotelBtn: "🏨 Book",
     giftIdeasFor: "For", findingGifts: "✨ Finding perfect gifts…",
     getAIIdeas: "✨ Get AI Gift Ideas",
+    ideasByInterests: "Based on their interests",
     upcomingOccasions: "Upcoming Occasions 🎁",
     searchFriendsHint: "Search for friends to see their upcoming occasions and get AI gift ideas.",
     friendsGiftHint: "Friends will get gift ideas for you!",
     secOccasions: "🗓️ Occasions", secWishlist: "🎁 Wishlist", secReceived: "🎀 Received", secInbox: "🎁 Inbox",
     noOccasions: "No occasions added yet", wishlistEmpty: "Wishlist is empty",
     noGiftsRecorded: "No gifts recorded yet", noSentMessages: "You haven't sent any gift messages yet!",
-    fromWhom: "From", iGiftedThem: "🎁 I gifted them!",
+    fromWhom: "From", iGiftedThem: "🎁 I gifted them!", markBought: "Mark as bought",
     sendGiftTitle: "Tell {name} you gifted them!", sendGiftMsg: "Send Gift Message 🎁", sending: "Sending…",
     colour: "COLOUR",
     welcomeMsg: "👋 Welcome!", setupProfile: "Let's set up your profile",
@@ -207,13 +211,14 @@ const TRANSLATIONS = {
     bookBtn: "Reservar →", buyBtn: "Comprar →", nightlifeBtn: "🎉 Reservar", hotelBtn: "🏨 Reservar",
     giftIdeasFor: "Para", findingGifts: "✨ Buscando regalos perfectos…",
     getAIIdeas: "✨ Ideas de Regalo con IA",
+    ideasByInterests: "Según sus intereses",
     upcomingOccasions: "Próximas Ocasiones 🎁",
     searchFriendsHint: "Busca amigos para ver sus próximas ocasiones y obtener ideas de regalo con IA.",
     friendsGiftHint: "¡Los amigos podrán obtener ideas de regalo para ti!",
     secOccasions: "🗓️ Ocasiones", secWishlist: "🎁 Lista", secReceived: "🎀 Recibidos", secInbox: "🎁 Buzón",
     noOccasions: "Sin ocasiones añadidas", wishlistEmpty: "Lista vacía",
     noGiftsRecorded: "Sin regalos registrados", noSentMessages: "¡Aún no has enviado ningún mensaje de regalo!",
-    fromWhom: "De", iGiftedThem: "🎁 ¡Les hice un regalo!",
+    fromWhom: "De", iGiftedThem: "🎁 ¡Les hice un regalo!", markBought: "Marcar como comprado",
     sendGiftTitle: "¡Cuéntale a {name} que le regalaste algo!", sendGiftMsg: "Enviar mensaje de regalo 🎁", sending: "Enviando…",
     colour: "COLOR",
     welcomeMsg: "👋 ¡Bienvenido!", setupProfile: "Vamos a configurar tu perfil",
@@ -280,13 +285,14 @@ const TRANSLATIONS = {
     bookBtn: "Réserver →", buyBtn: "Acheter →", nightlifeBtn: "🎉 Réserver", hotelBtn: "🏨 Réserver",
     giftIdeasFor: "Pour", findingGifts: "✨ Recherche des cadeaux parfaits…",
     getAIIdeas: "✨ Idées cadeaux par IA",
+    ideasByInterests: "Selon leurs centres d'intérêt",
     upcomingOccasions: "Occasions à venir 🎁",
     searchFriendsHint: "Recherchez des amis pour voir leurs prochaines occasions et obtenir des idées cadeaux.",
     friendsGiftHint: "Vos amis pourront trouver des idées cadeaux pour vous !",
     secOccasions: "🗓️ Occasions", secWishlist: "🎁 Liste", secReceived: "🎀 Reçus", secInbox: "🎁 Boîte",
     noOccasions: "Aucune occasion ajoutée", wishlistEmpty: "Liste vide",
     noGiftsRecorded: "Aucun cadeau enregistré", noSentMessages: "Vous n'avez encore envoyé aucun message cadeau !",
-    fromWhom: "De", iGiftedThem: "🎁 Je leur ai offert !",
+    fromWhom: "De", iGiftedThem: "🎁 Je leur ai offert !", markBought: "Marquer comme acheté",
     sendGiftTitle: "Dites à {name} que vous lui avez offert !", sendGiftMsg: "Envoyer un message cadeau 🎁", sending: "Envoi…",
     colour: "COULEUR",
     welcomeMsg: "👋 Bienvenue !", setupProfile: "Configurons votre profil",
@@ -352,13 +358,14 @@ const TRANSLATIONS = {
     bookBtn: "Buchen →", buyBtn: "Kaufen →", nightlifeBtn: "🎉 Buchen", hotelBtn: "🏨 Buchen",
     giftIdeasFor: "Für", findingGifts: "✨ Perfekte Geschenke werden gesucht…",
     getAIIdeas: "✨ KI-Geschenkideen",
+    ideasByInterests: "Basierend auf ihren Interessen",
     upcomingOccasions: "Bevorstehende Anlässe 🎁",
     searchFriendsHint: "Suche nach Freunden, um ihre bevorstehenden Anlässe zu sehen und KI-Geschenkideen zu erhalten.",
     friendsGiftHint: "Freunde können Geschenkideen für dich bekommen!",
     secOccasions: "🗓️ Anlässe", secWishlist: "🎁 Wunschliste", secReceived: "🎀 Erhalten", secInbox: "🎁 Posteingang",
     noOccasions: "Noch keine Anlässe", wishlistEmpty: "Wunschliste leer",
     noGiftsRecorded: "Noch keine Geschenke", noSentMessages: "Du hast noch keine Geschenknachrichten gesendet!",
-    fromWhom: "Von", iGiftedThem: "🎁 Ich hab ihnen was geschenkt!",
+    fromWhom: "Von", iGiftedThem: "🎁 Ich hab ihnen was geschenkt!", markBought: "Als gekauft markieren",
     sendGiftTitle: "Sag {name}, dass du ihnen etwas geschenkt hast!", sendGiftMsg: "Geschenknachricht senden 🎁", sending: "Senden…",
     colour: "FARBE",
     welcomeMsg: "👋 Willkommen!", setupProfile: "Lass uns dein Profil einrichten",
@@ -425,13 +432,14 @@ const TRANSLATIONS = {
     bookBtn: "Prenota →", buyBtn: "Acquista →", nightlifeBtn: "🎉 Prenota", hotelBtn: "🏨 Prenota",
     giftIdeasFor: "Per", findingGifts: "✨ Ricerca regali perfetti…",
     getAIIdeas: "✨ Idee regalo con IA",
+    ideasByInterests: "In base ai loro interessi",
     upcomingOccasions: "Occasioni in arrivo 🎁",
     searchFriendsHint: "Cerca amici per vedere le loro prossime occasioni e ottenere idee regalo con IA.",
     friendsGiftHint: "Gli amici potranno trovare idee regalo per te!",
     secOccasions: "🗓️ Occasioni", secWishlist: "🎁 Lista", secReceived: "🎀 Ricevuti", secInbox: "🎁 Posta",
     noOccasions: "Nessuna occasione aggiunta", wishlistEmpty: "Lista desideri vuota",
     noGiftsRecorded: "Nessun regalo registrato", noSentMessages: "Non hai ancora inviato messaggi regalo!",
-    fromWhom: "Da", iGiftedThem: "🎁 Ho fatto loro un regalo!",
+    fromWhom: "Da", iGiftedThem: "🎁 Ho fatto loro un regalo!", markBought: "Segna come acquistato",
     sendGiftTitle: "Dì a {name} che hai fatto loro un regalo!", sendGiftMsg: "Invia messaggio regalo 🎁", sending: "Invio…",
     colour: "COLORE",
     welcomeMsg: "👋 Benvenuto!", setupProfile: "Configuriamo il tuo profilo",
@@ -497,13 +505,14 @@ const TRANSLATIONS = {
     bookBtn: "Reservar →", buyBtn: "Comprar →", nightlifeBtn: "🎉 Reservar", hotelBtn: "🏨 Reservar",
     giftIdeasFor: "Para", findingGifts: "✨ Encontrando presentes perfeitos…",
     getAIIdeas: "✨ Ideias de presente com IA",
+    ideasByInterests: "Baseado nos interesses deles",
     upcomingOccasions: "Próximas Ocasiões 🎁",
     searchFriendsHint: "Busque amigos para ver suas próximas ocasiões e obter ideias de presente com IA.",
     friendsGiftHint: "Amigos poderão encontrar ideias de presente para você!",
     secOccasions: "🗓️ Ocasiões", secWishlist: "🎁 Lista", secReceived: "🎀 Recebidos", secInbox: "🎁 Caixa",
     noOccasions: "Nenhuma ocasião adicionada", wishlistEmpty: "Lista de desejos vazia",
     noGiftsRecorded: "Nenhum presente registrado", noSentMessages: "Você ainda não enviou nenhuma mensagem de presente!",
-    fromWhom: "De", iGiftedThem: "🎁 Eu dei um presente!",
+    fromWhom: "De", iGiftedThem: "🎁 Eu dei um presente!", markBought: "Marcar como comprado",
     sendGiftTitle: "Diga a {name} que você deu um presente!", sendGiftMsg: "Enviar mensagem de presente 🎁", sending: "Enviando…",
     colour: "COR",
     welcomeMsg: "👋 Bem-vindo!", setupProfile: "Vamos configurar seu perfil",
@@ -647,7 +656,9 @@ const INTEREST_TRANSLATIONS={
 const getInterests = () => INTEREST_TRANSLATIONS[_lang] || INTEREST_TRANSLATIONS.en;
 const translateInterest = key => { const i = INTEREST_KEYS.indexOf(key); return i>=0 ? (getInterests()[i]||key) : key; };
 const INTERESTS = INTEREST_KEYS;
-const EMOJIS=["🎁","😊","🌟","🎯","🦋","🌈","🎨","🎵","🌺","🦁","🐺","🦊","🐬","🌙","⭐","🔥","💫","🎭"];
+// Unique avatar icons (no duplicates) - each maps to one emoji for DB storage
+const AVATAR_ICONS = ["gift","heart","star","trophy","flower","wave","package","share","leaf","crown","box","sparkle","globe","moon","thumbsUp","camera"];
+const iconToEmoji = {gift:"🎁",heart:"😊",star:"🌟",trophy:"🎯",flower:"🦋",wave:"🌈",package:"🎨",share:"🎵",leaf:"🌺",crown:"🦁",box:"🐺",sparkle:"🦊",globe:"🐬",moon:"🌙",thumbsUp:"🔥",camera:"🎭"};
 const OCCASION_KEYS=["Birthday","Anniversary","Christmas","Valentine's Day","Mother's Day","Father's Day","Graduation","Wedding","Baby Shower","Housewarming","Retirement","Other"];
 const OCCASION_TRANSLATIONS = {
   en: ["Birthday","Anniversary","Christmas","Valentine's Day","Mother's Day","Father's Day","Graduation","Wedding","Baby Shower","Housewarming","Retirement","Other"],
@@ -863,7 +874,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
         <div style=${{marginBottom:14}}>
           <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:8}}>${t("emojiAvatar")}</div>
           <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
-            ${EMOJIS.map(e => html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{background:emoji===e?`${P.gold}33`:"none",border:`1px solid ${emoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIcon(e),20,P.text)}</button>`)}
+            ${AVATAR_ICONS.map(icon => html`<button key=${icon} onClick=${()=>setEmoji(iconToEmoji[icon]||"🎁")} style=${{background:emojiToIcon(emoji)===icon?`${P.gold}33`:"none",border:`1px solid ${emojiToIcon(emoji)===icon?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(icon,20,P.text)}</button>`)}
           </div>
         </div>
 
@@ -1076,7 +1087,7 @@ function Onboarding({userId, onComplete}) {
       <div style=${{fontSize:26,textAlign:"center",marginBottom:6,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("star",28,P.gold)} Pick your icon</div>
       <div style=${{color:P.muted,textAlign:"center",marginBottom:18,fontSize:14}}>This will be your avatar</div>
       <div style=${{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:8,marginBottom:14}}>
-        ${EMOJIS.map(e => html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{padding:"10px 0",borderRadius:12,border:`2px solid ${emoji===e?P.gold:"transparent"}`,background:emoji===e?P.gold+"22":P.bg,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIcon(e),24,P.text)}</button>`)}
+        ${AVATAR_ICONS.map(icon => html`<button key=${icon} onClick=${()=>setEmoji(iconToEmoji[icon]||"🎁")} style=${{padding:"10px 0",borderRadius:12,border:`2px solid ${emojiToIcon(emoji)===icon?P.gold:"transparent"}`,background:emojiToIcon(emoji)===icon?P.gold+"22":P.bg,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon(icon,24,P.text)}</button>`)}
       </div>
       <div style=${{textAlign:"center",display:"flex",justifyContent:"center",alignItems:"center"}}>${Icon(emojiToIcon(emoji),48,P.gold)}</div>
     </div>`,
@@ -1484,6 +1495,18 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
     setGiftLoading(false);
   };
 
+  const getGiftIdeasByInterests = async () => {
+    setGiftIdeas([]); setGiftLoading(true);
+    const city = myProfile?.city||"Madrid";
+    const interests = (friend.interests||[]).join(", ")||"various things";
+    try {
+      const data = await callChatApi({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} based on their interests: ${interests}. They live in/near ${city}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}. Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60, experiences €25-80. Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]});
+      const text = (data.content?.[0]?.text||"[]").replace(/```json|```/g,"").trim();
+      setGiftIdeas(JSON.parse(text));
+    } catch(e) { captureError("friend_gift_ideas_interests", e, {friendId: friend.id}); setToast("Couldn't load ideas — try again"); }
+    setGiftLoading(false);
+  };
+
   const [showSendGift, setShowSendGift] = useState(false);
   const [localToast, setLocalToast] = useState(null);
   const [followCounts, setFollowCounts] = useState({followers:0, following:0});
@@ -1525,8 +1548,8 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
         <span style=${{color:tier.color,fontWeight:700,fontSize:12}}>${tier.name}</span>
         <span style=${{color:P.faint,fontSize:11,display:"inline-flex",alignItems:"center",gap:2}}>· ${friend.stars||0} ${Icon("star",10,P.faint)}</span>
       </div>
-      ${friend.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:6,display:"flex",alignItems:"center",gap:6}}>${Icon("calendar",14,P.gold)} ${fmtDate(friend.birthday)} · ${t("inDays")} ${daysUntil(friend.birthday)} ${t("daysWord")}</div>`}
-      ${friend.birthday && html`<button onClick=${addBirthdayToCalendar} style=${{background:`${P.gold}11`,border:`1px solid ${P.gold}33`,color:P.goldL,borderRadius:8,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",marginBottom:10,display:"inline-flex",alignItems:"center",gap:6}}>${Icon("calendar",12,P.gold)} ${stripEmoji(t("addToCalendar"))}</button>`}
+      ${friend.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:6,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>${Icon("calendar",14,P.gold)} ${fmtDate(friend.birthday)} · ${t("inDays")} ${daysUntil(friend.birthday)} ${t("daysWord")}</div>`}
+      ${friend.birthday && html`<div style=${{display:"flex",justifyContent:"center",marginBottom:10}}><button onClick=${addBirthdayToCalendar} style=${{background:`${P.gold}11`,border:`1px solid ${P.gold}33`,color:P.goldL,borderRadius:8,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("calendar",12,P.gold)} ${stripEmoji(t("addToCalendar"))}</button></div>`}
       <div style=${{display:"flex",gap:20,justifyContent:"center",marginBottom:12}}>
         <button onClick=${()=>setFollowModal("followers")} style=${{background:"none",border:"none",cursor:"pointer",textAlign:"center",padding:0}}>
           <div style=${{fontWeight:800,fontSize:18,color:P.text}}>${followCounts.followers}</div>
@@ -1549,21 +1572,25 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
       </div>
     </div>
     ${showSendGift && html`<${SendGiftModal} friend=${friend} myProfile=${myProfile} onClose=${()=>setShowSendGift(false)} toast=${msg=>{setLocalToast(msg);setTimeout(()=>setLocalToast(null),3000);}}/>`}
-    ${occasions.length>0 && html`<div style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:16,padding:16,marginBottom:14}}>
+    ${(occasions.length>0 || (friend.interests||[]).length>0) && html`<div style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:16,padding:16,marginBottom:14}}>
       <div style=${{fontWeight:700,fontSize:15,marginBottom:10}}>${t("getAIIdeas")}</div>
       <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
+        ${(friend.interests||[]).length>0 && html`<button onClick=${getGiftIdeasByInterests} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 12px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("heart",14,P.gold)} ${stripEmoji(t("ideasByInterests"))}</button>`}
         ${occasions.slice(0,3).map(o => html`<button key=${o.id} onClick=${()=>getGiftIdeas(o)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 12px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("gift",14,P.gold)} ${t("giftIdeasFor")} ${translateOccasion(o.type)}</button>`)}
       </div>
       ${giftLoading && html`<div style=${{color:P.muted,fontSize:13,marginTop:10}}>${t("findingGifts")}</div>`}
       ${giftIdeas.map((g,i) => html`
-        <div key=${i} style=${{background:P.bg,borderRadius:10,padding:"10px 12px",marginTop:10,display:"flex",gap:10,alignItems:"flex-start"}}>
+        <div key=${i} style=${{background:P.bg,borderRadius:10,padding:"10px 12px",marginTop:10,display:"flex",gap:10,alignItems:"flex-start",flexWrap:"wrap"}}>
           <div style=${{width:36,height:36,borderRadius:8,background:`${P.gold}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${Icon("gift",20,P.gold)}</div>
-          <div style=${{flex:1}}>
+          <div style=${{flex:1,minWidth:0}}>
             <div style=${{fontWeight:700,fontSize:13,color:P.text}}>${g.name}</div>
             <div style=${{fontSize:12,color:P.muted,marginTop:2}}>${g.description}</div>
             <div style=${{color:P.gold,fontWeight:700,fontSize:13,marginTop:4}}>~€${g.price}</div>
           </div>
-          <${SmartBuyButton} name=${g.name} city=${myProfile?.city||"Madrid"}/>
+          <div style=${{display:"flex",gap:6,flexWrap:"wrap"}}>
+            <${SmartBuyButton} name=${g.name} city=${myProfile?.city||"Madrid"}/>
+            <button onClick=${()=>{setGiftIdeas(prev=>prev.filter((_,idx)=>idx!==i));}} style=${{background:`${P.green}22`,border:`1px solid ${P.green}44`,color:P.green,borderRadius:8,padding:"5px 10px",fontSize:11,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:4}}>${Icon("check",12,P.green)} ${stripEmoji(t("markBought"))}</button>
+          </div>
         </div>`)}
     </div>`}
     <div style=${{display:"flex",background:P.card,borderRadius:10,padding:3,marginBottom:12,gap:2}}>
@@ -1691,6 +1718,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
 
   const [showEdit, setShowEdit] = useState(false);
   const [localProfile, setLocalProfile] = useState(profile);
+  useEffect(() => { setLocalProfile(profile); }, [profile]);
   const [followRequests, setFollowRequests] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
   const [requestsTab, setRequestsTab] = useState("received");
@@ -1761,7 +1789,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
           <div style=${{fontSize:11,color:P.muted}}>${t("followingCount")}</div>
         </button>
       </div>
-      ${localProfile.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:8,display:"flex",alignItems:"center",gap:6}}>${Icon("calendar",14,P.gold)} ${fmtDate(localProfile.birthday)}</div>`}
+      ${localProfile.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:8,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>${Icon("calendar",14,P.gold)} ${fmtDate(localProfile.birthday)}</div>`}
       ${(localProfile.interests||[]).length>0 && html`<div style=${{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center",marginTop:8}}>
         ${localProfile.interests.map(i => html`<span key=${i} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}33`,borderRadius:99,padding:"3px 10px",fontSize:11,color:P.goldL,fontWeight:600}}>${translateInterest(i)}</span>`)}
       </div>`}
@@ -2091,17 +2119,15 @@ function CreateGroup({profile, feed, following, onCreate, onClose}) {
     onCreate(group);
   };
 
-  const GROUP_EMOJIS = ["🎁","🎂","💍","🎓","🏠","❤️","🎉","🌟","🍾","✈️","🎸","⚽"];
-
   return html`<div>
     <button onClick=${onClose} style=${{background:"none",border:"none",color:P.muted,fontSize:14,cursor:"pointer",marginBottom:16,padding:0}}>← Back</button>
     <div style=${{fontWeight:800,fontSize:18,color:P.text,marginBottom:20}}>New Gift Group</div>
 
     <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:16,padding:18,marginBottom:14}}>
       <div style=${{marginBottom:14}}>
-        <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:6}}>GROUP EMOJI</div>
+        <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:6}}>GROUP ICON</div>
         <div style=${{display:"flex",gap:8,flexWrap:"wrap"}}>
-          ${GROUP_EMOJIS.map(e=>html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{background:emoji===e?`${P.gold}33`:"none",border:`1px solid ${emoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIconGroup(e),20,P.text)}</button>`)}
+          ${GROUP_ICONS.map(icon=>html`<button key=${icon} onClick=${()=>setEmoji(iconToEmojiGroup[icon]||"🎁")} style=${{background:emojiToIconGroup(emoji)===icon?`${P.gold}33`:"none",border:`1px solid ${emojiToIconGroup(emoji)===icon?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(icon,20,P.text)}</button>`)}
         </div>
       </div>
       <div style=${{marginBottom:12}}>
@@ -2207,10 +2233,10 @@ function GroupChat({group, profile, feed, following, onBack}) {
   const isAdmin = group.created_by===profile.id;
   const memberCount = members.length;
   const [editingEmoji, setEditingEmoji] = useState(false);
-  const GROUP_EMOJIS = ["🎁","🎂","💍","🎓","🏠","❤️","🎉","🌟","🍾","✈️","🎸","⚽","🐶","🌸","🎨","🎭","🍕","☕","🏖️","🎪"];
   const [currentEmoji, setCurrentEmoji] = useState(group.emoji||"🎁");
 
-  const changeEmoji = async e => {
+  const changeEmoji = async icon => {
+    const e = iconToEmojiGroup[icon]||"🎁";
     setCurrentEmoji(e); setEditingEmoji(false);
     await sb.from("gift_groups").update({emoji:e}).eq("id",group.id);
   };
@@ -2230,7 +2256,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
       <button onClick=${()=>setShowProposalForm(true)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"6px 10px",fontSize:11,fontWeight:700,cursor:"pointer"}}>+ Propose</button>
     </div>
     ${editingEmoji && html`<div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:12,marginBottom:10,display:"flex",flexWrap:"wrap",gap:6}}>
-      ${GROUP_EMOJIS.map(e=>html`<button key=${e} onClick=${()=>changeEmoji(e)} style=${{background:currentEmoji===e?`${P.gold}33`:"none",border:`1px solid ${currentEmoji===e?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIconGroup(e),20,P.text)}</button>`)}
+      ${GROUP_ICONS.map(icon=>html`<button key=${icon} onClick=${()=>changeEmoji(icon)} style=${{background:emojiToIconGroup(currentEmoji)===icon?`${P.gold}33`:"none",border:`1px solid ${emojiToIconGroup(currentEmoji)===icon?P.gold:"transparent"}`,borderRadius:8,padding:"6px 8px",cursor:"pointer",display:"inline-flex",alignItems:"center",justifyContent:"center"}}>${Icon(icon,20,P.text)}</button>`)}
     </div>`}
 
     <!-- Proposals bar -->
