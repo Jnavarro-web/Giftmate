@@ -51,12 +51,13 @@ const Icon = (name, size=20, color="currentColor") => {
     thumbsUp: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1z"/><path d="M11 10h6a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-6"/><path d="M11 10V5a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v5"/></svg>`,
     thumbsDown: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 13V5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M13 14H7a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h6"/><path d="M13 14v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-5"/></svg>`,
     box: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
-    close: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
+    close: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    copy: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`
   };
   return icons[name] ? html`<span style=${{display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${icons[name]}</span>` : null;
 };
 const stripEmoji = s => (s||"").replace(/^[^\w\s]+/g,"").replace(/\s+[^\w\s]+$/g,"").replace(/\s+/g," ").trim();
-const AVATAR_OPTIONS = [{e:"🎁",i:"gift"},{e:"😊",i:"heart"},{e:"🌟",i:"star"},{e:"🎯",i:"sparkle"},{e:"🦋",i:"flower"},{e:"🌈",i:"wave"},{e:"🎨",i:"sparkle"},{e:"🎵",i:"sparkle"},{e:"🌺",i:"flower"},{e:"🦁",i:"crown"},{e:"🐺",i:"heart"},{e:"🦊",i:"heart"},{e:"🐬",i:"wave"},{e:"🌙",i:"moon"},{e:"⭐",i:"star"},{e:"🔥",i:"sparkle"},{e:"💫",i:"sparkle"},{e:"🎭",i:"heart"}];
+const AVATAR_OPTIONS = [{e:"🎁",i:"gift"},{e:"😊",i:"heart"},{e:"🌟",i:"star"},{e:"🎯",i:"trophy"},{e:"🦋",i:"flower"},{e:"🌈",i:"wave"},{e:"🎨",i:"package"},{e:"🎵",i:"share"},{e:"🌺",i:"flower"},{e:"🦁",i:"crown"},{e:"🐺",i:"heart"},{e:"🦊",i:"heart"},{e:"🐬",i:"wave"},{e:"🌙",i:"moon"},{e:"⭐",i:"star"},{e:"🔥",i:"sparkle"},{e:"💫",i:"sparkle"},{e:"🎭",i:"heart"}];
 const emojiToIcon = emoji => (AVATAR_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 const GROUP_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"🍾",i:"sparkle"},{e:"✈️",i:"globe"},{e:"🎸",i:"sparkle"},{e:"⚽",i:"sparkle"},{e:"🐶",i:"heart"},{e:"🌸",i:"flower"},{e:"🎨",i:"sparkle"},{e:"🎭",i:"heart"},{e:"🍕",i:"sparkle"},{e:"☕",i:"sparkle"},{e:"🏖️",i:"wave"},{e:"🎪",i:"sparkle"}];
 const emojiToIconGroup = emoji => (GROUP_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
@@ -830,7 +831,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
           <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
             ${Object.entries(LANGUAGES).map(([code,lang]) => html`
               <button key=${code} onClick=${()=>setLanguage(code)} style=${{background:language===code?`${P.gold}33`:"transparent",border:`1px solid ${language===code?P.gold:P.border}`,borderRadius:99,padding:"6px 12px",fontSize:13,cursor:"pointer",color:language===code?P.goldL:P.muted,fontWeight:language===code?700:400,display:"inline-flex",alignItems:"center",gap:6}}>
-                ${Icon("globe",14,language===code?P.goldL:P.muted)} ${lang.name}
+                <span style=${{fontSize:16,lineHeight:1}}>${lang.flag}</span> ${lang.name}
               </button>`)}
           </div>
         </div>
@@ -1363,7 +1364,7 @@ function GiftInbox({profile, toast}) {
         ${m.status==="thanked" && html`<div style=${{color:isSent?P.green:P.green,fontSize:12,fontWeight:700}}>${isSent?t("thanked"):t("thanked")}</div>`}
       </div>
       <div style=${{background:P.bg,borderRadius:10,padding:"10px 12px",marginBottom:isSent||m.status==="thanked"?0:10}}>
-        <div style=${{fontWeight:700,color:P.text,fontSize:14}}>🎁 ${m.gift_name}</div>
+        <div style=${{fontWeight:700,color:P.text,fontSize:14,display:"flex",alignItems:"center",gap:6}}>${Icon("gift",16,P.gold)} ${m.gift_name}</div>
         ${m.occasion&&html`<div style=${{color:P.muted,fontSize:12,marginTop:2}}>For: ${m.occasion}</div>`}
         ${m.note&&html`<div style=${{color:P.goldL,fontSize:13,marginTop:6,fontStyle:"italic"}}>"${m.note}"</div>`}
       </div>
@@ -1372,10 +1373,10 @@ function GiftInbox({profile, toast}) {
 
   return html`<div>
     <div style=${{display:"flex",background:P.bg,borderRadius:10,padding:3,marginBottom:14,gap:2}}>
-      <button onClick=${()=>setTab("received")} style=${{flex:1,padding:"8px 4px",borderRadius:8,border:"none",background:tab==="received"?`linear-gradient(135deg,${P.goldD},${P.gold})`:"transparent",color:tab==="received"?"#000":P.muted,fontWeight:700,fontSize:12,cursor:"pointer"}}>
-        ${t("received")} ${pendingCount>0?html`<span style=${{background:P.red,color:"#fff",borderRadius:99,padding:"1px 5px",fontSize:10,marginLeft:3}}>${pendingCount}</span>`:""}
+      <button onClick=${()=>setTab("received")} style=${{flex:1,padding:"8px 4px",borderRadius:8,border:"none",background:tab==="received"?`linear-gradient(135deg,${P.goldD},${P.gold})`:"transparent",color:tab==="received"?"#000":P.muted,fontWeight:700,fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>
+        ${Icon("gift",12,tab==="received"?"#000":P.muted)} ${stripEmoji(t("received"))} ${pendingCount>0?html`<span style=${{background:P.red,color:"#fff",borderRadius:99,padding:"1px 5px",fontSize:10,marginLeft:3}}>${pendingCount}</span>`:""}
       </button>
-      <button onClick=${()=>setTab("sent")} style=${{flex:1,padding:"8px 4px",borderRadius:8,border:"none",background:tab==="sent"?`linear-gradient(135deg,${P.goldD},${P.gold})`:"transparent",color:tab==="sent"?"#000":P.muted,fontWeight:700,fontSize:12,cursor:"pointer"}}>${t("sent")}</button>
+      <button onClick=${()=>setTab("sent")} style=${{flex:1,padding:"8px 4px",borderRadius:8,border:"none",background:tab==="sent"?`linear-gradient(135deg,${P.goldD},${P.gold})`:"transparent",color:tab==="sent"?"#000":P.muted,fontWeight:700,fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>${Icon("share",12,tab==="sent"?"#000":P.muted)} ${stripEmoji(t("sent"))}</button>
     </div>
     ${tab==="received" && html`<div>
       ${inbox.length===0&&html`<div style=${{color:P.muted,textAlign:"center",padding:24,fontSize:14}}>${t("noMessages")}</div>`}
@@ -1494,7 +1495,7 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
   }, [friend.id]);
   const isF = following.includes(friend.id);
   const tier = getTier(friend.stars||0);
-  const SECS = [["occasions",t("secOccasions")],["wishlist",t("secWishlist")],["gifts",t("secReceived")]];
+  const SECS = [["occasions",html`${Icon("calendar",12,section==="occasions"?P.gold:P.muted)} ${stripEmoji(t("secOccasions"))}`],["wishlist",html`${Icon("gift",12,section==="wishlist"?P.gold:P.muted)} ${stripEmoji(t("secWishlist"))}`],["gifts",html`${Icon("gift",12,section==="gifts"?P.gold:P.muted)} ${stripEmoji(t("secReceived"))}`]];
 
   const addBirthdayToCalendar = async () => {
     if(!friend.birthday) return;
@@ -1523,7 +1524,7 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
         <span style=${{color:P.faint,fontSize:11,display:"inline-flex",alignItems:"center",gap:2}}>· ${friend.stars||0} ${Icon("star",10,P.faint)}</span>
       </div>
       ${friend.birthday && html`<div style=${{fontSize:13,color:P.gold,marginBottom:6,display:"flex",alignItems:"center",gap:6}}>${Icon("calendar",14,P.gold)} ${fmtDate(friend.birthday)} · ${t("inDays")} ${daysUntil(friend.birthday)} ${t("daysWord")}</div>`}
-      ${friend.birthday && html`<button onClick=${addBirthdayToCalendar} style=${{background:`${P.gold}11`,border:`1px solid ${P.gold}33`,color:P.goldL,borderRadius:8,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",marginBottom:10}}>${t("addToCalendar")}</button>`}
+      ${friend.birthday && html`<button onClick=${addBirthdayToCalendar} style=${{background:`${P.gold}11`,border:`1px solid ${P.gold}33`,color:P.goldL,borderRadius:8,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",marginBottom:10,display:"inline-flex",alignItems:"center",gap:6}}>${Icon("calendar",12,P.gold)} ${stripEmoji(t("addToCalendar"))}</button>`}
       <div style=${{display:"flex",gap:20,justifyContent:"center",marginBottom:12}}>
         <button onClick=${()=>setFollowModal("followers")} style=${{background:"none",border:"none",cursor:"pointer",textAlign:"center",padding:0}}>
           <div style=${{fontWeight:800,fontSize:18,color:P.text}}>${followCounts.followers}</div>
@@ -1542,19 +1543,19 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
         <button onClick=${()=>onToggleFollow(friend.id,friend)} style=${{background:isF?P.border:pendingRequests.includes(friend.id)?`${P.gold}22`:`linear-gradient(135deg,${P.goldD},${P.gold})`,border:pendingRequests.includes(friend.id)?`1px solid ${P.gold}88`:"none",color:isF?P.muted:pendingRequests.includes(friend.id)?P.goldL:"#000",borderRadius:10,padding:"10px 20px",fontWeight:700,fontSize:14,cursor:"pointer"}}>
           ${isF ? t("following") : pendingRequests.includes(friend.id) ? "Requested ⏳" : friend.is_private ? "Request 🔒" : t("follow")}
         </button>
-        <button onClick=${()=>setShowSendGift(true)} style=${{background:"#C084FC22",border:"1px solid #C084FC66",color:"#C084FC",borderRadius:10,padding:"10px 20px",fontWeight:700,fontSize:14,cursor:"pointer"}}>${t("iGiftedThem")}</button>
+        <button onClick=${()=>setShowSendGift(true)} style=${{background:"#C084FC22",border:"1px solid #C084FC66",color:"#C084FC",borderRadius:10,padding:"10px 20px",fontWeight:700,fontSize:14,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("gift",16,"#C084FC")} ${stripEmoji(t("iGiftedThem"))}</button>
       </div>
     </div>
     ${showSendGift && html`<${SendGiftModal} friend=${friend} myProfile=${myProfile} onClose=${()=>setShowSendGift(false)} toast=${msg=>{setLocalToast(msg);setTimeout(()=>setLocalToast(null),3000);}}/>`}
     ${occasions.length>0 && html`<div style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:16,padding:16,marginBottom:14}}>
       <div style=${{fontWeight:700,fontSize:15,marginBottom:10}}>${t("getAIIdeas")}</div>
       <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
-        ${occasions.slice(0,3).map(o => html`<button key=${o.id} onClick=${()=>getGiftIdeas(o)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}}>🎁 ${t("giftIdeasFor")} ${translateOccasion(o.type)}</button>`)}
+        ${occasions.slice(0,3).map(o => html`<button key=${o.id} onClick=${()=>getGiftIdeas(o)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 12px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("gift",14,P.gold)} ${t("giftIdeasFor")} ${translateOccasion(o.type)}</button>`)}
       </div>
       ${giftLoading && html`<div style=${{color:P.muted,fontSize:13,marginTop:10}}>${t("findingGifts")}</div>`}
       ${giftIdeas.map((g,i) => html`
         <div key=${i} style=${{background:P.bg,borderRadius:10,padding:"10px 12px",marginTop:10,display:"flex",gap:10,alignItems:"flex-start"}}>
-          <span style=${{fontSize:24}}>${g.emoji}</span>
+          <div style=${{width:36,height:36,borderRadius:8,background:`${P.gold}22`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${Icon("gift",20,P.gold)}</div>
           <div style=${{flex:1}}>
             <div style=${{fontWeight:700,fontSize:13,color:P.text}}>${g.name}</div>
             <div style=${{fontSize:12,color:P.muted,marginTop:2}}>${g.description}</div>
@@ -1583,7 +1584,7 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
         `;
       })()}
     </div>`}
-    ${section==="gifts" && giftsReceived.map(g => html`<div key=${g.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"12px 14px",marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style=${{fontWeight:600,color:P.text}}>${g.gift_name}</div>${g.from_whom&&html`<div style=${{fontSize:13,color:P.muted}}>${t("fromWhom")} ${g.from_whom}${g.occasion?` · ${g.occasion}`:""}</div>`}</div><span style=${{fontSize:20}}>${g.reaction||"😊"}</span></div>`)}
+    ${section==="gifts" && giftsReceived.map(g => html`<div key=${g.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"12px 14px",marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style=${{fontWeight:600,color:P.text}}>${g.gift_name}</div>${g.from_whom&&html`<div style=${{fontSize:13,color:P.muted}}>${t("fromWhom")} ${g.from_whom}${g.occasion?` · ${g.occasion}`:""}</div>`}</div><span style=${{display:"flex",alignItems:"center"}}>${Icon("heart",18,P.gold)}</span></div>`)}
     ${section==="gifts" && giftsReceived.length===0 && html`<div style=${{color:P.muted,textAlign:"center",padding:20,fontSize:14}}>${t("noGiftsRecorded")}</div>`}
     ${(toast||localToast) && html`<${Toast} msg=${toast||localToast} onDone=${()=>{setToast(null);setLocalToast(null);}}/>`}
   </div>`;
@@ -1900,7 +1901,7 @@ function MyProfile({profile, setProfile, friendsOccasions=[], onLangChange, onTh
     ${section==="gifts" && html`<div>
       ${giftsReceived.map(g => html`<div key=${g.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"12px 14px",marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div><div style=${{fontWeight:600,color:P.text}}>${g.gift_name}</div>${g.from_whom&&html`<div style=${{fontSize:13,color:P.muted}}>${t("fromWhom")} ${g.from_whom}${g.occasion?` · ${g.occasion}`:""}</div>`}</div>
-        <span style=${{fontSize:20}}>${g.reaction||"😊"}</span>
+        <span style=${{display:"flex",alignItems:"center"}}>${Icon("heart",18,P.gold)}</span>
       </div>`)}
       ${addingGift ? html`<div style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:14,padding:16,marginBottom:10}}>
         <${Inp} value=${newGift.gift_name} onChange=${v=>setNewGift(g=>({...g,gift_name:v}))} placeholder="Gift name" style=${{marginBottom:8}}/>
@@ -2083,7 +2084,7 @@ function CreateGroup({profile, feed, following, onCreate, onClose}) {
       if(e3) console.warn("Couldn't add friends:", e3.message);
     }
     // System message
-    await sb.from("group_messages").insert({group_id:group.id, sender_id:profile.id, content:`${profile.display_name} created this group 🎉`, message_type:"system"});
+    await sb.from("group_messages").insert({group_id:group.id, sender_id:profile.id, content:`${profile.display_name} created this group`, message_type:"system"});
 
     onCreate(group);
   };
@@ -2259,7 +2260,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
       ${messages.map(m => {
         const isMe = m.sender_id===profile.id;
         const isSystem = m.message_type==="system";
-        if(isSystem) return html`<div key=${m.id} style=${{textAlign:"center",color:P.muted,fontSize:12,padding:"4px 0"}}>${m.content}</div>`;
+        if(isSystem) return html`<div key=${m.id} style=${{textAlign:"center",color:P.muted,fontSize:12,padding:"4px 0",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>${stripEmoji(m.content)} ${m.content.includes("created this group")?Icon("sparkle",12,P.muted):""}</div>`;
         const senderEmoji = isMe ? profile.emoji : m.sender?.emoji;
         const senderAvatar = isMe ? profile.avatar_url : m.sender?.avatar_url;
         const senderName = isMe ? profile.display_name : m.sender?.display_name;
@@ -2464,27 +2465,27 @@ function StarsTab({profile, setProfile}) {
       ${!nextTier && html`<div style=${{color:P.gold,fontWeight:700,fontSize:13}}>${t("maxTier")}</div>`}
     </div>
     <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:16,padding:18,marginBottom:14}}>
-      <div style=${{fontWeight:700,fontSize:15,marginBottom:12}}>${t("howToEarn")}</div>
+      <div style=${{fontWeight:700,fontSize:15,marginBottom:12,display:"flex",alignItems:"center",gap:6}}>${Icon("star",14,P.gold)} ${stripEmoji(t("howToEarn"))}</div>
       ${[[Icon("groups",18,P.gold),t("earnFollow"),"+15"],[Icon("calendar",18,P.gold),t("earnOccasion"),"+10"],[Icon("share",18,P.gold),t("earnShare"),"+10"],[Icon("groups",18,P.gold),t("earnRefer"),"+80"]].map(([icon,label,pts]) => html`
         <div key=${label} style=${{display:"flex",alignItems:"center",gap:10,marginBottom:8,background:P.bg,borderRadius:10,padding:"10px 12px"}}>
           ${icon}
           <div style=${{flex:1,fontSize:13,color:P.muted}}>${label}</div>
-          <div style=${{color:P.gold,fontWeight:700,fontSize:13}}>${pts} ⭐</div>
+          <div style=${{color:P.gold,fontWeight:700,fontSize:13,display:"flex",alignItems:"center",gap:4}}>${pts} ${Icon("star",14,P.gold)}</div>
         </div>`)}
       <div style=${{display:"flex",gap:8,marginTop:12}}>
-        <button onClick=${()=>share("wa")} style=${{flex:1,background:"#25D366",color:"#fff",border:"none",borderRadius:10,padding:"11px 0",fontSize:13,fontWeight:700,cursor:"pointer"}}>${t("shareWhatsapp")}</button>
-        <button onClick=${()=>share("copy")} style=${{flex:1,background:P.card,border:`1px solid ${P.border}`,color:P.text,borderRadius:10,padding:"11px 0",fontSize:13,fontWeight:700,cursor:"pointer"}}>${t("copyLink")}</button>
+        <button onClick=${()=>share("wa")} style=${{flex:1,background:"#25D366",color:"#fff",border:"none",borderRadius:10,padding:"11px 0",fontSize:13,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>${Icon("chat",16,"#fff")} ${stripEmoji(t("shareWhatsapp"))}</button>
+        <button onClick=${()=>share("copy")} style=${{flex:1,background:P.card,border:`1px solid ${P.border}`,color:P.text,borderRadius:10,padding:"11px 0",fontSize:13,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>${Icon("copy",16,P.text)} ${stripEmoji(t("copyLink"))}</button>
       </div>
     </div>
-    <div style=${{fontWeight:700,fontSize:15,marginBottom:12}}>${t("redeemStars")}</div>
+    <div style=${{fontWeight:700,fontSize:15,marginBottom:12,display:"flex",alignItems:"center",gap:6}}>${Icon("gift",14,P.gold)} ${stripEmoji(t("redeemStars"))}</div>
     <div style=${{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
       ${REWARDS.map(r => { const can = stars>=r.cost; return html`
         <div key=${r.id} style=${{background:P.card,border:`1px solid ${can?P.gold+"44":P.border}`,borderRadius:14,padding:14}}>
           <div style=${{width:28,height:28,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:6}}>${Icon(r.svgIcon, 24, P.gold)}</div>
           <div style=${{fontWeight:700,fontSize:13,color:P.text,marginBottom:2}}>${r.title}</div>
           <div style=${{fontSize:11,color:P.muted,marginBottom:10}}>${r.desc}</div>
-          <button onClick=${()=>redeem(r)} disabled=${!can} style=${{width:"100%",background:can?`linear-gradient(135deg,${P.goldD},${P.gold})`:P.border,color:can?"#000":P.muted,border:"none",borderRadius:8,padding:"7px 0",fontSize:11,fontWeight:700,cursor:can?"pointer":"not-allowed"}}>
-            ${can?`${r.cost} ${t("redeemLabel")}`:`${r.cost-stars} ${t("needMore")}`}
+          <button onClick=${()=>redeem(r)} disabled=${!can} style=${{width:"100%",background:can?`linear-gradient(135deg,${P.goldD},${P.gold})`:P.border,color:can?"#000":P.muted,border:"none",borderRadius:8,padding:"7px 0",fontSize:11,fontWeight:700,cursor:can?"pointer":"not-allowed",display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>
+            ${can?html`${r.cost} ${Icon("star",12,"#000")} ${stripEmoji(t("redeemLabel"))}`:html`${r.cost-stars} ${t("needMore")}`}
           </button>
         </div>`; })}
     </div>
@@ -2508,7 +2509,10 @@ function GiftCards({gifts, city}) {
   return html`<div style=${{display:"flex",flexDirection:"column",gap:8,marginTop:8}}>
     ${gifts.map((g,i) => html`
       <div key=${i} style=${{background:P.bg,border:`1px solid ${P.border}`,borderRadius:14,padding:"12px 14px",display:"flex",gap:12,alignItems:"center"}}>
-        ${Icon("gift",28,P.gold)}
+        <div style=${{position:"relative",width:56,height:56,flexShrink:0}}>
+          ${g.image_url ? html`<img src=${g.image_url} alt="" style=${{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",borderRadius:10,zIndex:1}} onError=${e=>{e.target.style.display="none";}}/>` : null}
+          <div style=${{position:"absolute",inset:0,background:`${P.gold}22`,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon("gift",28,P.gold)}</div>
+        </div>
         <div style=${{flex:1,minWidth:0}}>
           <div style=${{fontWeight:700,fontSize:13,color:P.text}}>${g.name}</div>
           <div style=${{fontSize:12,color:P.muted,marginTop:2}}>${g.description}</div>
@@ -2550,7 +2554,7 @@ FLOW:
 - After EVERY follow-up: ALWAYS give 5 fresh gifts + another follow-up. Never stop.
 
 Format — one punchy sentence first, then:
-<gifts>[{"name":"...","description":"under 10 words","price":25,"emoji":"🎁","reason":"..."},{"name":"...","description":"...","price":35,"emoji":"🎁","reason":"..."},{"name":"...","description":"...","price":50,"emoji":"🎁","reason":"..."},{"name":"...","description":"...","price":65,"emoji":"🎁","reason":"..."},{"name":"...","description":"...","price":80,"emoji":"🎁","reason":"..."}]</gifts>
+<gifts>[{"name":"...","description":"under 10 words","price":25,"emoji":"🎁","reason":"...","image_url":"optional image URL"}]</gifts>
 
 PRICES MUST BE REALISTIC — anchor to actual market prices:
 - Physical products: check what they actually cost on Amazon (books €10-20, gadgets €20-80, clothing €30-60)
@@ -2560,7 +2564,7 @@ PRICES MUST BE REALISTIC — anchor to actual market prices:
 - Never invent inflated prices — if unsure, go lower rather than higher
 
 Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if the user is clearly talking about nightlife/clubs/going out, give ALL 5 as nightlife options — real specific venues, club nights, bar crawls, cocktail spots in ${city} by name. If they're talking about romantic experiences, go all-in on experiences. Match the energy of what they're asking for. No ** asterisks.`;
-  const opening = t("conciergeOpening").replace("{name}", name);
+  const opening = stripEmoji(t("conciergeOpening")).replace("{name}", name);
   const [messages, setMessages] = useState([{role:"assistant", content:opening}]);
   const [rawMessages, setRawMessages] = useState([{role:"assistant", content:opening}]);
   const [input, setInput] = useState("");
