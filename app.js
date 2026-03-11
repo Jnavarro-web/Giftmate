@@ -58,7 +58,7 @@ const Icon = (name, size=20, color="currentColor") => {
 };
 const stripEmoji = s => (s||"").replace(/^[^\w\s]+/g,"").replace(/\s+[^\w\s]+$/g,"").replace(/\s+/g," ").trim();
 const stripAllEmoji = s => (s||"").replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F1E0}-\u{1F1FF}]/gu,"").replace(/\s{2,}/g," ").trim();
-const AVATAR_OPTIONS = [{e:"🎁",i:"gift"},{e:"😊",i:"heart"},{e:"🌟",i:"star"},{e:"🎯",i:"trophy"},{e:"🦋",i:"flower"},{e:"🌈",i:"wave"},{e:"🎨",i:"package"},{e:"🎵",i:"share"},{e:"🌺",i:"flower"},{e:"🦁",i:"crown"},{e:"🐺",i:"heart"},{e:"🦊",i:"heart"},{e:"🐬",i:"wave"},{e:"🌙",i:"moon"},{e:"⭐",i:"star"},{e:"🔥",i:"sparkle"},{e:"💫",i:"sparkle"},{e:"🎭",i:"heart"}];
+const AVATAR_OPTIONS = [{e:"🎁",i:"gift"},{e:"😊",i:"heart"},{e:"🌟",i:"star"},{e:"🎯",i:"trophy"},{e:"🦋",i:"flower"},{e:"🌈",i:"wave"},{e:"🎨",i:"package"},{e:"🎵",i:"share"},{e:"🌺",i:"leaf"},{e:"🦁",i:"crown"},{e:"🐺",i:"box"},{e:"🦊",i:"sparkle"},{e:"🐬",i:"globe"},{e:"🌙",i:"moon"},{e:"⭐",i:"star"},{e:"🔥",i:"thumbsUp"},{e:"💫",i:"sparkle"},{e:"🎭",i:"camera"}];
 const emojiToIcon = emoji => (AVATAR_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
 const GROUP_EMOJI_OPTIONS = [{e:"🎁",i:"gift"},{e:"🎂",i:"calendar"},{e:"💍",i:"heart"},{e:"🎓",i:"gift"},{e:"🏠",i:"gift"},{e:"❤️",i:"heart"},{e:"🎉",i:"sparkle"},{e:"🌟",i:"star"},{e:"🍾",i:"sparkle"},{e:"✈️",i:"globe"},{e:"🎸",i:"sparkle"},{e:"⚽",i:"sparkle"},{e:"🐶",i:"heart"},{e:"🌸",i:"flower"},{e:"🎨",i:"sparkle"},{e:"🎭",i:"heart"},{e:"🍕",i:"sparkle"},{e:"☕",i:"sparkle"},{e:"🏖️",i:"wave"},{e:"🎪",i:"sparkle"}];
 const emojiToIconGroup = emoji => (GROUP_EMOJI_OPTIONS.find(o=>o.e===emoji)||{i:"gift"}).i;
@@ -85,7 +85,7 @@ const TRANSLATIONS = {
     forgotPassword: "Forgot password?", resetSent: "✓ Reset link sent! Check your email.",
     loading: "Loading…", logOut: "Log out", save: "Save Changes ✓", cancel: "Cancel",
     editProfile: "✏️ Edit Profile", displayName: "DISPLAY NAME", username: "USERNAME",
-    emojiAvatar: "EMOJI AVATAR", interests: "INTERESTS (up to 8)", removePhoto: "Remove photo",
+    emojiAvatar: "AVATAR ICON", interests: "INTERESTS (up to 8)", removePhoto: "Remove photo",
     home: "Home", search: "Search", groups: "Groups", concierge: "GiftMind", profile: "Profile", stars: "Stars",
     searchPlaceholder: "Search by username…", noResults: "No users found",
     follow: "+ Follow", following: "✓ Following", viewProfile: "View", followers: "Followers", followingCount: "Following", noFollowers: "No followers yet", noFollowing: "Not following anyone yet",
@@ -157,7 +157,7 @@ const TRANSLATIONS = {
     forgotPassword: "¿Olvidaste tu contraseña?", resetSent: "✓ ¡Enlace enviado! Revisa tu correo.",
     loading: "Cargando…", logOut: "Cerrar sesión", save: "Guardar Cambios ✓", cancel: "Cancelar",
     editProfile: "✏️ Editar Perfil", displayName: "NOMBRE", username: "USUARIO",
-    emojiAvatar: "EMOJI", interests: "INTERESES (máx. 8)", removePhoto: "Eliminar foto",
+    emojiAvatar: "AVATAR", interests: "INTERESES (máx. 8)", removePhoto: "Eliminar foto",
     home: "Inicio", search: "Buscar", groups: "Grupos", concierge: "GiftMind", profile: "Perfil", stars: "Estrellas",
     searchPlaceholder: "Buscar por usuario…", noResults: "Sin resultados",
     follow: "+ Seguir", following: "✓ Siguiendo", viewProfile: "Ver", followers: "Seguidores", followingCount: "Siguiendo", noFollowers: "Aún sin seguidores", noFollowing: "No sigues a nadie aún",
@@ -230,7 +230,7 @@ const TRANSLATIONS = {
     forgotPassword: "Mot de passe oublié ?", resetSent: "✓ Lien envoyé ! Vérifiez votre email.",
     loading: "Chargement…", logOut: "Déconnexion", save: "Enregistrer ✓", cancel: "Annuler",
     editProfile: "✏️ Modifier le profil", displayName: "NOM AFFICHÉ", username: "PSEUDO",
-    emojiAvatar: "EMOJI", interests: "CENTRES D'INTÉRÊT (max 8)", removePhoto: "Supprimer la photo",
+    emojiAvatar: "AVATAR", interests: "CENTRES D'INTÉRÊT (max 8)", removePhoto: "Supprimer la photo",
     home: "Accueil", search: "Chercher", groups: "Groupes", concierge: "GiftMind", profile: "Profil", stars: "Étoiles",
     searchPlaceholder: "Rechercher par pseudo…", noResults: "Aucun résultat",
     follow: "+ Suivre", following: "✓ Abonné", viewProfile: "Voir", followers: "Abonnés", followingCount: "Abonnements", noFollowers: "Pas encore d'abonnés", noFollowing: "Vous ne suivez personne",
@@ -303,7 +303,7 @@ const TRANSLATIONS = {
     forgotPassword: "Passwort vergessen?", resetSent: "✓ Link gesendet! Prüfe deine E-Mail.",
     loading: "Laden…", logOut: "Abmelden", save: "Änderungen speichern ✓", cancel: "Abbrechen",
     editProfile: "✏️ Profil bearbeiten", displayName: "ANZEIGENAME", username: "BENUTZERNAME",
-    emojiAvatar: "EMOJI", interests: "INTERESSEN (max. 8)", removePhoto: "Foto entfernen",
+    emojiAvatar: "AVATAR", interests: "INTERESSEN (max. 8)", removePhoto: "Foto entfernen",
     home: "Start", search: "Suche", groups: "Gruppen", concierge: "GiftMind", profile: "Profil", stars: "Sterne",
     searchPlaceholder: "Nach Benutzername suchen…", noResults: "Keine Ergebnisse",
     follow: "+ Folgen", following: "✓ Gefolgt", viewProfile: "Ansehen", followers: "Follower", followingCount: "Folge ich", noFollowers: "Noch keine Follower", noFollowing: "Folgst noch niemandem",
@@ -375,7 +375,7 @@ const TRANSLATIONS = {
     forgotPassword: "Password dimenticata?", resetSent: "✓ Link inviato! Controlla la tua email.",
     loading: "Caricamento…", logOut: "Esci", save: "Salva modifiche ✓", cancel: "Annulla",
     editProfile: "✏️ Modifica profilo", displayName: "NOME VISUALIZZATO", username: "NOME UTENTE",
-    emojiAvatar: "EMOJI", interests: "INTERESSI (max 8)", removePhoto: "Rimuovi foto",
+    emojiAvatar: "AVATAR", interests: "INTERESSI (max 8)", removePhoto: "Rimuovi foto",
     home: "Home", search: "Cerca", groups: "Gruppi", concierge: "GiftMind", profile: "Profilo", stars: "Stelle",
     searchPlaceholder: "Cerca per username…", noResults: "Nessun risultato",
     follow: "+ Segui", following: "✓ Seguito", viewProfile: "Vedi", followers: "Follower", followingCount: "Seguiti", noFollowers: "Ancora nessun follower", noFollowing: "Non segui ancora nessuno",
@@ -448,7 +448,7 @@ const TRANSLATIONS = {
     forgotPassword: "Esqueceu a senha?", resetSent: "✓ Link enviado! Verifique seu email.",
     loading: "Carregando…", logOut: "Sair", save: "Salvar alterações ✓", cancel: "Cancelar",
     editProfile: "✏️ Editar perfil", displayName: "NOME EXIBIDO", username: "NOME DE USUÁRIO",
-    emojiAvatar: "EMOJI", interests: "INTERESSES (máx. 8)", removePhoto: "Remover foto",
+    emojiAvatar: "AVATAR", interests: "INTERESSES (máx. 8)", removePhoto: "Remover foto",
     home: "Início", search: "Buscar", groups: "Grupos", concierge: "GiftMind", profile: "Perfil", stars: "Estrelas",
     searchPlaceholder: "Buscar por usuário…", noResults: "Sem resultados",
     follow: "+ Seguir", following: "✓ Seguindo", viewProfile: "Ver", followers: "Seguidores", followingCount: "Seguindo", noFollowers: "Sem seguidores ainda", noFollowing: "Não segue ninguém ainda",
@@ -1073,7 +1073,7 @@ function Onboarding({userId, onComplete}) {
       </div>
     </div>`,
     html`<div key="s1">
-      <div style=${{fontSize:26,textAlign:"center",marginBottom:6}}>Pick your emoji</div>
+      <div style=${{fontSize:26,textAlign:"center",marginBottom:6,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("star",28,P.gold)} Pick your icon</div>
       <div style=${{color:P.muted,textAlign:"center",marginBottom:18,fontSize:14}}>This will be your avatar</div>
       <div style=${{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:8,marginBottom:14}}>
         ${EMOJIS.map(e => html`<button key=${e} onClick=${()=>setEmoji(e)} style=${{padding:"10px 0",borderRadius:12,border:`2px solid ${emoji===e?P.gold:"transparent"}`,background:emoji===e?P.gold+"22":P.bg,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>${Icon(emojiToIcon(e),24,P.text)}</button>`)}
@@ -2575,7 +2575,7 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
 
   useEffect(() => { bottomRef.current?.scrollIntoView({behavior:"smooth"}); }, [messages]);
 
-  const QUICK = [t("quickChip1"), t("quickChip2"), t("quickChip3"), t("quickChip4").replace("✈️", city)];
+  const QUICK = [[stripEmoji(t("quickChip1")),"calendar"],[stripEmoji(t("quickChip2")),"heart"],[stripEmoji(t("quickChip3")),"package"],[stripEmoji(t("quickChip4").replace("✈️", city)),"globe"]];
 
   const parseReply = raw => {
     const match = raw.match(/<gifts>([\s\S]*?)<\/gifts>/);
@@ -2639,7 +2639,7 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
       <div ref=${bottomRef}/>
     </div>
     <div style=${{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
-      ${QUICK.map(q => html`<button key=${q} onClick=${()=>send(stripEmoji(q))} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:99,padding:"6px 12px",fontSize:11,color:P.muted,cursor:"pointer",fontWeight:600,display:"inline-flex",alignItems:"center",gap:4}}>${Icon("gift",12,P.muted)} ${stripEmoji(q)}</button>`)}
+      ${QUICK.map(([label,iconName]) => html`<button key=${label} onClick=${()=>send(label)} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:99,padding:"6px 12px",fontSize:11,color:P.muted,cursor:"pointer",fontWeight:600,display:"inline-flex",alignItems:"center",gap:4}}>${Icon(iconName,12,P.muted)} ${label}</button>`)}
     </div>
     <div style=${{display:"flex",gap:8}}>
       <textarea value=${input} onInput=${e=>{setInput(e.target.value);e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,120)+"px";}} onKeyDown=${e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}} placeholder=${t("conciergeInput")} rows="1" style=${{flex:1,background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"8px 12px",color:P.text,fontSize:14,resize:"none",outline:"none",lineHeight:1.4,maxHeight:"120px",overflowY:"auto"}}/>
