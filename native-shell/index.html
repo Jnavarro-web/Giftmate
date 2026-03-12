@@ -32,9 +32,8 @@
 <body>
   <div id="splash">
     <svg width="80" height="80" viewBox="0 0 44 44" fill="none" preserveAspectRatio="xMidYMid meet">
-      <circle cx="22" cy="22" r="20" fill="#FFE566" id="splash-circle" data-splash-brand="true"/>
-      <circle cx="22" cy="22" r="14" fill="#000"/>
-      <text x="22" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#fff" stroke="#000" stroke-width="0.3" dominant-baseline="alphabetic">8</text>
+      <circle cx="22" cy="22" r="20" fill="#FFE566" id="splash-circle" data-splash-8ball="true"/>
+      <text x="22" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#fff" dominant-baseline="alphabetic">8</text>
     </svg>
     <p id="splash-title">Gift m8</p>
   </div>
@@ -93,9 +92,9 @@
         var splash = document.getElementById("splash");
         if (splash) splash.style.background = th.bg;
         var circle = document.getElementById("splash-circle");
-        if (circle && !circle.getAttribute("data-splash-brand")) circle.setAttribute("fill", th.gold);
+        if (circle && !circle.hasAttribute("data-splash-8ball")) circle.setAttribute("fill", th.gold);
         var title = document.getElementById("splash-title");
-        if (title) title.style.color = (circle && circle.getAttribute("data-splash-brand")) ? "#FFE566" : th.gold;
+        if (title) title.style.color = (circle && circle.hasAttribute("data-splash-8ball")) ? "#FFE566" : th.gold;
         var meta = document.getElementById("theme-color-meta");
         if (meta) meta.content = th.gold;
       } catch(e) {}
