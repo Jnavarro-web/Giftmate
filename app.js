@@ -2509,7 +2509,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
         const proposalMatch = isProposal && m.content && m.content.match(/^(.*?proposed:\s*)([\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F1E0}-\u{1F1FF}]+)\s*(.*)$/u);
         const msgContent = proposalMatch ? html`${proposalMatch[1]}${Icon(emojiToIconProposal(proposalMatch[2]),14,isMe?"#000":P.text)} ${proposalMatch[3]}` : (isProposal ? stripAllEmoji(m.content) : m.content);
         const msgReacts = reactions[m.id] || {};
-        const REACT_EMOJIS = ["❤️","👍","😂","🎁"];
+        const REACT_EMOJIS = ["❤️","👍","😂","😮","😢","😡","🎁","🎉","👏","⭐","🔥","🙏"];
         return html`<div key=${m.id} style=${{display:"flex",gap:8,alignItems:"flex-end",flexDirection:isMe?"row-reverse":"row"}}>
           <div onClick=${()=>setViewingMember(isMe?profile:{id:m.sender_id,...m.sender})} style=${{cursor:"pointer",flexShrink:0}}>
             <${Avatar} emoji=${senderEmoji} avatarUrl=${senderAvatar} size=${28}/>
@@ -2523,7 +2523,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
               ${Object.entries(msgReacts).map(([emoji,users]) => html`<button key=${emoji} onClick=${()=>toggleReaction(m.id,emoji)} style=${{background:users.includes(profile.id)?`${P.gold}33`:"transparent",border:`1px solid ${P.border}`,borderRadius:99,padding:"2px 6px",fontSize:12,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:2}}>${emoji} ${users.length}</button>`)}
             </div>`}
             <div style=${{display:"flex",alignItems:"center",gap:4,marginTop:4,flexDirection:isMe?"row-reverse":"row"}}>
-              ${!isMe && html`<div style=${{display:"flex",gap:2}}>
+              ${!isMe && html`<div style=${{display:"flex",flexWrap:"wrap",gap:2}}>
                 ${REACT_EMOJIS.map(emoji=>html`<button key=${emoji} onClick=${()=>toggleReaction(m.id,emoji)} style=${{background:"none",border:"none",fontSize:14,cursor:"pointer",padding:2,opacity:0.7}} title="React">${emoji}</button>`)}
               </div>`}
               <span style=${{fontSize:9,color:P.muted}}>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</span>
