@@ -52,7 +52,8 @@ const Icon = (name, size=20, color="currentColor") => {
     thumbsDown: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 13V5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M13 14H7a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h6"/><path d="M13 14v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-5"/></svg>`,
     box: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
     close: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
-    copy: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`
+    copy: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`,
+    bell: html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${color} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`
   };
   return icons[name] ? html`<span style=${{display:"inline-flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>${icons[name]}</span>` : null;
 };
@@ -847,9 +848,6 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
   const [selectedTheme, setSelectedTheme] = useState(profile.theme||_theme||"midnight");
   const [isPrivate, setIsPrivate] = useState(profile.is_private||false);
   const [loading, setLoading] = useState(false);
-  const [questionnaire, setQuestionnaire] = useState(() => {
-    try { return profile.questionnaire_answers && typeof profile.questionnaire_answers==="object" ? profile.questionnaire_answers : (typeof profile.questionnaire_answers==="string" ? JSON.parse(profile.questionnaire_answers||"{}") : {}); } catch(e){ return {}; }
-  });
   const toggleI = i => setInterests(p => p.includes(i)?p.filter(x=>x!==i):[...p,i]);
 
   const save = async () => {
@@ -858,7 +856,6 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
     try {
       const updates = {display_name:name, username:username.toLowerCase().replace(/[^a-z0-9_]/g,""), emoji, interests, birthday:birthday||null, avatar_url:avatarUrl||null, city:city||null, country:country||null, language, is_private:isPrivate};
       const {error} = await sb.from("profiles").update(updates).eq("id", profile.id);
-      await sb.from("profiles").update({questionnaire_answers:questionnaire}).eq("id", profile.id).then(()=>{}).catch(()=>{});
       if(error) { console.error("Save error:", error); setLoading(false); return; }
       await sb.from("profiles").update({theme:selectedTheme}).eq("id", profile.id).then(()=>{}).catch(()=>{});
       if(profile.display_name !== name || (profile.birthday||null) !== (birthday||null)) {
@@ -872,7 +869,7 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
       }
       setLang(language);
       if(onLangChange) onLangChange(language);
-      const fullUpdates = {...updates, theme:selectedTheme, questionnaire_answers:questionnaire};
+      const fullUpdates = {...updates, theme:selectedTheme};
       if(onThemeChange && selectedTheme !== (profile.theme||"midnight")) onThemeChange(selectedTheme);
       const p = {...profile, ...fullUpdates};
       const r = onSave(p);
@@ -968,44 +965,6 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
           </div>
         </div>
 
-        <div style=${{marginBottom:20}}>
-          <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:8}}>${Icon("sparkle",12,P.gold)} ${t("questionnaire")||"Gift preferences"}</div>
-          <div style=${{fontSize:11,color:P.muted,marginBottom:10}}>Edit anytime — helps GiftMind recommend better gifts for you</div>
-          <div style=${{marginBottom:10}}>
-            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qBudget")||"Budget"}</div>
-            <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
-              ${["Budget (€15-30)","Medium (€30-80)","Premium (€80-150)","Luxury (€150+)"].map(opt=>
-                html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,budget:opt}))} style=${{background:(questionnaire.budget===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.budget===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.budget===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.budget===opt)?700:400}}>${opt}</button>`)}
-            </div>
-          </div>
-          <div style=${{marginBottom:10}}>
-            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qPreference")||"Preference"}</div>
-            <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
-              ${["Both","Experiences","Physical gifts","Personalised"].map(opt=>
-                html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,preference:opt}))} style=${{background:(questionnaire.preference===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.preference===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.preference===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.preference===opt)?700:400}}>${opt}</button>`)}
-            </div>
-          </div>
-          <div style=${{marginBottom:10}}>
-            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qLifeStage")||"Life stage"}</div>
-            <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
-              ${["Student","Professional","Parent","Homeowner","Retired","Other"].map(opt=>
-                html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,life_stage:opt}))} style=${{background:(questionnaire.life_stage===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.life_stage===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.life_stage===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.life_stage===opt)?700:400}}>${opt}</button>`)}
-            </div>
-          </div>
-          <div style=${{marginBottom:10}}>
-            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qBrands")||"Favourite brands"}</div>
-            <${Inp} value=${questionnaire.brands||""} onChange=${v=>setQuestionnaire(q=>({...q,brands:v}))} placeholder=${t("qBrandsPlaceholder")||"e.g. Apple, Nike"} style=${{marginBottom:0}}/>
-          </div>
-          <div style=${{marginBottom:10}}>
-            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qDietary")||"Dietary"}</div>
-            <${Inp} value=${questionnaire.dietary||""} onChange=${v=>setQuestionnaire(q=>({...q,dietary:v}))} placeholder=${t("qDietaryPlaceholder")||"e.g. vegan, none"} style=${{marginBottom:0}}/>
-          </div>
-          <div style=${{marginBottom:10}}>
-            <div style=${{fontSize:10,color:P.muted,marginBottom:4}}>${t("qNotes")||"Anything else?"}</div>
-            <${Inp} value=${questionnaire.notes||""} onChange=${v=>setQuestionnaire(q=>({...q,notes:v}))} placeholder=${t("qNotesPlaceholder")||"e.g. love surprises"} style=${{marginBottom:0}}/>
-          </div>
-        </div>
-
         <div style=${{marginBottom:16,background:P.bg,borderRadius:12,padding:"12px 14px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div>
             <div style=${{fontWeight:700,color:P.text,fontSize:14,display:"flex",alignItems:"center",gap:6}}>${Icon("lock",14,P.text)} Private profile</div>
@@ -1024,6 +983,93 @@ function EditProfileModal({profile, onSave, onClose, onLangChange, onThemeChange
           <button onClick=${()=>openLegalPage("/terms")} style=${{flex:1,background:"transparent",border:`1px solid ${P.border}`,color:P.muted,borderRadius:10,padding:"10px 12px",cursor:"pointer",fontSize:12}}>Terms</button>
         </div>
         <button onClick=${()=>requestAccountDeletion(profile.email || "")} style=${{width:"100%",background:"transparent",border:`1px solid ${P.red}55`,color:P.red,borderRadius:10,padding:"10px 12px",cursor:"pointer",fontSize:12,marginBottom:8}}>Request account deletion</button>
+        <button onClick=${onClose} style=${{width:"100%",background:"transparent",border:"none",color:P.muted,padding:"8px 0",cursor:"pointer"}}>${t("cancel")}</button>
+      </div>
+    </div>`;
+}
+
+// ── ABOUT / QUESTIONNAIRE MODAL ──
+function AboutModal({profile, onSave, onClose}) {
+  const [questionnaire, setQuestionnaire] = useState(() => {
+    try { return profile.questionnaire_answers && typeof profile.questionnaire_answers==="object" ? profile.questionnaire_answers : (typeof profile.questionnaire_answers==="string" ? JSON.parse(profile.questionnaire_answers||"{}") : {}); } catch(e){ return {}; }
+  });
+  const [loading, setLoading] = useState(false);
+  const [aiQuestions, setAiQuestions] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const GIFT_TYPES = ["Experiences (tours, classes)","Physical gifts (books, gadgets)","Personalised (custom, handmade)","Luxury (premium brands)","Practical (useful everyday)"];
+  const giftRatings = questionnaire.gift_ratings || {};
+
+  const save = async () => {
+    setLoading(true);
+    try {
+      await sb.from("profiles").update({questionnaire_answers:questionnaire}).eq("id", profile.id).then(()=>{}).catch(()=>{});
+      onSave({...profile, questionnaire_answers:questionnaire});
+      onClose();
+    } catch(e) { console.error("About save failed:", e); }
+    setLoading(false);
+  };
+
+  const fetchAiQuestions = async () => {
+    setAiLoading(true);
+    try {
+      const data = await callChatApi({model:MODEL,max_tokens:400,messages:[{role:"user",content:`Generate 4 short gift preference questions with 3-4 multiple choice answers each for a user. Return ONLY valid JSON: {"questions":[{"q":"Question text","options":["A","B","C"]}]}`}]});
+      const text = (data.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim();
+      const parsed = JSON.parse(text);
+      if(parsed?.questions?.length) setAiQuestions(parsed.questions);
+    } catch(e) { console.error("AI questions failed:", e); }
+    setAiLoading(false);
+  };
+
+  return html`
+    <div style=${{position:"fixed",inset:0,background:"#000b",zIndex:2000,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick=${onClose}>
+      <div style=${{background:P.card,borderRadius:"20px 20px 0 0",padding:24,width:"100%",maxWidth:480,maxHeight:"85vh",overflowY:"auto"}} onClick=${e=>e.stopPropagation()}>
+        <div style=${{fontWeight:800,fontSize:18,color:P.text,marginBottom:20,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("sparkle",18,P.gold)} ${t("questionnaire")||"About you"}</div>
+        <div style=${{fontSize:12,color:P.muted,marginBottom:20,textAlign:"center"}}>Helps GiftMind recommend better gifts for you</div>
+
+        <div style=${{marginBottom:16}}>
+          <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:6}}>${t("qBudget")}</div>
+          <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
+            ${["Budget (€15-30)","Medium (€30-80)","Premium (€80-150)","Luxury (€150+)"].map(opt=>
+              html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,budget:opt}))} style=${{background:(questionnaire.budget===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.budget===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.budget===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.budget===opt)?700:400}}>${opt}</button>`)}
+          </div>
+        </div>
+        <div style=${{marginBottom:16}}>
+          <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:6}}>${t("qPreference")}</div>
+          <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
+            ${["Both","Experiences","Physical gifts","Personalised"].map(opt=>
+              html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,preference:opt}))} style=${{background:(questionnaire.preference===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.preference===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.preference===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.preference===opt)?700:400}}>${opt}</button>`)}
+          </div>
+        </div>
+        <div style=${{marginBottom:16}}>
+          <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:6}}>${t("qLifeStage")}</div>
+          <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
+            ${["Student","Professional","Parent","Homeowner","Retired","Other"].map(opt=>
+              html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,life_stage:opt}))} style=${{background:(questionnaire.life_stage===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire.life_stage===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire.life_stage===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire.life_stage===opt)?700:400}}>${opt}</button>`)}
+          </div>
+        </div>
+
+        ${aiQuestions ? html`<div style=${{marginBottom:16}}>
+          <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:8}}>${Icon("sparkle",12,P.gold)} AI questions</div>
+          ${aiQuestions.map((aq,i)=>html`<div key=${i} style=${{marginBottom:10}}>
+            <div style=${{fontSize:12,color:P.text,marginBottom:4}}>${aq.q}</div>
+            <div style=${{display:"flex",flexWrap:"wrap",gap:6}}>
+              ${(aq.options||[]).map(opt=>html`<button key=${opt} onClick=${()=>setQuestionnaire(q=>({...q,[`ai_${i}`]:opt}))} style=${{background:(questionnaire[`ai_${i}`]===opt)?`${P.gold}33`:"transparent",border:`1px solid ${(questionnaire[`ai_${i}`]===opt)?P.gold:P.border}`,borderRadius:99,padding:"4px 10px",fontSize:11,color:(questionnaire[`ai_${i}`]===opt)?P.goldL:P.muted,cursor:"pointer",fontWeight:(questionnaire[`ai_${i}`]===opt)?700:400}}>${opt}</button>`)}
+            </div>
+          </div>`)}
+        </div>` : html`<button onClick=${fetchAiQuestions} disabled=${aiLoading} style=${{width:"100%",background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:10,padding:"10px 0",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:16,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>${aiLoading?"...":html`${Icon("sparkle",14,P.gold)} Generate personalised questions with AI`}</button>`}
+
+        <div style=${{marginBottom:20}}>
+          <div style=${{fontSize:11,color:P.muted,fontWeight:700,marginBottom:8}}>${Icon("gift",12,P.gold)} Rate gift types (1–5)</div>
+          <div style=${{fontSize:12,color:P.muted,marginBottom:10}}>Helps adjust recommendations to your tastes</div>
+          ${GIFT_TYPES.map((gt,i)=>html`<div key=${gt} style=${{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+            <span style=${{flex:1,fontSize:13,color:P.text}}>${gt}</span>
+            <div style=${{display:"flex",gap:4}}>
+              ${[1,2,3,4,5].map(n=>html`<button key=${n} onClick=${()=>setQuestionnaire(q=>({...q,gift_ratings:{...q.gift_ratings,[gt]:n}}))} style=${{width:32,height:32,borderRadius:8,border:`1px solid ${(giftRatings[gt]||0)>=n?P.gold:P.border}`,background:(giftRatings[gt]||0)>=n?`${P.gold}33`:P.bg,color:(giftRatings[gt]||0)>=n?P.goldL:P.muted,fontSize:12,fontWeight:700,cursor:"pointer"}}>${n}</button>`)}
+            </div>
+          </div>`)}
+        </div>
+
+        <button onClick=${save} disabled=${loading} style=${{width:"100%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,border:"none",color:"#000",borderRadius:12,padding:"14px 0",fontSize:15,fontWeight:800,cursor:"pointer",marginBottom:10}}>${loading?t("loading"):t("save")}</button>
         <button onClick=${onClose} style=${{width:"100%",background:"transparent",border:"none",color:P.muted,padding:"8px 0",cursor:"pointer"}}>${t("cancel")}</button>
       </div>
     </div>`;
@@ -1136,9 +1182,9 @@ function AuthScreen({onAuth}) {
     <div style=${{minHeight:"100vh",background:P.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
       <div style=${{width:"100%",maxWidth:380}}>
         <div style=${{textAlign:"center",marginBottom:36}}>
-          <div style=${{width:72,height:72,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:32,margin:"0 auto 16px"}}>🎁</div>
+          <div style=${{width:72,height:72,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px"}}>${Icon("gift",36,"#0A0A18")}</div>
           <div style=${{fontFamily:"Georgia,serif",fontSize:34,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}>mate</span></div>
-          <div style=${{color:P.muted,fontSize:14,marginTop:4}}>${t("appTagline")}</div>
+          <div style=${{color:P.muted,fontSize:14,marginTop:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>${stripEmoji(t("appTagline"))} ${Icon("sparkle",14,P.gold)}</div>
         </div>
         <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:20,padding:28}}>
           <div style=${{display:"flex",marginBottom:22,background:P.bg,borderRadius:10,padding:3}}>
@@ -1164,7 +1210,7 @@ function AuthScreen({onAuth}) {
             <button onClick=${()=>openLegalPage("/privacy")} style=${{background:"none",border:"none",color:P.gold,cursor:"pointer",padding:"0 4px"}}>Privacy Policy</button>.
           </div>
         </div>
-        <div style=${{textAlign:"center",color:P.muted,fontSize:12,marginTop:20}}>Google & Apple login coming soon ✨</div>
+        <div style=${{textAlign:"center",color:P.muted,fontSize:12,marginTop:20,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>Google & Apple login coming soon ${Icon("sparkle",14,P.muted)}</div>
       </div>
     </div>`;
 }
@@ -1176,6 +1222,7 @@ function Onboarding({userId, onComplete}) {
   const [emoji,setEmoji] = useState("🎁"), [birthday,setBirthday] = useState("");
   const [interests,setInterests] = useState([]);
   const [loading,setLoading] = useState(false), [err,setErr] = useState("");
+  const [notifStatus,setNotifStatus] = useState("");
 
   const toggleI = i => setInterests(p => p.includes(i) ? p.filter(x=>x!==i) : [...p,i]);
 
@@ -1219,14 +1266,14 @@ function Onboarding({userId, onComplete}) {
       <div style=${{color:P.muted,fontSize:12,textAlign:"center",marginTop:10}}>You can skip this and add it later</div>
     </div>`,
     html`<div key="s3">
-      <div style=${{fontSize:26,textAlign:"center",marginBottom:6}}>What do you love? 💛</div>
+      <div style=${{fontSize:26,textAlign:"center",marginBottom:6,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("heart",28,P.gold)} What do you love?</div>
       <div style=${{color:P.muted,textAlign:"center",marginBottom:18,fontSize:14}}>Pick your interests</div>
       <div style=${{display:"flex",flexWrap:"wrap",gap:8}}>
         ${INTERESTS.map(i => html`<button key=${i} onClick=${()=>toggleI(i)} style=${{padding:"8px 14px",borderRadius:99,border:`1px solid ${interests.includes(i)?P.gold:P.border}`,background:interests.includes(i)?P.gold+"22":P.bg,color:interests.includes(i)?P.goldL:P.muted,fontSize:13,fontWeight:600,cursor:"pointer"}}>${translateInterest(i)}</button>`)}
       </div>
     </div>`,
     html`<div key="s4">
-      <div style=${{fontSize:26,textAlign:"center",marginBottom:6}}>Stay in the loop 🔔</div>
+      <div style=${{fontSize:26,textAlign:"center",marginBottom:6,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("bell",28,P.gold)} Stay in the loop</div>
       <div style=${{color:P.muted,textAlign:"center",marginBottom:22,fontSize:13,lineHeight:1.5}}>Allow Giftmate to send you notifications for gift messages, upcoming birthdays and group activity.</div>
       <div style=${{background:P.bg,borderRadius:14,padding:16,marginBottom:12}}>
         <div style=${{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
@@ -1242,7 +1289,8 @@ function Onboarding({userId, onComplete}) {
           <div><div style=${{fontWeight:700,color:P.text,fontSize:14}}>Group activity</div><div style=${{color:P.muted,fontSize:12}}>Messages and gift proposals</div></div>
         </div>
       </div>
-      <button onClick=${async()=>{ if("Notification" in window) await Notification.requestPermission(); }} style=${{width:"100%",background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:12,padding:"12px 0",fontWeight:700,fontSize:14,cursor:"pointer",marginBottom:8}}>🔔 Enable Notifications</button>
+      <button onClick=${async()=>{ if("Notification" in window) { try { const p=await Notification.requestPermission(); setNotifStatus(p==="granted"?"Notifications enabled!":"Permission denied"); } catch(e){ setNotifStatus("Not supported on this device"); } } else { setNotifStatus("Not supported"); } }} style=${{width:"100%",background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:12,padding:"12px 0",fontWeight:700,fontSize:14,cursor:"pointer",marginBottom:8,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>${Icon("bell",18,P.gold)} Enable Notifications</button>
+      ${notifStatus && html`<div style=${{color:notifStatus.includes("enabled")?P.green:P.muted,fontSize:12,textAlign:"center",marginBottom:8}}>${notifStatus}</div>`}
       <div style=${{color:P.muted,fontSize:11,textAlign:"center"}}>You can change this anytime in your phone settings</div>
     </div>`
   ];
@@ -1261,8 +1309,8 @@ function Onboarding({userId, onComplete}) {
           ${err && html`<div style=${{color:P.red,fontSize:13,marginTop:10,textAlign:"center"}}>${err}</div>`}
           <div style=${{display:"flex",gap:10,marginTop:22}}>
             ${step>0 && html`<button onClick=${()=>setStep(s=>s-1)} style=${{flex:1,background:"transparent",border:`1px solid ${P.border}`,color:P.muted,borderRadius:12,padding:"12px 0",fontWeight:700,cursor:"pointer"}}>Back</button>`}
-            <button onClick=${step<steps.length-1?()=>setStep(s=>s+1):finish} disabled=${loading} style=${{flex:2,background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",border:"none",borderRadius:12,padding:"14px 0",fontSize:15,fontWeight:800,cursor:"pointer"}}>
-              ${loading?"…":step<steps.length-1?"Continue →":"Start Gifting! 🎁"}
+            <button onClick=${step<steps.length-1?()=>setStep(s=>s+1):finish} disabled=${loading} style=${{flex:2,background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",border:"none",borderRadius:12,padding:"14px 0",fontSize:15,fontWeight:800,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+              ${loading?"…":step<steps.length-1?"Continue →":html`Start Gifting! ${Icon("gift",18,"#000")}`}
             </button>
           </div>
         </div>
@@ -1766,6 +1814,7 @@ function MyProfile({profile, setProfile, refreshProfile, friendsOccasions=[], on
   const [followCounts, setFollowCounts] = useState({followers:0, following:0});
   const [followModal, setFollowModal] = useState(null);
   const [viewingUser, setViewingUser] = useState(null);
+  const [showAbout, setShowAbout] = useState(false);
   // Wishlist lists
   const [activeList,setActiveList] = useState("all");
   const [showCreateList,setShowCreateList] = useState(false);
@@ -1893,6 +1942,7 @@ function MyProfile({profile, setProfile, refreshProfile, friendsOccasions=[], on
     ${viewingUser && html`<${FriendProfile} friend=${viewingUser} myProfile=${profile} following=${[]} onToggleFollow=${()=>{}} onBack=${()=>setViewingUser(null)}/>`}
     ${!viewingUser && html`<div>
     ${showEdit && html`<${EditProfileModal} profile=${localProfile} onSave=${async p=>{setProfile(p);setLocalProfile(p);if(refreshProfile) await refreshProfile();}} onLangChange=${onLangChange} onThemeChange=${onThemeChange} onClose=${()=>setShowEdit(false)}/>`}
+    ${showAbout && html`<${AboutModal} profile=${localProfile} onSave=${async p=>{setProfile(p);setLocalProfile(p);if(refreshProfile) await refreshProfile();}} onClose=${()=>setShowAbout(false)}/>`}
     <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:20,padding:20,marginBottom:14,textAlign:"center"}}>
       <div style=${{position:"relative",display:"inline-block",marginBottom:12}}>
         <${Avatar} emoji=${localProfile.emoji} avatarUrl=${localProfile.avatar_url} size=${80}/>
@@ -1923,7 +1973,8 @@ function MyProfile({profile, setProfile, refreshProfile, friendsOccasions=[], on
       ${(localProfile.interests||[]).length>0 && html`<div style=${{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center",marginTop:8}}>
         ${localProfile.interests.map(i => html`<span key=${i} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}33`,borderRadius:99,padding:"3px 10px",fontSize:11,color:P.goldL,fontWeight:600}}>${translateInterest(i)}</span>`)}
       </div>`}
-      <div style=${{display:"flex",gap:8,justifyContent:"center",marginTop:14}}>
+      <div style=${{display:"flex",gap:8,justifyContent:"center",marginTop:14,flexWrap:"wrap"}}>
+        <button onClick=${()=>setShowAbout(true)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 16px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("sparkle",14,P.gold)} About</button>
         <button onClick=${()=>setShowEdit(true)} style=${{background:`${P.gold}22`,border:`1px solid ${P.gold}44`,color:P.goldL,borderRadius:8,padding:"7px 16px",fontSize:12,fontWeight:700,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("pencil",14,P.gold)} ${stripEmoji(t("editProfileBtn"))}</button>
         <button onClick=${()=>sb.auth.signOut()} style=${{background:"none",border:`1px solid ${P.border}`,color:P.muted,borderRadius:8,padding:"7px 16px",fontSize:12,cursor:"pointer"}}>${t("logOut")}</button>
       </div>
@@ -2312,7 +2363,30 @@ function GroupChat({group, profile, feed, following, onBack}) {
   const [showSplit, setShowSplit] = useState(null);
   const [showAddMember, setShowAddMember] = useState(false);
   const [viewingMember, setViewingMember] = useState(null);
+  const [reactions, setReactions] = useState({}); // {message_id: {emoji: [user_ids]}}
   const msgEndRef = {current:null};
+
+  const toggleReaction = async (msgId, emoji) => {
+    const msgReacts = reactions[msgId] || {};
+    const users = msgReacts[emoji] || [];
+    const hasReacted = users.includes(profile.id);
+    if(hasReacted) {
+      await sb.from("group_message_reactions").delete().eq("message_id",msgId).eq("user_id",profile.id).eq("emoji",emoji);
+    } else {
+      await sb.from("group_message_reactions").insert({message_id:msgId, user_id:profile.id, emoji}).then(()=>{}).catch(()=>{});
+    }
+    setReactions(prev => {
+      const next = {...prev}; next[msgId] = {...(next[msgId]||{})};
+      if(hasReacted) {
+        next[msgId][emoji] = (next[msgId][emoji]||[]).filter(u=>u!==profile.id);
+        if(!next[msgId][emoji].length) delete next[msgId][emoji];
+      } else {
+        next[msgId][emoji] = [...(next[msgId][emoji]||[]), profile.id];
+      }
+      if(!Object.keys(next[msgId]).length) delete next[msgId];
+      return next;
+    });
+  };
 
   const load = async () => {
     const [msgs, mems, props] = await Promise.all([
@@ -2320,7 +2394,17 @@ function GroupChat({group, profile, feed, following, onBack}) {
       sb.from("group_members").select("*, user:user_id(id,display_name,emoji,avatar_url,username)").eq("group_id",group.id),
       sb.from("gift_proposals").select("*").eq("group_id",group.id).order("created_at")
     ]);
-    setMessages(msgs.data||[]); setMembers(mems.data||[]); setProposals(props.data||[]);
+    const msgIds = (msgs?.data||[]).map(m=>m.id);
+    let reactMap = {};
+    if(msgIds.length) {
+      const {data: reactData} = await sb.from("group_message_reactions").select("message_id,user_id,emoji").in("message_id",msgIds);
+      for(const r of (reactData||[])) {
+        if(!reactMap[r.message_id]) reactMap[r.message_id] = {};
+        if(!reactMap[r.message_id][r.emoji]) reactMap[r.message_id][r.emoji] = [];
+        reactMap[r.message_id][r.emoji].push(r.user_id);
+      }
+    }
+    setMessages(msgs.data||[]); setMembers(mems.data||[]); setProposals(props.data||[]); setReactions(reactMap);
     setLoading(false);
   };
 
@@ -2425,6 +2509,8 @@ function GroupChat({group, profile, feed, following, onBack}) {
         const isProposal = m.message_type==="proposal";
         const proposalMatch = isProposal && m.content && m.content.match(/^(.*?proposed:\s*)([\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F1E0}-\u{1F1FF}]+)\s*(.*)$/u);
         const msgContent = proposalMatch ? html`${proposalMatch[1]}${Icon(emojiToIconProposal(proposalMatch[2]),14,isMe?"#000":P.text)} ${proposalMatch[3]}` : (isProposal ? stripAllEmoji(m.content) : m.content);
+        const msgReacts = reactions[m.id] || {};
+        const REACT_EMOJIS = ["❤️","👍","😂","🎁"];
         return html`<div key=${m.id} style=${{display:"flex",gap:8,alignItems:"flex-end",flexDirection:isMe?"row-reverse":"row"}}>
           <div onClick=${()=>setViewingMember(isMe?profile:{id:m.sender_id,...m.sender})} style=${{cursor:"pointer",flexShrink:0}}>
             <${Avatar} emoji=${senderEmoji} avatarUrl=${senderAvatar} size=${28}/>
@@ -2434,8 +2520,14 @@ function GroupChat({group, profile, feed, following, onBack}) {
             <div style=${{background:isMe?`linear-gradient(135deg,${P.goldD},${P.gold})`:P.card,color:isMe?"#000":P.text,borderRadius:isMe?"14px 14px 4px 14px":"14px 14px 14px 4px",padding:"9px 13px",fontSize:14,border:isMe?"none":`1px solid ${P.border}`,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
               ${msgContent}
             </div>
-            <div style=${{fontSize:9,color:P.muted,marginTop:2,textAlign:isMe?"right":"left",marginLeft:isMe?0:4}}>
-              ${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
+            ${Object.keys(msgReacts).length>0 && html`<div style=${{display:"flex",flexWrap:"wrap",gap:4,marginTop:4,flexDirection:isMe?"row-reverse":"row"}}>
+              ${Object.entries(msgReacts).map(([emoji,users]) => html`<button key=${emoji} onClick=${()=>toggleReaction(m.id,emoji)} style=${{background:users.includes(profile.id)?`${P.gold}33`:"transparent",border:`1px solid ${P.border}`,borderRadius:99,padding:"2px 6px",fontSize:12,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:2}}>${emoji} ${users.length}</button>`)}
+            </div>`}
+            <div style=${{display:"flex",alignItems:"center",gap:4,marginTop:4,flexDirection:isMe?"row-reverse":"row"}}>
+              ${!isMe && html`<div style=${{display:"flex",gap:2}}>
+                ${REACT_EMOJIS.map(emoji=>html`<button key=${emoji} onClick=${()=>toggleReaction(m.id,emoji)} style=${{background:"none",border:"none",fontSize:14,cursor:"pointer",padding:2,opacity:0.7}} title="React">${emoji}</button>`)}
+              </div>`}
+              <span style=${{fontSize:9,color:P.muted}}>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</span>
             </div>
           </div>
         </div>`;
@@ -2842,14 +2934,16 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
     setUnreadCount(count||0);
   };
 
-  // Load group unread — counts # of GROUPS with new messages (not total messages)
+  // Load group unread — counts # of GROUPS with new messages OR never opened (added for first time)
   const loadGroupUnread = async () => {
     const {data:memberOf} = await sb.from("group_members").select("group_id").eq("user_id", profile.id);
     const ids = (memberOf||[]).map(m=>m.group_id);
     if(!ids.length) { setGroupUnread(0); return; }
     let groupsWithUnread = 0;
     for(const gid of ids) {
-      const lastRead = (() => { try { return localStorage.getItem(`gm_lastread_${gid}`) || "1970-01-01"; } catch(e) { return "1970-01-01"; } })();
+      const lastRead = (() => { try { return localStorage.getItem(`gm_lastread_${gid}`) || ""; } catch(e) { return ""; } })();
+      const neverOpened = !lastRead;
+      if(neverOpened) { groupsWithUnread++; continue; }
       const {count} = await sb.from("group_messages").select("id",{count:"exact",head:true})
         .eq("group_id",gid).gt("created_at",lastRead).neq("sender_id",profile.id).neq("message_type","system");
       if((count||0) > 0) groupsWithUnread++;
@@ -2938,7 +3032,7 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
     return () => { track("session_end", {}); sb.removeChannel(channel); sb.removeChannel(groupChannel); sb.removeChannel(memberChannel); sb.removeChannel(reqChannel); sb.removeChannel(reqAcceptChannel); };
   }, []);
 
-  const goTab = t => { trackTabView(t); setTab(t); if(t==="profile") loadUnread(); if(t==="groups") setGroupUnread(0); else loadGroupUnread(); };
+  const goTab = t => { trackTabView(t); setTab(t); if(t==="profile") loadUnread(); loadGroupUnread(); };
 
   const loadFollowing = async () => {
     const [{data:followData}, {data:reqs}, {data:acceptedReqs}] = await Promise.all([
