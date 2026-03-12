@@ -3133,7 +3133,7 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
     <div style=${{background:P.bg,minHeight:"100vh",maxWidth:480,margin:"0 auto",paddingBottom:74}}>
       <div style=${{background:P.card,borderBottom:`1px solid ${P.border}`,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
         <div style=${{display:"flex",alignItems:"center",gap:8}}>
-          <svg width="28" height="28" viewBox="0 0 44 44" fill="none" preserveAspectRatio="xMidYMid meet"><circle cx="22" cy="22" r="18" fill="#FFE566"/><text x="8" y="27" font-family="Georgia,serif" font-style="italic" font-weight="600" font-size="8" fill="#1a1a2e" dominant-baseline="alphabetic">gift m</text><text x="37" y="27" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="14" fill="#1a1a2e" dominant-baseline="alphabetic">8</text></svg>
+          <svg width="28" height="28" viewBox="0 0 44 44" fill="none" preserveAspectRatio="xMidYMid meet"><circle cx="22" cy="22" r="18" fill="#FFE566"/><text x="8" y="27" font-family="Georgia,serif" font-style="italic" font-weight="600" font-size="8" fill="#1a1a2e" dominant-baseline="alphabetic">gift m</text><text x="31" y="27" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="14" fill="#1a1a2e" dominant-baseline="alphabetic">8</text></svg>
           <div style=${{fontFamily:"Georgia,serif",fontSize:22,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}> m8</span></div>
         </div>
         <div style=${{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
