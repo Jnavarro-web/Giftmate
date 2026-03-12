@@ -1743,7 +1743,7 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
         <button onClick=${()=>onToggleFollow(friend.id,friend)} style=${{background:isF?P.border:pendingRequests.includes(friend.id)?`${P.gold}22`:`linear-gradient(135deg,${P.goldD},${P.gold})`,border:pendingRequests.includes(friend.id)?`1px solid ${P.gold}88`:"none",color:isF?P.muted:pendingRequests.includes(friend.id)?P.goldL:"#000",borderRadius:10,padding:"10px 20px",fontWeight:700,fontSize:14,cursor:"pointer"}}>
           ${isF ? t("following") : pendingRequests.includes(friend.id) ? "Requested ⏳" : friend.is_private ? "Request 🔒" : t("follow")}
         </button>
-        <button onClick=${()=>setShowSendGift(true)} style=${{background:"#C084FC22",border:"1px solid #C084FC66",color:"#C084FC",borderRadius:10,padding:"10px 20px",fontWeight:700,fontSize:14,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("gift",16,"#C084FC")} ${stripEmoji(t("iGiftedThem"))}</button>
+        <button onClick=${()=>setShowSendGift(true)} style=${{background:"#E8B92322",border:"1px solid #E8B92366",color:"#E8B923",borderRadius:10,padding:"10px 20px",fontWeight:700,fontSize:14,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:6}}>${Icon("gift",16,"#E8B923")} ${stripEmoji(t("iGiftedThem"))}</button>
       </div>
     </div>
     ${showSendGift && html`<${SendGiftModal} friend=${friend} myProfile=${myProfile} onClose=${()=>setShowSendGift(false)} toast=${msg=>{setLocalToast(msg);setTimeout(()=>setLocalToast(null),3000);}}/>`}
@@ -1791,7 +1791,7 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
         `;
       })()}
     </div>`}
-    ${section==="gifts" && giftsReceived.map(g => html`<div key=${g.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"12px 14px",marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style=${{fontWeight:600,color:P.text}}>${g.gift_name}</div>${g.from_whom&&html`<div style=${{fontSize:13,color:P.muted}}>${t("fromWhom")} ${g.from_whom}${g.occasion?` · ${g.occasion}`:""}</div>`}</div><span style=${{display:"flex",alignItems:"center"}}>${Icon("heart",18,P.gold)}</span></div>`)}
+    ${section==="gifts" && giftsReceived.map(g => html`<div key=${g.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"12px 14px",marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style=${{fontWeight:600,color:P.text}}>${g.gift_name}</div>${g.from_whom&&html`<div style=${{fontSize:13,color:P.gold}}>${t("fromWhom")} ${g.from_whom}${g.occasion?` · ${g.occasion}`:""}</div>`}</div></div>`)}
     ${section==="gifts" && giftsReceived.length===0 && html`<div style=${{color:P.muted,textAlign:"center",padding:20,fontSize:14}}>${t("noGiftsRecorded")}</div>`}
     ${(toast||localToast) && html`<${Toast} msg=${toast||localToast} onDone=${()=>{setToast(null);setLocalToast(null);}}/>`}
   </div>`;
@@ -2111,8 +2111,7 @@ function MyProfile({profile, setProfile, refreshProfile, friendsOccasions=[], on
 
     ${section==="gifts" && html`<div>
       ${giftsReceived.map(g => html`<div key=${g.id} style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:"12px 14px",marginBottom:8,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div><div style=${{fontWeight:600,color:P.text}}>${g.gift_name}</div>${g.from_whom&&html`<div style=${{fontSize:13,color:P.muted}}>${t("fromWhom")} ${g.from_whom}${g.occasion?` · ${g.occasion}`:""}</div>`}</div>
-        <span style=${{display:"flex",alignItems:"center"}}>${Icon("heart",18,P.gold)}</span>
+        <div><div style=${{fontWeight:600,color:P.text}}>${g.gift_name}</div>${g.from_whom&&html`<div style=${{fontSize:13,color:P.gold}}>${t("fromWhom")} ${g.from_whom}${g.occasion?` · ${g.occasion}`:""}</div>`}</div>
       </div>`)}
       ${addingGift ? html`<div style=${{background:P.card,border:`1px solid ${P.gold}44`,borderRadius:14,padding:16,marginBottom:10}}>
         <${Inp} value=${newGift.gift_name} onChange=${v=>setNewGift(g=>({...g,gift_name:v}))} placeholder="Gift name" style=${{marginBottom:8}}/>
