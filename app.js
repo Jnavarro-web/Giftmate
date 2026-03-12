@@ -3133,7 +3133,7 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
     <div style=${{background:P.bg,minHeight:"100vh",maxWidth:480,margin:"0 auto",paddingBottom:74}}>
       <div style=${{background:P.card,borderBottom:`1px solid ${P.border}`,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
         <div style=${{display:"flex",alignItems:"center",gap:8}}>
-          <img src="/icon-192.png" alt="Giftmate" style=${{width:28,height:28,borderRadius:"50%",objectFit:"cover"}}/>
+          <svg width="28" height="28" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="18" fill="#FFD700"/><text x="22" y="19" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="600" font-size="9" fill="#1a1a2e" letter-spacing="0.5">gift</text><text x="22" y="32" text-anchor="middle" font-family="Arial,sans-serif" font-weight="600" font-size="10" fill="#1a1a2e" letter-spacing="0.6">MATE</text></svg>
           <div style=${{fontFamily:"Georgia,serif",fontSize:22,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}>mate</span></div>
         </div>
         <div style=${{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
