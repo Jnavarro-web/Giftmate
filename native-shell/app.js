@@ -4,7 +4,8 @@ const html = htm.bind(React.createElement);
 const SUPABASE_URL = "https://xpvvutfojaqtrybwlnph.supabase.co";
 const SUPABASE_KEY = "sb_publishable_S1FnE9dxWOZCZ77Bm93SSg_ObsDrMVc";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const API = `${typeof window !== "undefined" ? window.location.origin : "https://giftmate-sigma.vercel.app"}/api/chat`, MODEL = "claude-sonnet-4-20250514";
+const _apiOrigin = typeof window !== "undefined" && window.location?.origin && !window.location.origin.startsWith("capacitor://") && !window.location.origin.startsWith("ionic://") ? window.location.origin : "https://www.giftm8.app";
+const API = `${_apiOrigin}/api/chat`, MODEL = "claude-sonnet-4-20250514";
 const SUPPORT_EMAIL = "support@giftm8.app";
 
 const THEMES = {
