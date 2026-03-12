@@ -2695,7 +2695,7 @@ function StarsTab({profile, setProfile}) {
 
   const share = async via => {
     const url = "https://giftmate-sigma.vercel.app";
-    const msg = `🎁 Check out Giftmate — the social gifting app! ${url}`;
+    const msg = `Check out Giftmate — the social gifting app! ${url}`;
     if(via==="wa") window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,"_blank");
     else await navigator.clipboard.writeText(url);
     const ns = stars+10;
