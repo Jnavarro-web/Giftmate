@@ -2870,7 +2870,8 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
       if(gifts?.length) track("concierge_gifts_shown", {gifts: gifts.map(g=>({name:g.name, price:g.price})), session_id: SESSION_ID});
     } catch(e) {
       captureError("concierge_send", e, {messageCount: newRaw.length});
-      setMessages(p => [...p, {role:"assistant", content:t("conciergeError")}]);
+      const errMsg = e?.message || t("conciergeError");
+      setMessages(p => [...p, {role:"assistant", content:errMsg}]);
     }
     setLoading(false);
   };
