@@ -23,7 +23,9 @@ function applyCors(req, res) {
   const origin = req.headers.origin || "";
   const allowed = getAllowedOrigins();
   const isLocalhost = origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1");
-  if (allowed.includes(origin) || isLocalhost) {
+  const isVercelApp = origin.includes("vercel.app");
+  const isGiftm8 = origin.includes("giftm8");
+  if (allowed.includes(origin) || isLocalhost || isVercelApp || isGiftm8) {
     res.setHeader("Access-Control-Allow-Origin", origin || "*");
     res.setHeader("Vary", "Origin");
   } else if (origin) {
