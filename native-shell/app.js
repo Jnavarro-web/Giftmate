@@ -4,7 +4,7 @@ const html = htm.bind(React.createElement);
 const SUPABASE_URL = "https://xpvvutfojaqtrybwlnph.supabase.co";
 const SUPABASE_KEY = "sb_publishable_S1FnE9dxWOZCZ77Bm93SSg_ObsDrMVc";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const API = "https://giftmate-sigma.vercel.app/api/chat", MODEL = "claude-sonnet-4-20250514";
+const API = `${typeof window !== "undefined" ? window.location.origin : "https://giftmate-sigma.vercel.app"}/api/chat`, MODEL = "claude-sonnet-4-20250514";
 const SUPPORT_EMAIL = "support@giftm8.app";
 
 const THEMES = {
@@ -1662,8 +1662,9 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
     try {
       const data = await callChatApi({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} for their ${occ.type} in ${city}. Interests: ${(friend.interests||[]).join(", ")||"unknown"}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}.${pref} Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60 (like Amazon pricing), experiences €25-80 (like GetYourGuide/Viator pricing). Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]});
       const text = (data.content?.[0]?.text||"[]").replace(/```json|```/g,"").trim();
-      setGiftIdeas(JSON.parse(text));
-    } catch(e) { captureError("friend_gift_ideas", e, {friendId: friend.id, occasion: occ.type}); setToast("Couldn't load ideas — try again"); }
+      const match = text.match(/\[[\s\S]*\]/);
+      setGiftIdeas(JSON.parse(match ? match[0] : "[]"));
+    } catch(e) { captureError("friend_gift_ideas", e, {friendId: friend.id, occasion: occ.type}); setToast(e?.message || "Couldn't load ideas — try again"); }
     setGiftLoading(false);
   };
 
@@ -1677,8 +1678,9 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
     try {
       const data = await callChatApi({model:MODEL,max_tokens:700,messages:[{role:"user",content:`Generate 5 personalised gift ideas for ${friend.display_name} based on their interests: ${interests}. They live in/near ${city}. Past gifts: ${giftsReceived.map(g=>g.gift_name).join(", ")||"none"}. Wishlist: ${wishlist.map(w=>w.name).join(", ")||"empty"}.${pref} Mix physical products AND experiences (tours, classes, workshops in ${city}). Use REALISTIC market prices: physical gifts €15-60, experiences €25-80. Return ONLY a valid JSON array, nothing else: [{"name":"...","description":"under 10 words","price":30,"emoji":"🎁"}]`}]});
       const text = (data.content?.[0]?.text||"[]").replace(/```json|```/g,"").trim();
-      setGiftIdeas(JSON.parse(text));
-    } catch(e) { captureError("friend_gift_ideas_interests", e, {friendId: friend.id}); setToast("Couldn't load ideas — try again"); }
+      const match = text.match(/\[[\s\S]*\]/);
+      setGiftIdeas(JSON.parse(match ? match[0] : "[]"));
+    } catch(e) { captureError("friend_gift_ideas_interests", e, {friendId: friend.id}); setToast(e?.message || "Couldn't load ideas — try again"); }
     setGiftLoading(false);
   };
 
