@@ -25,7 +25,7 @@
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/account-deletion", "destination": "/account-deletion.html" },
     { "source": "/og-image.png", "destination": "/api/og-image" },
-    { "source": "/((?!icon-192\\.png|icon-512\\.png|manifest\\.json).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|icon-192\\.png|icon-512\\.png|manifest\\.json).*)", "destination": "/index.html" }
   ],
   "functions": {
     "api/og-image.js": {
