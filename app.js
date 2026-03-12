@@ -1183,7 +1183,7 @@ function AuthScreen({onAuth}) {
       <div style=${{width:"100%",maxWidth:380}}>
         <div style=${{textAlign:"center",marginBottom:36}}>
           <div style=${{width:72,height:72,borderRadius:"50%",background:`linear-gradient(135deg,${P.goldD},${P.gold})`,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px"}}>${Icon("gift",36,"#0A0A18")}</div>
-          <div style=${{fontFamily:"Georgia,serif",fontSize:34,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}>mate</span></div>
+          <div style=${{fontFamily:"Georgia,serif",fontSize:34,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}> m8</span></div>
           <div style=${{color:P.muted,fontSize:14,marginTop:4,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>${stripEmoji(t("appTagline"))} ${Icon("sparkle",14,P.gold)}</div>
         </div>
         <div style=${{background:P.card,border:`1px solid ${P.border}`,borderRadius:20,padding:28}}>
@@ -1299,7 +1299,7 @@ function Onboarding({userId, onComplete}) {
     <div style=${{minHeight:"100vh",background:P.bg,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
       <div style=${{width:"100%",maxWidth:400}}>
         <div style=${{textAlign:"center",marginBottom:24}}>
-          <div style=${{fontFamily:"Georgia,serif",fontSize:24,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}>mate</span></div>
+          <div style=${{fontFamily:"Georgia,serif",fontSize:24,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}> m8</span></div>
           <div style=${{display:"flex",justifyContent:"center",gap:6,marginTop:12}}>
             ${steps.map((_,i) => html`<div key=${i} style=${{width:i===step?24:8,height:8,borderRadius:99,background:i<=step?P.gold:P.border,transition:"all 0.3s"}}/>`)}
           </div>
@@ -2695,7 +2695,7 @@ function StarsTab({profile, setProfile}) {
 
   const share = async via => {
     const url = "https://giftmate-sigma.vercel.app";
-    const msg = `Check out Giftmate — the social gifting app! ${url}`;
+    const msg = `Check out Gift m8 — the social gifting app! ${url}`;
     if(via==="wa") window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,"_blank");
     else await navigator.clipboard.writeText(url);
     const ns = stars+10;
@@ -3133,8 +3133,8 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
     <div style=${{background:P.bg,minHeight:"100vh",maxWidth:480,margin:"0 auto",paddingBottom:74}}>
       <div style=${{background:P.card,borderBottom:`1px solid ${P.border}`,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
         <div style=${{display:"flex",alignItems:"center",gap:8}}>
-          <svg width="28" height="28" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="18" fill="#FFD700"/><text x="22" y="19" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="600" font-size="9" fill="#1a1a2e" letter-spacing="0.5">gift</text><text x="22" y="32" text-anchor="middle" font-family="Arial,sans-serif" font-weight="600" font-size="10" fill="#1a1a2e" letter-spacing="0.6">MATE</text></svg>
-          <div style=${{fontFamily:"Georgia,serif",fontSize:22,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}>mate</span></div>
+          <svg width="28" height="28" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="18" fill="#FFD700"/><text x="10" y="27" font-family="Georgia,serif" font-style="italic" font-weight="600" font-size="8" fill="#1a1a2e">gift m</text><text x="34" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#1a1a2e">8</text></svg>
+          <div style=${{fontFamily:"Georgia,serif",fontSize:22,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}> m8</span></div>
         </div>
         <div style=${{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
           <div style=${{fontSize:13,color:P.gold,fontWeight:700,display:"flex",alignItems:"center",gap:4}}>${Icon("star",14,P.gold)} ${profile.stars||0}</div>
