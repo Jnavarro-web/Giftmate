@@ -2362,6 +2362,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
   const [showSplit, setShowSplit] = useState(null);
   const [showAddMember, setShowAddMember] = useState(false);
   const [viewingMember, setViewingMember] = useState(null);
+  const [reactingToMessageId, setReactingToMessageId] = useState(null);
   const [reactions, setReactions] = useState({}); // {message_id: {emoji: [user_ids]}}
   const msgEndRef = {current:null};
 
@@ -2374,6 +2375,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
     } else {
       await sb.from("group_message_reactions").insert({message_id:msgId, user_id:profile.id, emoji}).then(()=>{}).catch(()=>{});
     }
+    setReactingToMessageId(null);
     setReactions(prev => {
       const next = {...prev}; next[msgId] = {...(next[msgId]||{})};
       if(hasReacted) {
@@ -2510,7 +2512,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
         const msgContent = proposalMatch ? html`${proposalMatch[1]}${Icon(emojiToIconProposal(proposalMatch[2]),14,isMe?"#000":P.text)} ${proposalMatch[3]}` : (isProposal ? stripAllEmoji(m.content) : m.content);
         const msgReacts = reactions[m.id] || {};
         const REACT_EMOJIS = ["❤️","👍","😂","😮","😢","😡","🎁","🎉","👏","⭐","🔥","🙏"];
-        return html`<div key=${m.id} style=${{display:"flex",gap:8,alignItems:"flex-end",flexDirection:isMe?"row-reverse":"row"}}>
+        return html`<div key=${m.id} style=${{display:"flex",gap:8,alignItems:"flex-end",flexDirection:isMe?"row-reverse":"row",position:"relative",zIndex:reactingToMessageId===m.id?100:1}}>
           <div onClick=${()=>setViewingMember(isMe?profile:{id:m.sender_id,...m.sender})} style=${{cursor:"pointer",flexShrink:0}}>
             <${Avatar} emoji=${senderEmoji} avatarUrl=${senderAvatar} size=${28}/>
           </div>
@@ -2522,9 +2524,10 @@ function GroupChat({group, profile, feed, following, onBack}) {
             ${Object.keys(msgReacts).length>0 && html`<div style=${{display:"flex",flexWrap:"wrap",gap:4,marginTop:4,flexDirection:isMe?"row-reverse":"row"}}>
               ${Object.entries(msgReacts).map(([emoji,users]) => html`<button key=${emoji} onClick=${()=>toggleReaction(m.id,emoji)} style=${{background:users.includes(profile.id)?`${P.gold}33`:"transparent",border:`1px solid ${P.border}`,borderRadius:99,padding:"2px 6px",fontSize:12,cursor:"pointer",display:"inline-flex",alignItems:"center",gap:2}}>${emoji} ${users.length}</button>`)}
             </div>`}
-            <div style=${{display:"flex",alignItems:"center",gap:4,marginTop:4,flexDirection:isMe?"row-reverse":"row"}}>
-              ${!isMe && html`<div style=${{display:"flex",flexWrap:"wrap",gap:2}}>
-                ${REACT_EMOJIS.map(emoji=>html`<button key=${emoji} onClick=${()=>toggleReaction(m.id,emoji)} style=${{background:"none",border:"none",fontSize:14,cursor:"pointer",padding:2,opacity:0.7}} title="React">${emoji}</button>`)}
+            <div style=${{display:"flex",alignItems:"center",gap:4,marginTop:4,flexDirection:isMe?"row-reverse":"row",position:"relative"}}>
+              ${!isMe && html`<button onClick=${e=>{e.stopPropagation();setReactingToMessageId(reactingToMessageId===m.id?null:m.id);}} style=${{background:"none",border:"none",fontSize:12,color:P.muted,cursor:"pointer",padding:"2px 6px",fontWeight:600}}>React</button>`}
+              ${reactingToMessageId===m.id && html`<div style=${{position:"absolute",bottom:"100%",left:isMe?"auto":0,right:isMe?0:"auto",marginBottom:4,background:P.card,border:`1px solid ${P.border}`,borderRadius:12,padding:8,display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:4,boxShadow:"0 4px 12px #0004",zIndex:100}}>
+                ${REACT_EMOJIS.map(emoji=>html`<button key=${emoji} onClick=${()=>toggleReaction(m.id,emoji)} style=${{background:"none",border:"none",fontSize:18,cursor:"pointer",padding:4}}>${emoji}</button>`)}
               </div>`}
               <span style=${{fontSize:9,color:P.muted}}>${new Date(m.created_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</span>
             </div>
@@ -2533,6 +2536,7 @@ function GroupChat({group, profile, feed, following, onBack}) {
       })}
     </div>
 
+    ${reactingToMessageId && html`<div onClick=${()=>setReactingToMessageId(null)} style=${{position:"fixed",inset:0,zIndex:99}}/>`}
     ${viewingMember && html`
       <div onClick=${()=>setViewingMember(null)} style=${{position:"fixed",inset:0,background:"#000a",zIndex:3000,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
         <div onClick=${e=>e.stopPropagation()} style=${{background:P.card,borderRadius:"20px 20px 0 0",padding:24,width:"100%",maxWidth:480,textAlign:"center"}}>
@@ -2792,7 +2796,7 @@ function ConciergeTab({profile}) {
 
 IMPORTANT: You MUST respond entirely in ${langNames[lang]||"English"}. Every word of your response must be in ${langNames[lang]||"English"}.
 
-Your personality: clever, warm, occasionally cheeky, like a best friend who happens to know every cool spot in the city and gives the most thoughtful gifts. You make people feel excited about gifting. Use playful humour, unexpected observations, and the odd perfectly-placed emoji. Never be boring or generic.
+Your personality: clever, warm, occasionally cheeky, like a best friend who happens to know every cool spot in the city and gives the most thoughtful gifts. You make people feel excited about gifting. Use playful humour, unexpected observations, and contextually relevant emojis woven naturally into your text. Match emojis to the topic: makeup/beauty→💄💅✨, food/dining→🍕🍷☕, travel→✈️🌴🏖️, tech/gadgets→📱⌚, fashion→👗👠, books→📚, fitness→💪🏃, music→🎵🎸, art→🎨, pets→🐶🐱, plants→🌿🌸, etc. Never be boring or generic.
 
 CRITICAL RULES:
 1. ALWAYS include <gifts> with 5 recommendations when the user has given ANY info. Even a little info = recommend immediately.
@@ -2881,12 +2885,12 @@ Mix: experiences, physical gifts, personalised, hotels, nightlife/events. BUT if
           <div style=${{maxWidth:"82%"}}>
             ${m.role==="assistant" ? html`
               <div style=${{background:P.card,color:P.text,borderRadius:"18px 18px 18px 4px",padding:"11px 15px",fontSize:14,lineHeight:1.6,border:`1px solid ${P.border}`}}>
-                ${m.content && renderBold(stripAllEmoji(m.content))}
+                ${m.content && renderBold(m.content)}
               </div>
               ${m.gifts && html`<${GiftCards} gifts=${m.gifts} city=${city}/>`}
             ` : html`
               <div style=${{background:`linear-gradient(135deg,${P.goldD},${P.gold})`,color:"#000",borderRadius:"18px 18px 4px 18px",padding:"11px 15px",fontSize:14,lineHeight:1.5,fontWeight:600}}>
-                ${stripAllEmoji(m.content)}
+                ${m.content}
               </div>`}
           </div>
           ${m.role==="user" && html`<div style=${{flexShrink:0}} key=${"avatar-"+profile.emoji+(profile.avatar_url||"")}><${Avatar} emoji=${profile.emoji} avatarUrl=${profile.avatar_url} size=${28}/></div>`}
