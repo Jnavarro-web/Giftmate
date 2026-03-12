@@ -3133,7 +3133,7 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
     <div style=${{background:P.bg,minHeight:"100vh",maxWidth:480,margin:"0 auto",paddingBottom:74}}>
       <div style=${{background:P.card,borderBottom:`1px solid ${P.border}`,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
         <div style=${{display:"flex",alignItems:"center",gap:8}}>
-          <img src="/icon-192.png" alt="Giftmate" style=${{width:32,height:32,borderRadius:8,objectFit:"contain"}}/>
+          <img src="/icon-192.png" alt="Giftmate" style=${{width:28,height:28,borderRadius:"50%",objectFit:"cover"}}/>
           <div style=${{fontFamily:"Georgia,serif",fontSize:22,fontWeight:900,color:P.text}}>gift<span style=${{color:P.gold}}>mate</span></div>
         </div>
         <div style=${{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
