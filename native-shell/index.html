@@ -12,11 +12,11 @@
   <meta property="og:url" content="https://giftmate-sigma.vercel.app"/>
   <meta property="og:title" content="Gift m8 — The social gifting app"/>
   <meta property="og:description" content="AI-powered gift ideas for every occasion. Follow friends, never miss a birthday, give the perfect gift every time."/>
-  <meta property="og:image" content="https://giftmate-sigma.vercel.app/og-image.png?v=2"/>
+  <meta property="og:image" content="https://giftmate-sigma.vercel.app/og-image.png?v=3"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:image" content="https://giftmate-sigma.vercel.app/og-image.png?v=2"/>
+  <meta name="twitter:image" content="https://giftmate-sigma.vercel.app/og-image.png?v=3"/>
   <link rel="manifest" href="/manifest.json"/>
   <link rel="apple-touch-icon" href="/icon-192.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@900&family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
@@ -25,16 +25,16 @@
     body { background: #0A0A18; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", system-ui, sans-serif; }
     #root { min-height: 100vh; }
     #splash { position:fixed;inset:0;background:#0A0A18;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.4s ease; }
-    #splash p { color:#F4A438;font-family:Georgia,serif;font-style:italic;font-size:22px;font-weight:700;margin-top:16px; }
+    #splash p { color:#FFE566;font-family:Georgia,serif;font-style:italic;font-size:22px;font-weight:700;margin-top:16px; }
     input,button,select,textarea { font-family: inherit; }
   </style>
 </head>
 <body>
   <div id="splash">
-    <svg width="80" height="80" viewBox="0 0 44 44" fill="none">
-      <circle cx="22" cy="22" r="18" fill="#FFD700" id="splash-circle" data-splash-brand="true"/>
-      <text x="10" y="27" font-family="Georgia,serif" font-style="italic" font-weight="600" font-size="8" fill="#1a1a2e" dominant-baseline="alphabetic">gift m</text>
-      <text x="34" y="27" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="16" fill="#1a1a2e" dominant-baseline="alphabetic">8</text>
+    <svg width="80" height="80" viewBox="0 0 44 44" fill="none" preserveAspectRatio="xMidYMid meet">
+      <circle cx="22" cy="22" r="18" fill="#FFE566" id="splash-circle" data-splash-brand="true"/>
+      <text x="8" y="27" font-family="Georgia,serif" font-style="italic" font-weight="600" font-size="8" fill="#1a1a2e" dominant-baseline="alphabetic">gift m</text>
+      <text x="37" y="27" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="14" fill="#1a1a2e" dominant-baseline="alphabetic">8</text>
     </svg>
     <p id="splash-title">Gift m8</p>
   </div>
@@ -95,7 +95,7 @@
         var circle = document.getElementById("splash-circle");
         if (circle && !circle.getAttribute("data-splash-brand")) circle.setAttribute("fill", th.gold);
         var title = document.getElementById("splash-title");
-        if (title) title.style.color = th.gold;
+        if (title) title.style.color = (circle && circle.getAttribute("data-splash-brand")) ? "#FFE566" : th.gold;
         var meta = document.getElementById("theme-color-meta");
         if (meta) meta.content = th.gold;
       } catch(e) {}
