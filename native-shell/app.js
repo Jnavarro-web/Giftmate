@@ -3085,11 +3085,18 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
   useEffect(() => {
     if(!searchQ.trim()) { setSearchResults([]); return; }
     const t = setTimeout(async () => {
-      const {data} = await sb.from("profiles").select("*").ilike("username",`%${searchQ}%`).neq("id",profile.id).limit(20);
-      setSearchResults(data||[]);
+      try {
+        const {data, error} = await sb.rpc("search_profiles_social", {search_q: searchQ.trim(), current_user_id: profile.id});
+        if (error) throw error;
+        setSearchResults(data || []);
+      } catch (e) {
+        captureError("search_profiles_social", e, {searchQ});
+        const {data} = await sb.from("profiles").select("*").ilike("username",`%${searchQ}%`).neq("id",profile.id).limit(20);
+        setSearchResults(data || []);
+      }
     }, 300);
     return () => clearTimeout(t);
-  }, [searchQ]);
+  }, [searchQ, profile.id]);
 
   const toggleFollow = async (targetId, targetProfile) => {
     const isF = following.includes(targetId);
