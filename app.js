@@ -1702,16 +1702,22 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
 
   const addBirthdayToCalendar = async () => {
     if(!friend.birthday) return;
-    const dateStr = getNextBirthdayDate(friend.birthday);
+    const bdayStr = typeof friend.birthday === "string" ? friend.birthday : (friend.birthday?.toISOString?.()?.slice(0,10) || null);
+    const dateStr = getNextBirthdayDate(bdayStr);
+    if(!dateStr) { setLocalToast("Invalid birthday format"); setTimeout(()=>setLocalToast(null),3000); return; }
+    const note = getBirthdaySyncNote(friend.id);
+    const {data: existing} = await sb.from("occasions").select("id").eq("user_id", myProfile.id).eq("note", note).limit(1).maybeSingle();
+    if(existing) { setLocalToast(`🎂 Already in your calendar!`); setTimeout(()=>setLocalToast(null),3000); return; }
     const {error} = await sb.from("occasions").insert({
       user_id: myProfile.id,
       type: `${friend.display_name}'s Birthday`,
       date: dateStr,
       color: "#EC4899",
-      note: getBirthdaySyncNote(friend.id),
+      note,
       is_public: false
     });
-    if(!error) { setLocalToast(`🎂 ${friend.display_name}'s birthday added!`); setTimeout(()=>setLocalToast(null),3000); }
+    if(error) { setLocalToast("Couldn't add: " + (error.message || "error")); setTimeout(()=>setLocalToast(null),3000); return; }
+    setLocalToast(`🎂 ${friend.display_name}'s birthday added!`); setTimeout(()=>setLocalToast(null),3000);
   };
 
   return html`<div>
@@ -3085,18 +3091,27 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
   useEffect(() => {
     if(!searchQ.trim()) { setSearchResults([]); return; }
     const t = setTimeout(async () => {
+      const q = searchQ.trim();
+      const uid = profile?.id;
       try {
-        const {data, error} = await sb.rpc("search_profiles_social", {search_q: searchQ.trim(), current_user_id: profile.id});
+        const {data, error} = await sb.rpc("search_profiles_social", {search_q: q, current_user_id: uid});
         if (error) throw error;
         setSearchResults(data || []);
       } catch (e) {
-        captureError("search_profiles_social", e, {searchQ});
-        const {data} = await sb.from("profiles").select("*").ilike("username",`%${searchQ}%`).neq("id",profile.id).limit(20);
-        setSearchResults(data || []);
+        captureError("search_profiles_social", e, {searchQ: q});
+        try {
+          let query = sb.from("profiles").select("*").or(`username.ilike.%${q}%,display_name.ilike.%${q}%`).limit(20);
+          if (uid) query = query.neq("id", uid);
+          const {data, error: fbErr} = await query;
+          setSearchResults(fbErr ? [] : (data || []));
+        } catch (fb) {
+          captureError("search_fallback", fb, {searchQ: q});
+          setSearchResults([]);
+        }
       }
     }, 300);
     return () => clearTimeout(t);
-  }, [searchQ, profile.id]);
+  }, [searchQ, profile?.id]);
 
   const toggleFollow = async (targetId, targetProfile) => {
     const isF = following.includes(targetId);
