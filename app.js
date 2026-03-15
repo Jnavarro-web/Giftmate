@@ -1706,16 +1706,14 @@ function FriendProfile({friend, myProfile, following, pendingRequests=[], onTogg
     const dateStr = getNextBirthdayDate(bdayStr);
     if(!dateStr) { setLocalToast("Invalid birthday format"); setTimeout(()=>setLocalToast(null),3000); return; }
     const note = getBirthdaySyncNote(friend.id);
-    const {data: existing} = await sb.from("occasions").select("id").eq("user_id", myProfile.id).eq("note", note).limit(1).maybeSingle();
-    if(existing) { setLocalToast(`🎂 Already in your calendar!`); setTimeout(()=>setLocalToast(null),3000); return; }
-    const {error} = await sb.from("occasions").insert({
-      user_id: myProfile.id,
-      type: `${friend.display_name}'s Birthday`,
-      date: dateStr,
-      color: "#EC4899",
-      note,
-      is_public: false
-    });
+    const basePayload = { user_id: myProfile.id, type: `${friend.display_name}'s Birthday`, date: dateStr, color: "#EC4899", is_public: false };
+    const {data: existing, error: dupErr} = await sb.from("occasions").select("id").eq("user_id", myProfile.id).eq("note", note).limit(1).maybeSingle();
+    const hasNoteCol = !dupErr || !/note.*schema cache/i.test(dupErr?.message || "");
+    if (hasNoteCol && existing) { setLocalToast(`🎂 Already in your calendar!`); setTimeout(()=>setLocalToast(null),3000); return; }
+    let {error} = await sb.from("occasions").insert(hasNoteCol ? { ...basePayload, note } : basePayload);
+    if (error && /note.*schema cache/i.test(error.message)) {
+      ({error} = await sb.from("occasions").insert(basePayload));
+    }
     if(error) { setLocalToast("Couldn't add: " + (error.message || "error")); setTimeout(()=>setLocalToast(null),3000); return; }
     setLocalToast(`🎂 ${friend.display_name}'s birthday added!`); setTimeout(()=>setLocalToast(null),3000);
   };
@@ -3093,21 +3091,29 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
     const t = setTimeout(async () => {
       const q = searchQ.trim();
       const uid = profile?.id;
-      try {
-        const {data, error} = await sb.rpc("search_profiles_social", {search_q: q, current_user_id: uid});
-        if (error) throw error;
-        setSearchResults(data || []);
-      } catch (e) {
-        captureError("search_profiles_social", e, {searchQ: q});
+      const runFallback = async () => {
         try {
           let query = sb.from("profiles").select("*").or(`username.ilike.%${q}%,display_name.ilike.%${q}%`).limit(20);
           if (uid) query = query.neq("id", uid);
           const {data, error: fbErr} = await query;
-          setSearchResults(fbErr ? [] : (data || []));
+          return fbErr ? [] : (data || []);
         } catch (fb) {
           captureError("search_fallback", fb, {searchQ: q});
-          setSearchResults([]);
+          return [];
         }
+      };
+      try {
+        const {data, error} = await sb.rpc("search_profiles_social", {search_q: q, current_user_id: uid});
+        if (error) throw error;
+        const results = data || [];
+        if (results.length > 0) {
+          setSearchResults(results);
+        } else {
+          setSearchResults(await runFallback());
+        }
+      } catch (e) {
+        captureError("search_profiles_social", e, {searchQ: q});
+        setSearchResults(await runFallback());
       }
     }, 300);
     return () => clearTimeout(t);
