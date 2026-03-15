@@ -3105,12 +3105,7 @@ function MainApp({session, profile, setProfile, refreshProfile, onLangChange, on
       try {
         const {data, error} = await sb.rpc("search_profiles_social", {search_q: q, current_user_id: uid});
         if (error) throw error;
-        const results = data || [];
-        if (results.length > 0) {
-          setSearchResults(results);
-        } else {
-          setSearchResults(await runFallback());
-        }
+        setSearchResults(data || []);
       } catch (e) {
         captureError("search_profiles_social", e, {searchQ: q});
         setSearchResults(await runFallback());
